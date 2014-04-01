@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Gravity Forms Pages Query
+ * Gravity Forms Pages Form Query
  *
  * @package Gravity Forms Pages
  * @subpackage Query
@@ -433,7 +433,7 @@ function gf_pages_setup_postdata( $form ) {
  *
  * @since 1.0.0
  *
- * @see bbp_theme_compat_reset_post()
+ * @see gf_pages_theme_compat_reset_post()
  * 
  * @global WP_Query $wp_query
  * @global object $post
@@ -576,7 +576,7 @@ function gf_pages_template_include_theme_compat( $template = '' ) {
 	} elseif ( gf_pages_is_form_archive() ) {
 
 		// Reset post
-		bbp_theme_compat_reset_post( array(
+		gf_pages_theme_compat_reset_post( array(
 			'ID'             => 0,
 			'post_title'     => gf_pages_get_form_archive_title(),
 			'post_author'    => 0,
