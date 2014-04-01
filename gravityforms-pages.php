@@ -10,13 +10,14 @@
  */
 
 /**
- * Plugin Name: Gravity Forms Pages
- * Plugin URI:  https://github.com/lmoffereins/gravityforms-pages/
- * Description: Auto-create form pages for Gravity Forms
- * Author:      Laurens Offereins
- * Author URI:  https://github.com/lmoffereins
- * Version:     1.0.0
- * Text Domain: gravityforms-pages
+ * Plugin Name:       Gravity Forms Pages
+ * Plugin URI:        https://github.com/lmoffereins/gravityforms-pages/
+ * Description:       Auto-create form pages for Gravity Forms
+ * Author:            Laurens Offereins
+ * Author URI:        https://github.com/lmoffereins
+ * Version:           1.0.0
+ * Text Domain:       gravityforms-pages
+ * GitHub Plugin URI: lmoffereins/gravityforms-pages
  */
 
 // Exit if accessed directly
