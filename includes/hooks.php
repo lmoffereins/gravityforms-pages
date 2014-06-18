@@ -122,12 +122,12 @@ function gf_pages_single_form_filter( $hide, $form ) {
 	// Form is not yet open
 	if ( ! gf_pages_is_form_open( $form )
 
-	// Form is closed
-	|| ( gf_pages_hide_closed_forms() && gf_pages_is_form_closed( $form ) )
+		// Form is closed
+		|| ( gf_pages_hide_closed_forms() && gf_pages_is_form_closed( $form ) )
 
-	// Login required
-	|| ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() ) 
-		) {
+		// Login required
+		|| ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() ) 
+	) {
 		$hide = true;
 	}
 

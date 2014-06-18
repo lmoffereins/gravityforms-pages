@@ -398,7 +398,7 @@ class GravityForms_Pages {
 		// Single Form
 		if ( gf_pages_is_single_form() ) {
 			$single = gf_pages_get_form_title();
-			$form   = __('Form', 'gravityforms-pages');
+			$form   = __( 'Form', 'gravityforms-pages' );
 
 			if ( 'right' == $seplocation ) {
 				$title = $single . " $sep " . $form . " $sep " . $title;
@@ -486,7 +486,7 @@ class GravityForms_Pages {
 		// Add 'Edit Form' menu
 		$wp_admin_bar->add_menu( array(
 			'id'     => 'edit',
-			'title'  => __('Edit Form', 'gravityforms-pages'),
+			'title'  => __( 'Edit Form', 'gravityforms-pages' ),
 			'href'   => gf_pages_get_edit_form_url()
 		) );
 	}
@@ -507,7 +507,7 @@ class GravityForms_Pages {
 		$parent = RGForms::get_parent_menu( apply_filters( 'gform_addon_navigation', array() ) );
 
 		// Add the plugin menu page
-		$hook = add_submenu_page( $parent['name'], __('Forms Pages', 'gravityforms-pages'), __('Pages', 'gravityforms-pages' ), 'gravityforms-pages-settings', 'gf_pages', array( $this, 'admin_page' ) );
+		$hook = add_submenu_page( $parent['name'], __( 'Forms Pages', 'gravityforms-pages' ), __( 'Pages', 'gravityforms-pages' ), 'gravityforms-pages-settings', 'gf_pages', array( $this, 'admin_page' ) );
 
 		// Add hooks
 		add_action( "admin_head-$hook", array( $this, 'admin_head' ) );
@@ -554,7 +554,7 @@ class GravityForms_Pages {
 		<div class="wrap">
 
             <div id="gravity-settings-icon" class="icon32"><br></div>
-			<h2><?php _e('Forms Pages', 'gravityforms-pages'); ?></h2>
+			<h2><?php _e( 'Forms Pages', 'gravityforms-pages' ); ?></h2>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'gf_pages' ); ?>
