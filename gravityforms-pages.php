@@ -3,16 +3,16 @@
 /**
  * The Gravity Forms Pages Plugin
  *
+ * Tested with Gravity Forms 1.6.9
+ *
  * @package Gravity Forms Pages
  * @subpackage Main
- *
- * @version Gravity Forms 1.6.9
  */
 
 /**
  * Plugin Name:       Gravity Forms Pages
  * Plugin URI:        https://github.com/lmoffereins/gravityforms-pages/
- * Description:       Auto-create form pages for Gravity Forms
+ * Description:       List and display (single) Gravity Forms forms in your theme
  * Author:            Laurens Offereins
  * Author URI:        https://github.com/lmoffereins
  * Version:           1.0.0
@@ -37,14 +37,14 @@ class GravityForms_Pages {
 	 * Main GF Pages Instance
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @return GF Pages instance
 	 */
 	public static function instance() {
 
 		// Store locally
 		static $instance = null;
-		
+
 		// Only run when not previously run
 		if ( null === $instance ) {
 			$instance = new GravityForms_Pages;
@@ -63,7 +63,7 @@ class GravityForms_Pages {
 	 * @see gf_pages()
 	 */
 	public function __construct() { /* Nothing here */ }
-	
+
 	/** Setup *****************************************************************/
 
 	/**
@@ -78,7 +78,7 @@ class GravityForms_Pages {
 		$this->version      = '1.0.0';
 
 		/** Paths *************************************************************/
-		
+
 		$this->file         = __FILE__;
 		$this->basename     = plugin_basename( $this->file );
 		$this->plugin_dir   = plugin_dir_path( $this->file );
@@ -100,7 +100,7 @@ class GravityForms_Pages {
 
 		/** Query *************************************************************/
 
-		$this->current_form = new stdClass(); // Current form 
+		$this->current_form = new stdClass(); // Current form
 		$this->form_query   = new stdClass(); // Form query
 
 		/** Misc **************************************************************/
@@ -129,30 +129,30 @@ class GravityForms_Pages {
 	private function setup_actions() {
 
 		// Rewrite Rules
-		add_action( 'init',                  array( $this, 'add_rewrite_tags'        ), 20    );
-		add_action( 'init',                  array( $this, 'add_rewrite_rules'       ), 30    );
-		add_action( 'init',                  array( $this, 'add_permastructs'        ), 40    );
+		add_action( 'init',        array( $this, 'add_rewrite_tags'  ), 20 );
+		add_action( 'init',        array( $this, 'add_rewrite_rules' ), 30 );
+		add_action( 'init',        array( $this, 'add_permastructs'  ), 40 );
 
 		// Queries
-		add_action( 'parse_query',           array( $this, 'parse_query'             )        );
+		add_action( 'parse_query', array( $this, 'parse_query'       )     );
 
 		// Template
-		add_action( 'template_include',      array( $this, 'template_include'        )        );
-		add_action( 'wp_title',              array( $this, 'wp_title'                ), 10, 3 );
-		add_action( 'body_class',            array( $this, 'body_class'              ), 10, 2 );
-		add_action( 'admin_bar_menu',        array( $this, 'admin_bar_menu'          ), 90    );
+		add_action( 'template_include', array( $this, 'template_include' )        );
+		add_action( 'wp_title',         array( $this, 'wp_title'         ), 10, 3 );
+		add_action( 'body_class',       array( $this, 'body_class'       ), 10, 2 );
+		add_action( 'admin_bar_menu',   array( $this, 'admin_bar_menu'   ), 90    );
 
 		// Admin Functions
-		add_action( 'admin_menu',            array( $this, 'admin_menu'              ), 11    );
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts'   )        );
-		add_action( 'admin_init',            array( $this, 'admin_register_settings' )        );
+		add_action( 'admin_menu',            array( $this, 'admin_menu'              ), 11 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts'   )     );
+		add_action( 'admin_init',            array( $this, 'admin_register_settings' )     );
 	}
 
 	/** Rewrite Rules *********************************************************/
 
 	/**
 	 * Add the form-specific rewrite tags
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function add_rewrite_tags() {
@@ -206,8 +206,8 @@ class GravityForms_Pages {
 	public function add_permastructs() {
 
 		// Get unique ID
-		$form_id   = gf_pages_get_form_rewrite_id();
-		
+		$form_id = gf_pages_get_form_rewrite_id();
+
 		// Get root slug
 		$form_slug = gf_pages_get_single_form_slug();
 
@@ -232,10 +232,10 @@ class GravityForms_Pages {
 	 * the query var 'gf_pages_form_id' with the form's id is added.
 	 * If it's a form archive page, WP_Query::gf_pages_is_form_archive is set to true.
 	 * In addition, on form/form archive pages, WP_Query::home is set to false
-	 * and WP_Query::gf_pages_is_form is set to true. 
+	 * and WP_Query::gf_pages_is_form is set to true.
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param WP_Query $posts_query
 	 *
 	 * @todo Check capabilities
@@ -290,7 +290,7 @@ class GravityForms_Pages {
 			// 404 and bail if to hide single form
 			if ( gf_pages_hide_single_form( $the_form ) ) {
 				$posts_query->set_404();
-				return;				
+				return;
 			}
 
 			// Looking at a single form
@@ -314,11 +314,11 @@ class GravityForms_Pages {
 
 		// Archive Page
 		} elseif ( isset( $posts_query->query_vars[ gf_pages_get_archive_rewrite_id() ] ) ) {
-			
+
 			// 404 and bail if to hide archive page
 			if ( gf_pages_hide_form_archive() ) {
 				$posts_query->set_404();
-				return;			
+				return;
 			}
 
 			// We are on an archive page
@@ -342,7 +342,7 @@ class GravityForms_Pages {
 	 * Replace and load the template for form pages
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param string $template Template file
 	 * @return string Template
 	 */
@@ -376,8 +376,9 @@ class GravityForms_Pages {
 		// Locate template
 		if ( ! empty( $file ) ) {
 			$template = locate_template( $templates );
-			if ( ! $template )
+			if ( ! $template ) {
 				$template = $this->template_dir . $file;
+			}
 		}
 
 		return apply_filters( 'gf_pages_template_include', $template, $file );
@@ -387,7 +388,7 @@ class GravityForms_Pages {
 	 * Return the forms page title element
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param string $title Page title
 	 * @param string $sep Separator
 	 * @param string $seplocation Page title direction
@@ -421,40 +422,40 @@ class GravityForms_Pages {
 	}
 
 	/**
-	 * Add form specific classes to the body class 
+	 * Add form specific classes to the body class
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param array $classes Body classes
 	 * @return array Classes
 	 */
 	public function body_class( $wp_classes = array(), $custom_classes = false ) {
-		$gf_pages_classes = array();
+		$form_classes = array();
 
 		// Single Form
 		if ( gf_pages_is_single_form() ) {
-			$gf_pages_classes[] = 'form-' . gf_pages_get_form_slug();
-			$gf_pages_classes[] = 'form-' . gf_pages_get_form_id();
-			$gf_pages_classes[] = 'single';
-			$gf_pages_classes[] = 'single-form';
-			$gf_pages_classes[] = 'singular';
+			$form_classes[] = 'form-' . gf_pages_get_form_slug();
+			$form_classes[] = 'form-' . gf_pages_get_form_id();
+			$form_classes[] = 'single';
+			$form_classes[] = 'single-form';
+			$form_classes[] = 'singular';
 
 		// Form Archive
 		} elseif ( gf_pages_is_form_archive() ) {
-			$gf_pages_classes[] = 'archive';
-			$gf_pages_classes[] = 'form-archive';
-			$gf_pages_classes[] = 'forms';
+			$form_classes[] = 'archive';
+			$form_classes[] = 'form-archive';
+			$form_classes[] = 'forms';
 		}
 
-		if ( ! empty( $gf_pages_classes ) ) {	
-			$gf_pages_classes[] = 'form';
-			$gf_pages_classes[] = 'gfp-form';
+		if ( ! empty( $form_classes ) ) {
+			$form_classes[] = 'form';
+			$form_classes[] = 'gfp-form';
 		}
 
-		// Merge WP classes with GFP classes and remove duplicates
-		$classes = array_unique( array_merge( $wp_classes, $gf_pages_classes ) );
+		// Merge WP classes with form classes and remove duplicates
+		$classes = array_unique( array_merge( $wp_classes, $form_classes ) );
 
-		return apply_filters( 'gf_pages_body_class', $classes, $gf_pages_classes, $wp_classes, $custom_classes );
+		return apply_filters( 'gf_pages_body_class', $classes, $form_classes, $wp_classes, $custom_classes );
 	}
 
 	/**
@@ -467,7 +468,7 @@ class GravityForms_Pages {
 	 * @uses GFCommon::current_user_can_any()
 	 * @uses WP_Admin_Bar::add_menu()
 	 * @uses gf_pages_get_edit_form_url()
-	 * 
+	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
@@ -479,16 +480,16 @@ class GravityForms_Pages {
 		// Remove 'Edit Post' menu - hacky!
 		$wp_admin_bar->remove_menu( 'edit' );
 
-		// Bail if user cannot edit forms
-		if ( ! GFCommon::current_user_can_any( 'gforms_edit_forms' ) )
-			return;
+		// If user can edit forms
+		if ( GFCommon::current_user_can_any( 'gforms_edit_forms' ) ) {
 
-		// Add 'Edit Form' menu
-		$wp_admin_bar->add_menu( array(
-			'id'     => 'edit',
-			'title'  => __( 'Edit Form', 'gravityforms-pages' ),
-			'href'   => gf_pages_get_edit_form_url()
-		) );
+			// Add 'Edit Form' menu item
+			$wp_admin_bar->add_menu( array(
+				'id'     => 'edit',
+				'title'  => __( 'Edit Form', 'gravityforms-pages' ),
+				'href'   => gf_pages_get_edit_form_url()
+			) );
+		}
 	}
 
 	/** Admin *****************************************************************/
@@ -515,7 +516,7 @@ class GravityForms_Pages {
 
 	/**
 	 * Enqueue admin scripts
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	public function admin_enqueue_scripts() {
@@ -529,18 +530,15 @@ class GravityForms_Pages {
 	 *
 	 * @since 1.0.0
 	 */
-	public function admin_head() {
-	?>
+	public function admin_head() { ?>
 
 		<style type="text/css">
-
 			input, textarea {
 				padding: 3px;
 			}
-
 		</style>
 
-	<?php
+		<?php
 	}
 
 	/**
@@ -548,8 +546,7 @@ class GravityForms_Pages {
 	 *
 	 * @since 1.0.0
 	 */
-	public function admin_page() {
-	?>
+	public function admin_page() { ?>
 
 		<div class="wrap">
 
@@ -564,7 +561,7 @@ class GravityForms_Pages {
 
 		</div>
 
-	<?php
+		<?php
 	}
 
 	/**
@@ -612,9 +609,9 @@ class GravityForms_Pages {
 /**
  * Main function responsible for loading plugin functionality and returning
  * the plugin main object.
- * 
+ *
  * @since 1.0.0
- * 
+ *
  * @return GF Pages instance
  */
 function gf_pages() {
