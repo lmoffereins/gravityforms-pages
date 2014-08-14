@@ -148,6 +148,36 @@ class GravityForms_Pages {
 		add_action( 'admin_init',            array( $this, 'admin_register_settings' )     );
 	}
 
+	/** (de)Activation ********************************************************/
+
+	/**
+	 * Act on plugin activation
+	 *
+	 * @since 1.1.0
+	 *
+	 * @uses delete_option()
+	 */
+	public function activate() {
+		do_action( 'gf_pages_activate' );
+
+		// Flush permalinks
+		delete_option('rewrite_rules');
+	}
+
+	/**
+	 * Act on plugin deactivation
+	 *
+	 * @since 1.1.0
+	 *
+	 * @uses delete_option()
+	 */
+	public function deactivate() {
+		do_action( 'gf_pages_deactivate' );
+
+		// Flush permalinks
+		delete_option('rewrite_rules');
+	}
+
 	/** Rewrite Rules *********************************************************/
 
 	/**
@@ -605,6 +635,10 @@ class GravityForms_Pages {
 		}
 	}
 }
+
+// Register (de)activation hooks
+register_activation_hook(   __FILE__, array( 'GravityForms_Pages', 'activate'   ) );
+register_deactivation_hook( __FILE__, array( 'GravityForms_Pages', 'deactivate' ) );
 
 /**
  * Main function responsible for loading plugin functionality and returning
