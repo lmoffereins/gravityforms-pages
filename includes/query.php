@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'GFP_Form_Query' ) ) :
 /**
  * Custom Form Query
- * 
+ *
  * @since 1.0.0
  */
 class GFP_Form_Query extends WP_Query {
@@ -284,7 +284,7 @@ class GFP_Form_Query extends WP_Query {
 	 * Redefine setting up the current post
 	 *
 	 * Sets current post as the current form global.
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	function the_post() {
@@ -299,7 +299,7 @@ class GFP_Form_Query extends WP_Query {
 
 	/**
 	 * Redefine restoring the current form global
-	 * 
+	 *
 	 * @since 1.0.0
 	 */
 	function reset_postdata() {
@@ -313,10 +313,10 @@ class GFP_Form_Query extends WP_Query {
 endif; // class_exists
 
 /**
- * Sanitizes a raw form and fixes it to be used
+ * Sanitizes a raw form and sets it up for further usage
  *
  * @since 1.0.0
- * 
+ *
  * @param object $form Raw form
  * @return object Form
  */
@@ -325,7 +325,7 @@ function gf_pages_sanitize_form( $form ) {
 	// Unserialize and attach meta
 	if ( isset( $form->display_meta ) ) {
 		$meta = maybe_unserialize( $form->display_meta );
-		
+
 		// Unset meta array
 		unset( $form->display_meta );
 
@@ -417,7 +417,7 @@ function gf_pages_setup_postdata( $form ) {
 			$multipage = 1;
 	} else {
 		$pages = array( $form->post_content );
-	} 
+	}
 	*/
 
 	do_action_ref_array( 'gf_pages_the_form', array( &$form ) );
@@ -433,8 +433,8 @@ function gf_pages_setup_postdata( $form ) {
  *
  * @since 1.0.0
  *
- * @see gf_pages_theme_compat_reset_post()
- * 
+ * @see bbp_theme_compat_reset_post()
+ *
  * @global WP_Query $wp_query
  * @global object $post
  * @param array $args

@@ -538,7 +538,7 @@ class GravityForms_Pages {
 		$parent = RGForms::get_parent_menu( apply_filters( 'gform_addon_navigation', array() ) );
 
 		// Add the plugin menu page
-		$hook = add_submenu_page( $parent['name'], __( 'Forms Pages', 'gravityforms-pages' ), __( 'Pages', 'gravityforms-pages' ), 'gravityforms-pages-settings', 'gf_pages', array( $this, 'admin_page' ) );
+		$hook = add_submenu_page( $parent['name'], __( 'Forms Pages', 'gravityforms-pages' ), __( 'Pages', 'gravityforms-pages' ), 'manage_options', 'gf_pages', array( $this, 'admin_page' ) );
 
 		// Add hooks
 		add_action( "admin_head-$hook", array( $this, 'admin_head' ) );
