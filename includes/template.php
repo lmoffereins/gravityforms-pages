@@ -555,8 +555,12 @@ function gf_pages_is_form_open( $form = '' ) {
 
 	if ( ! empty( $form ) ) {
 
+		// Inactive forms are closed
+		if ( ! gf_pages_is_form_active( $form ) ) {
+			$open = false;
+
 		// Is form schedule enabled
-		if ( isset( $form->scheduleForm ) && $form->scheduleForm ) {
+		} elseif ( isset( $form->scheduleForm ) && $form->scheduleForm ) {
 
 			// We're here before opening hours
 			if ( time() < gf_pages_get_form_open_date( $form ) )
@@ -581,8 +585,12 @@ function gf_pages_is_form_closed( $form = '' ) {
 
 	if ( ! empty( $form ) ) {
 
+		// Inactive forms are closed
+		if ( ! gf_pages_is_form_active( $form ) ) {
+			$closed = true;
+
 		// Is form schedule enabled
-		if ( isset( $form->scheduleForm ) && $form->scheduleForm ) {
+		} elseif ( isset( $form->scheduleForm ) && $form->scheduleForm ) {
 
 			// We're past due date
 			if ( time() > gf_pages_get_form_close_date( $form ) )
