@@ -556,7 +556,7 @@ function gf_pages_is_form_open( $form = '' ) {
 	if ( ! empty( $form ) ) {
 
 		// Inactive forms are closed
-		if ( ! gf_pages_is_form_active( $form ) ) {
+		if ( gf_pages_is_form_inactive( $form ) ) {
 			$open = false;
 
 		// Is form schedule enabled
@@ -586,7 +586,7 @@ function gf_pages_is_form_closed( $form = '' ) {
 	if ( ! empty( $form ) ) {
 
 		// Inactive forms are closed
-		if ( ! gf_pages_is_form_active( $form ) ) {
+		if ( gf_pages_is_form_inactive( $form ) ) {
 			$closed = true;
 
 		// Is form schedule enabled
@@ -1168,23 +1168,35 @@ function gf_pages_form_class( $classes = array() ) {
 	}
 
 /**
- * Return whether the form is active
+ * Return whether the form is inactive
  *
- * @since 1.0.0
+ * @since 1.1.0
  *
  * @param object|int $form Optional. Form data or form ID
- * @return bool Form is active
+ * @return bool Form is inactive
  */
-function gf_pages_is_form_active( $form = '' ) {
-	$form   = gf_pages_get_form( $form );
-	$active = false;
-
-	if ( ! empty( $form ) ) {
-		$active = $form->is_active;
-	}
-
-	return (bool) apply_filters( 'gf_pages_is_form_active', $active, $form );
+function gf_pages_is_form_inactive( $form = '' ) {
+	return ! gf_pages_is_form_active( $form );
 }
+
+	/**
+	 * Return whether the form is active
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param object|int $form Optional. Form data or form ID
+	 * @return bool Form is active
+	 */
+	function gf_pages_is_form_active( $form = '' ) {
+		$form   = gf_pages_get_form( $form );
+		$active = false;
+
+		if ( ! empty( $form ) ) {
+			$active = $form->is_active;
+		}
+
+		return (bool) apply_filters( 'gf_pages_is_form_active', $active, $form );
+	}
 
 /**
  * Return whether the form has an entry limit
@@ -1345,6 +1357,3 @@ function gf_pages_has_form_user_entry( $form = '', $user_id = 0 ) {
 
 	return (bool) apply_filters( 'gf_pages_has_form_user_entry', $has_entry, $form, $user_id );
 }
-
-
-

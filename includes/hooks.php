@@ -28,10 +28,16 @@ add_filter( 'gf_pages_get_form_excerpt', 'wpautop',            40 );
 /** Template Filters **********************************************************/
 
 /**
+ * These filters are only here for potential use. They provide ways
+ * to display forms with default post/page template files by filtering
+ * the standard template tags that are used for posts and pages.
+ */
+
+/**
  * Filter the post title to return form title
  *
  * @since 1.0.0
- * 
+ *
  * @param string $title Item title
  * @return string Form title
  */
@@ -57,7 +63,7 @@ function gf_pages_form_title_filter( $title = '' ) {
  * Filter the post content to return form content
  *
  * @since 1.0.0
- * 
+ *
  * @param string $content Item content
  * @return string Form content
  */
@@ -84,7 +90,7 @@ function gf_pages_form_content_filter( $content = '' ) {
  * Filter the post excerpt to return form excerpt
  *
  * @since 1.0.0
- * 
+ *
  * @param string $excerpt Item excerpt
  * @return string Form excerpt
  */
@@ -112,7 +118,7 @@ function gf_pages_form_excerpt_filter( $excerpt = '' ) {
  * Filter to hide the single form and return a 404 'Not Found'
  *
  * @since 1.0.0
- * 
+ *
  * @param bool $hide Whether to hide the single form
  * @param object $form Form data
  * @return bool Hide single form
@@ -126,7 +132,7 @@ function gf_pages_single_form_filter( $hide, $form ) {
 		|| ( gf_pages_hide_closed_forms() && gf_pages_is_form_closed( $form ) )
 
 		// Login required
-		|| ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() ) 
+		|| ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() )
 	) {
 		$hide = true;
 	}
@@ -141,11 +147,11 @@ function gf_pages_single_form_filter( $hide, $form ) {
  * for existing form meta is to check for strings that
  * match the serialized meta key and expected meta value.
  *
- * This method isn't waterproof and only works for hard 
+ * This method isn't waterproof and only works for hard
  * black-or-white checks. It cannot do comparison checking.
  *
  * @since 1.0.0
- * 
+ *
  * @param string $where Where clause
  * @param GFP_Forms_Query $query
  * @return string Where clause
@@ -155,9 +161,9 @@ function gf_pages_forms_where_paged( $where, $query ) {
 	// Setup local var
 	$matches = array();
 
-	/*	
+	/*
 	// Form is not yet open
-	$matches['hide_not_open'] = array( 
+	$matches['hide_not_open'] = array(
 		'scheduleForm'        => true,
 		'scheduleStart'       => 0, // Date in the future
 		'scheduleStartHour'   => 0, // Hour of this ampm in the future
@@ -167,7 +173,7 @@ function gf_pages_forms_where_paged( $where, $query ) {
 
 	// Form is closed
 	if ( gf_pages_hide_closed_forms() ) {
-		$matches['hide_closed'] = array( 
+		$matches['hide_closed'] = array(
 			'scheduleForm'      => true,
 			'scheduleEnd'       => 0, // Date in the past
 			'scheduleEndHour'   => 0, // Hour of this ampm in the past
@@ -233,7 +239,7 @@ function gf_pages_forms_where_paged( $where, $query ) {
  * Filter the forms query result before query end
  *
  * @since 1.0.0
- * 
+ *
  * @param array $forms Forms
  * @param GFP_Form_Query $query
  * @return array Forms
@@ -250,7 +256,7 @@ function gf_pages_the_forms_filter( $forms, $query ) {
 		|| ( gf_pages_hide_closed_forms() && gf_pages_is_form_closed( $form ) )
 
 		// Login required
-		|| ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() ) 
+		|| ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() )
 			) {
 			unset( $forms[$k] );
 			continue;

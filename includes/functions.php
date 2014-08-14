@@ -2,7 +2,7 @@
 
 /**
  * Gravity Forms Pages Functions
- * 
+ *
  * @package Gravity Forms Pages
  * @subpackage Main
  */
@@ -26,9 +26,9 @@ function gf_pages_get_single_form_slug( $default = 'form' ) {
 
 /**
  * Get the form archive slug
- * 
+ *
  * @since 1.0.0
- * 
+ *
  * @param string $default Optional. Default value
  * @return string Form archive slug
  */
@@ -55,7 +55,7 @@ function gf_pages_get_paged_slug() {
  * Get the form rewrite ID
  *
  * @since 1.0.0
- * 
+ *
  * @return string Form rewrite ID
  */
 function gf_pages_get_form_rewrite_id() {
@@ -66,7 +66,7 @@ function gf_pages_get_form_rewrite_id() {
  * Get the form archive rewrite ID
  *
  * @since 1.0.0
- * 
+ *
  * @return string Form archive rewrite ID
  */
 function gf_pages_get_archive_rewrite_id() {
@@ -77,7 +77,7 @@ function gf_pages_get_archive_rewrite_id() {
  * Get the id used for paginated requests
  *
  * @since 1.0.0
- * 
+ *
  * @return string Paged rewrite ID
  */
 function gf_pages_get_paged_rewrite_id() {
@@ -90,7 +90,7 @@ function gf_pages_get_paged_rewrite_id() {
  * Get the forms per page option
  *
  * @since 1.0.0
- * 
+ *
  * @param int $default Optional. Default value
  * @return int Forms per page
  */
@@ -102,7 +102,7 @@ function gf_pages_get_forms_per_page( $default = 10 ) {
  * Return whether to hide the form archive
  *
  * @since 1.0.0
- * 
+ *
  * @param bool $default Optional. Default value
  * @return bool Hide form archive
  */
@@ -116,22 +116,28 @@ function gf_pages_hide_form_archive( $default = false ) {
  * This is not an option actually.
  *
  * @since 1.0.0
- * 
+ *
  * @param object $form Form data
  * @return bool Hide single form
  */
 function gf_pages_hide_single_form( $form = '' ) {
+	$retval = false;
+
 	if ( ! is_object( $form ) )
 		$form = gf_pages_get_form( $form );
 
-	return (bool) apply_filters( 'gf_pages_hide_single_form', false, $form );
+	// Inactive forms should be hidden
+	if ( gf_pages_is_form_inactive( $form ) )
+		$retval = true;
+
+	return (bool) apply_filters( 'gf_pages_hide_single_form', $retval, $form );
 }
 
 /**
  * Return whether to hide closed forms
  *
  * @since 1.0.0
- * 
+ *
  * @param bool $default Optional. Default value
  * @return bool Hide closed forms
  */
@@ -143,7 +149,7 @@ function gf_pages_hide_closed_forms( $default = false ) {
  * Return whether to force form ajax
  *
  * @since 1.0.0
- * 
+ *
  * @param bool $default Optional. Default value
  * @return bool Force ajax
  */
@@ -155,7 +161,7 @@ function gf_pages_force_ajax( $default = false ) {
  * Return whether to show form view counts
  *
  * @since 1.0.0
- * 
+ *
  * @param bool $default Optional. Default value
  * @return bool Show view count
  */
@@ -167,7 +173,7 @@ function gf_pages_show_view_count( $default = false ) {
  * Return whether to show form entry counts
  *
  * @since 1.0.0
- * 
+ *
  * @param bool $default Optional. Default value
  * @return bool Show entry count
  */
@@ -193,7 +199,7 @@ function gf_pages_show_entry_count( $default = false ) {
  *
  * @uses gf_pages_get_form()
  * @uses sanitize_title_with_dashes()
- * 
+ *
  * @param object $form Form data
  * @return string Form slug
  */
@@ -217,7 +223,7 @@ function gf_pages_get_form_slug( $form = '' ) {
  * Get the form by given slug
  *
  * @since 1.0.0
- * 
+ *
  * @param string $slug Form slug or title
  * @return bool|array False when form not found, array otherwise
  */
@@ -322,7 +328,7 @@ if ( ! function_exists( 'gf_get_form' ) ) {
 	 * Get the form by given ID
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param int $form_id Form ID
 	 * @return object The form
 	 */
@@ -344,7 +350,7 @@ if ( ! function_exists( 'gf_get_form_meta' ) ) {
 	 * Get the form meta data by given ID
 	 *
 	 * @since 1.0.0
-	 * 
+	 *
 	 * @param int $form_id Form ID
 	 * @return object The form meta data
 	 */
