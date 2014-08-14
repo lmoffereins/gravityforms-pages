@@ -372,7 +372,8 @@ function gf_pages_form_excerpt( $form = '', $length = 200 ) {
 
 		// var_dump( maybe_serialize( gf_get_form_meta( $form->id ) ) );
 
-		if ( ! empty( $form ) ) {
+		// When form description is available
+		if ( ! empty( $form ) && isset( $form->description ) ) {
 			$excerpt = trim( strip_tags( $form->description ) );
 
 			// Multibyte support
