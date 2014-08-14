@@ -24,21 +24,21 @@ function gf_pages_admin_get_settings_sections() {
 
 		// Form slugs
 		'gf_pages_settings_slugs' => array(
-			'title'    => __('Form slugs', 'gravityforms-pages'),
+			'title'    => __( 'Form slugs', 'gravityforms-pages' ),
 			'callback' => 'gf_pages_admin_setting_callback_slugs_section',
 			'page'     => 'gf_pages'
 		),
 
 		// Query
 		'gf_pages_settings_query' => array(
-			'title'    => __('Query settings', 'gravityforms-pages'),
+			'title'    => __( 'Query settings', 'gravityforms-pages' ),
 			'callback' => 'gf_pages_admin_setting_callback_query_section',
 			'page'     => 'gf_pages'
 		),
 
 		// Additional
 		'gf_pages_settings_additional' => array(
-			'title'    => __('Additional settings', 'gravityforms-pages'),
+			'title'    => __( 'Additional settings', 'gravityforms-pages' ),
 			'callback' => 'gf_pages_admin_setting_callback_additional_section',
 			'page'     => 'gf_pages'
 		)
@@ -60,7 +60,7 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Form Slug
 			'_gf_pages_form_slug' => array(
-				'title'             => __('Single Form Slug', 'gravityforms-pages'),
+				'title'             => __( 'Single Form Slug', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_form_slug',
 				'sanitize_callback' => 'sanitize_title',
 				'args'              => array()
@@ -68,7 +68,7 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Form Archive Slug
 			'_gf_pages_form_archive_slug' => array(
-				'title'             => __('Form Archive Slug', 'gravityforms-pages'),
+				'title'             => __( 'Form Archive Slug', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_form_archive_slug',
 				'sanitize_callback' => 'sanitize_title',
 				'args'              => array()
@@ -80,7 +80,7 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Hide form archive
 			'_gf_pages_hide_form_archive' => array(
-				'title'             => __('Hide Form Archive', 'gravityforms-pages'),
+				'title'             => __( 'Hide Form Archive', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_hide_form_archive',
 				'sanitize_callback' => 'intval',
 				'args'              => array()
@@ -88,7 +88,7 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Forms per page
 			'_gf_pages_forms_per_page' => array(
-				'title'             => __('Forms Per Page', 'gravityforms-pages'),
+				'title'             => __( 'Forms Per Page', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_forms_per_page',
 				'sanitize_callback' => 'intval',
 				'args'              => array()
@@ -96,7 +96,7 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Hide closed forms
 			'_gf_pages_hide_closed_forms' => array(
-				'title'             => __('Hide Closed Forms', 'gravityforms-pages'),
+				'title'             => __( 'Hide Closed Forms', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_hide_closed_forms',
 				'sanitize_callback' => 'intval',
 				'args'              => array()
@@ -109,7 +109,7 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Force ajax
 			'_gf_pages_force_ajax' => array(
-				'title'             => __('Force Ajax Forms', 'gravityforms-pages'),
+				'title'             => __( 'Force Ajax Forms', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_force_ajax',
 				'sanitize_callback' => 'intval',
 				'args'              => array()
@@ -117,7 +117,7 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Show view count
 			'_gf_pages_show_view_count' => array(
-				'title'             => __('Show View Count', 'gravityforms-pages'),
+				'title'             => __( 'Show View Count', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_show_view_count',
 				'sanitize_callback' => 'intval',
 				'args'              => array()
@@ -125,21 +125,21 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Show entry count
 			'_gf_pages_show_entry_count' => array(
-				'title'             => __('Show Entry Count', 'gravityforms-pages'),
+				'title'             => __( 'Show Entry Count', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_show_entry_count',
 				'sanitize_callback' => 'intval',
 				'args'              => array()
 			),
-			
+
 		)
-	) );	
+	) );
 }
 
 /**
  * Get settings fields per section
  *
  * @since 1.0.0
- * 
+ *
  * @param string $section_id
  * @return array Settings fields
  */
@@ -209,7 +209,7 @@ function gf_pages_admin_setting_callback_form_archive_slug() {
 function gf_pages_admin_setting_callback_query_section() {
 ?>
 
-	<p><?php esc_html_e('Set single form and form archive query settings here.', 'gravityforms-pages'); ?></p>
+	<p><?php esc_html_e( 'Set single form and form archive query settings here.', 'gravityforms-pages' ); ?></p>
 
 <?php
 }
@@ -223,7 +223,7 @@ function gf_pages_admin_setting_callback_hide_form_archive() {
 ?>
 
 	<input id="_gf_pages_hide_form_archive" name="_gf_pages_hide_form_archive" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_hide_form_archive' ) ); ?> />
-	<label for="_gf_pages_hide_form_archive"><span class="description"><?php _e("Disable the forms archive listing page. Users will be routed to a 404 'Not Found' page.", 'gravityforms-pages'); ?></span></label>
+	<label for="_gf_pages_hide_form_archive"><span class="description"><?php _e("Disable the forms archive listing page. Users will be routed to a 404 'Not Found' page.", 'gravityforms-pages' ); ?></span></label>
 
 <?php
 }
@@ -250,7 +250,7 @@ function gf_pages_admin_setting_callback_hide_closed_forms() {
 ?>
 
 	<input id="_gf_pages_hide_closed_forms" name="_gf_pages_hide_closed_forms" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_hide_closed_forms' ) ); ?> />
-	<label for="_gf_pages_hide_closed_forms"><span class="description"><?php _e('Hide forms that are closed to new entries.', 'gravityforms-pages'); ?></span></label>
+	<label for="_gf_pages_hide_closed_forms"><span class="description"><?php _e( 'Hide forms that are closed to new entries.', 'gravityforms-pages' ); ?></span></label>
 
 <?php
 }
@@ -265,7 +265,7 @@ function gf_pages_admin_setting_callback_hide_closed_forms() {
 function gf_pages_admin_setting_callback_additional_section() {
 ?>
 
-	<p><?php esc_html_e('Set additional settings here.', 'gravityforms-pages'); ?></p>
+	<p><?php esc_html_e( 'Set additional settings here.', 'gravityforms-pages' ); ?></p>
 
 <?php
 }
@@ -279,7 +279,7 @@ function gf_pages_admin_setting_callback_force_ajax() {
 ?>
 
 	<input id="_gf_pages_force_ajax" name="_gf_pages_force_ajax" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_force_ajax' ) ); ?> />
-	<label for="_gf_pages_force_ajax"><span class="description"><?php _e('Always use interactive ajax functionality in forms.', 'gravityforms-pages'); ?></span></label>
+	<label for="_gf_pages_force_ajax"><span class="description"><?php _e( 'Always use interactive ajax functionality in forms.', 'gravityforms-pages' ); ?></span></label>
 
 <?php
 }
@@ -293,7 +293,7 @@ function gf_pages_admin_setting_callback_show_view_count() {
 ?>
 
 	<input id="_gf_pages_show_view_count" name="_gf_pages_show_view_count" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_show_view_count' ) ); ?> />
-	<label for="_gf_pages_show_view_count"><span class="description"><?php _e('Show the form view count on form pages.', 'gravityforms-pages'); ?></span></label>
+	<label for="_gf_pages_show_view_count"><span class="description"><?php _e( 'Show the form view count on form pages.', 'gravityforms-pages' ); ?></span></label>
 
 <?php
 }
@@ -307,7 +307,7 @@ function gf_pages_admin_setting_callback_show_entry_count() {
 ?>
 
 	<input id="_gf_pages_show_entry_count" name="_gf_pages_show_entry_count" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_show_entry_count' ) ); ?> />
-	<label for="_gf_pages_show_entry_count"><span class="description"><?php _e('Show the form entry count on form pages.', 'gravityforms-pages'); ?></span></label>
+	<label for="_gf_pages_show_entry_count"><span class="description"><?php _e( 'Show the form entry count on form pages.', 'gravityforms-pages' ); ?></span></label>
 
 <?php
 }
