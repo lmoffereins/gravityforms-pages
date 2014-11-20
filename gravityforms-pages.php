@@ -157,7 +157,7 @@ class GravityForms_Pages {
 	 *
 	 * @uses delete_option()
 	 */
-	public function activate() {
+	public static function activate() {
 		do_action( 'gf_pages_activate' );
 
 		// Flush permalinks
@@ -171,7 +171,7 @@ class GravityForms_Pages {
 	 *
 	 * @uses delete_option()
 	 */
-	public function deactivate() {
+	public static function deactivate() {
 		do_action( 'gf_pages_deactivate' );
 
 		// Flush permalinks
