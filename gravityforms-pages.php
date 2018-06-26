@@ -119,13 +119,13 @@ class GravityForms_Pages {
 		require( $this->includes_dir . 'actions.php'     );
 		require( $this->includes_dir . 'functions.php'   );
 		require( $this->includes_dir . 'query.php'       );
-		require( $this->includes_dir . 'settings.php'    );
 		require( $this->includes_dir . 'template.php'    );
 		require( $this->includes_dir . 'sub-actions.php' );
 
 		// Admin
 		if ( is_admin() ) {
-			require( $this->includes_dir . 'admin.php' );
+			require( $this->includes_dir . 'admin.php'    );
+			require( $this->includes_dir . 'settings.php' );
 		}
 	}
 

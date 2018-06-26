@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Gravityforms Pages Admin Functions
+ * Gravity Forms Pages Admin Functions
  *
- * @package Gravityforms Pages
+ * @package Gravity Forms Pages
  * @subpackage Administration
  */
 
@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'GravityForms_Pages_Admin' ) ) :
 /**
- * The Gravityforms Pages Admin class
+ * The Gravity Forms Pages Admin class
  *
  * @since 1.0.0
  */
@@ -44,9 +44,6 @@ class GravityForms_Pages_Admin {
 	 * Add the plugin admin menu
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses RGForms::get_parent_menu()
-	 * @uses add_submenu_page()
 	 */
 	public function admin_menu() {
 
@@ -54,7 +51,7 @@ class GravityForms_Pages_Admin {
 		$parent = RGForms::get_parent_menu( apply_filters( 'gform_addon_navigation', array() ) );
 
 		// Add the plugin menu page
-		$hook = add_submenu_page( $parent['name'], __( 'Forms Pages', 'gravityforms-pages' ), __( 'Pages', 'gravityforms-pages' ), 'manage_options', 'gf_pages', array( $this, 'admin_page' ) );
+		$hook = add_submenu_page( $parent['name'], esc_html_x( 'Forms Pages', 'Admin page title', 'gravityforms-pages' ), esc_html_x( 'Pages', 'Admin menu title', 'gravityforms-pages' ), 'manage_options', 'gf_pages', array( $this, 'admin_page' ) );
 
 		// Add hooks
 		add_action( "admin_head-$hook", array( $this, 'admin_head' ) );
@@ -97,7 +94,7 @@ class GravityForms_Pages_Admin {
 		<div class="wrap">
 
             <div id="gravity-settings-icon" class="icon32"><br></div>
-			<h2><?php _e( 'Forms Pages', 'gravityforms-pages' ); ?></h2>
+			<h2><?php echo esc_html_x( 'Forms Pages', 'Admin page heading', 'gravityforms-pages' ); ?></h2>
 
 			<form method="post" action="options.php">
 				<?php settings_fields( 'gf_pages' ); ?>
@@ -114,10 +111,6 @@ class GravityForms_Pages_Admin {
 	 * Register plugin settings
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses add_settings_section()
-	 * @uses add_settings_field()
-	 * @uses register_setting()
 	 */
 	public static function admin_register_settings() {
 
