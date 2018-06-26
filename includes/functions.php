@@ -79,6 +79,8 @@ function gf_pages_db_version_raw() {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_get_single_form_slug'
+ *
  * @param string $default Optional. Default value
  * @return string Form slug
  */
@@ -90,6 +92,8 @@ function gf_pages_get_single_form_slug( $default = 'form' ) {
  * Get the form archive slug
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_get_form_archive_slug'
  *
  * @param string $default Optional. Default value
  * @return string Form archive slug
@@ -163,6 +167,8 @@ function gf_pages_delete_rewrite_rules() {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_get_forms_per_page'
+ *
  * @param int $default Optional. Default value
  * @return int Forms per page
  */
@@ -174,6 +180,8 @@ function gf_pages_get_forms_per_page( $default = 10 ) {
  * Return whether to hide the form archive
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_hide_form_archive'
  *
  * @param bool $default Optional. Default value
  * @return bool Hide form archive
@@ -188,6 +196,8 @@ function gf_pages_hide_form_archive( $default = false ) {
  * This is not an option actually.
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_hide_single_form'
  *
  * @param object $form Form data
  * @return bool Hide single form
@@ -210,6 +220,8 @@ function gf_pages_hide_single_form( $form = '' ) {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_hide_closed_forms'
+ *
  * @param bool $default Optional. Default value
  * @return bool Hide closed forms
  */
@@ -221,6 +233,8 @@ function gf_pages_hide_closed_forms( $default = false ) {
  * Return whether to force form ajax
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_force_ajax'
  *
  * @param bool $default Optional. Default value
  * @return bool Force ajax
@@ -234,6 +248,8 @@ function gf_pages_force_ajax( $default = false ) {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_show_view_count'
+ *
  * @param bool $default Optional. Default value
  * @return bool Show view count
  */
@@ -245,6 +261,8 @@ function gf_pages_show_view_count( $default = false ) {
  * Return whether to show form entry counts
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_show_entry_count'
  *
  * @param bool $default Optional. Default value
  * @return bool Show entry count
@@ -269,8 +287,7 @@ function gf_pages_show_entry_count( $default = false ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form()
- * @uses sanitize_title_with_dashes()
+ * @uses apply_filters() Calls 'gf_pages_get_form_slug'
  *
  * @param object $form Form data
  * @return string Form slug
@@ -295,6 +312,8 @@ function gf_pages_get_form_slug( $form = '' ) {
  * Get the form by given slug
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_get_form_by_slug'
  *
  * @param string $slug Form slug or title
  * @return bool|array False when form not found, array otherwise
@@ -329,6 +348,8 @@ function gf_pages_get_form_by_slug( $slug = '' ) {
  * Return the requested form data or default to current form
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_get_form'
  *
  * @param int|object $form_id Optional. Defaults to current form
  * @return object Form data
@@ -401,6 +422,8 @@ if ( ! function_exists( 'gf_get_form' ) ) {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses apply_filters() Calls 'gf_get_form'
+	 *
 	 * @param int $form_id Form ID
 	 * @return object The form
 	 */
@@ -422,6 +445,8 @@ if ( ! function_exists( 'gf_get_form_meta' ) ) {
 	 * Get the form meta data by given ID
 	 *
 	 * @since 1.0.0
+	 *
+	 * @uses apply_filters() Calls 'gf_get_form_meta'
 	 *
 	 * @param int $form_id Form ID
 	 * @return object The form meta data

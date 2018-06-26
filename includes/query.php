@@ -317,6 +317,8 @@ endif; // class_exists
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_sanitize_form'
+ *
  * @param object $form Raw form
  * @return object Form
  */
@@ -381,6 +383,8 @@ function gf_pages_the_form() {
  * Mimic WP's setup_postdata for the current form
  *
  * @since 1.0.0
+ *
+ * @uses do_action() Calls 'gf_pages_the_form'
  *
  * @param object $form Form data.
  * @return bool True when finished
@@ -550,7 +554,8 @@ function gf_pages_theme_compat_reset_post( $args = array() ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_theme_compat_reset_post()
+ * @uses apply_filters() Calls 'gf_pages_template_include_theme_compat'
+ *
  * @param string $template
  * @return string Template
  */

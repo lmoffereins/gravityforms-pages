@@ -140,6 +140,8 @@ function gf_pages_admin_get_settings_fields() {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_admin_get_settings_fields_for_section'
+ *
  * @param string $section_id
  * @return array Settings fields
  */

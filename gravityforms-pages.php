@@ -180,11 +180,6 @@ class GravityForms_Pages {
 	 * - Forms archive
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses gf_pages_get_form_archive_slug()
-	 * @uses gf_pages_get_paged_slug()
-	 * @uses gf_pages_get_archive_rewrite_id()
-	 * @uses gf_pages_get_paged_rewrite_id()
 	 */
 	public function add_rewrite_rules() {
 
@@ -213,8 +208,6 @@ class GravityForms_Pages {
 	 * Add permalink stucture for archive-style destinations.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @uses add_permastruct()
 	 */
 	public function add_permastructs() {
 
@@ -356,6 +349,10 @@ class GravityForms_Pages {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_single_form_template'
+	 * @uses apply_filters() Calls 'gf_pages_get_form_archive_template'
+	 * @uses apply_filters() Calls 'gf_pages_template_include'
+	 *
 	 * @param string $template Template file
 	 * @return string Template
 	 */
@@ -402,6 +399,8 @@ class GravityForms_Pages {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses apply_filters() Calls 'gf_pages_wp_title'
+	 *
 	 * @param string $title Page title
 	 * @param string $sep Separator
 	 * @param string $seplocation Page title direction
@@ -438,6 +437,8 @@ class GravityForms_Pages {
 	 * Add form specific classes to the body class
 	 *
 	 * @since 1.0.0
+	 *
+	 * @uses apply_filters() Calls 'gf_pages_body_class'
 	 *
 	 * @param array $classes Body classes
 	 * @return array Classes

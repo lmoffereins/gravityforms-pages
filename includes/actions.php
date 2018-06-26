@@ -81,6 +81,8 @@ function gf_pages_form_title_filter( $title = '' ) {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_form_content_filter'
+ *
  * @param string $content Item content
  * @return string Form content
  */
@@ -107,6 +109,8 @@ function gf_pages_form_content_filter( $content = '' ) {
  * Filter the post excerpt to return form excerpt
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_form_excerpt_filter'
  *
  * @param string $excerpt Item excerpt
  * @return string Form excerpt
@@ -168,6 +172,8 @@ function gf_pages_single_form_filter( $hide, $form ) {
  * black-or-white checks. It cannot do comparison checking.
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_forms_where_not_like'
  *
  * @param string $where Where clause
  * @param GFP_Forms_Query $query

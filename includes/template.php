@@ -15,8 +15,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * @since 1.0.0
  *
- * @uses WP_Query
- * @return boolean Page is form page
+ * @global WP_Query $wp_query
+ *
+ * @uses apply_filters() Calls 'gf_pages_is_form'
+ * @return bool Page is form page
  */
 function gf_pages_is_form() {
 	global $wp_query;
@@ -36,8 +38,10 @@ function gf_pages_is_form() {
  *
  * @since 1.0.0
  *
- * @uses WP_Query
- * @return boolean Page is single form page
+ * @global WP_Query $wp_query
+ *
+ * @uses apply_filters() Calls 'gf_pages_is_single_form'
+ * @return bool Page is single form page
  */
 function gf_pages_is_single_form() {
 	global $wp_query;
@@ -61,8 +65,10 @@ function gf_pages_is_single_form() {
  *
  * @since 1.0.0
  *
- * @uses WP_Query
- * @return boolean Page is form archive page
+ * @global WP_Query $wp_query
+ *
+ * @uses apply_filters() Calls 'gf_pages_is_form_archive'
+ * @return bool Page is form archive page
  */
 function gf_pages_is_form_archive() {
 	global $wp_query;
@@ -87,6 +93,9 @@ function gf_pages_is_form_archive() {
  * Setup the form query
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_form_pagination'
+ * @uses apply_filters() Calls 'gf_pages_has_forms'
  *
  * @param array $args Optional. Query arguments
  * @return array Queried forms
@@ -186,8 +195,8 @@ function gf_pages_has_forms( $args = array() ) {
  *
  * @see get_template_part()
  *
- * @uses locate_template()
- * @uses load_template()
+ * @uses do_action() Calls 'get_template_part_$slug'
+ * @uses apply_filters() Calls 'gf_pages_get_template_part'
  *
  * @param string $slug The slug name for the generic template.
  * @param string $name The name of the specialised template.
@@ -220,8 +229,6 @@ function gf_pages_get_template_part( $slug, $name = null ) {
  * Output the current form ID
  *
  * @since 1.0.0
- *
- * @uses gf_pages_get_form_id() To get the form ID
  */
 function gf_pages_form_id() {
 	echo gf_pages_get_form_id();
@@ -232,8 +239,7 @@ function gf_pages_form_id() {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
-	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_form_id'
 	 * @return int Form ID
 	 */
 	function gf_pages_get_form_id() {
@@ -252,7 +258,6 @@ function gf_pages_form_id() {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_title() To get the form title
  * @param object|int $form Optional. Form data or form ID
  */
 function gf_pages_form_title( $form = '' ) {
@@ -264,7 +269,7 @@ function gf_pages_form_title( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_title'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return string Form title
@@ -283,11 +288,7 @@ function gf_pages_form_title( $form = '' ) {
 /**
  * Output the current form content
  *
- * Auto parses the form shortcode.
- *
  * @since 1.0.0
- *
- * @uses gf_pages_get_form_content() To get the form content
  *
  * @param bool $title Optional. Whether to add the form title. Defaults to false.
  * @param bool $description Optional. Whether to add the form description. Defaults to true.
@@ -304,12 +305,12 @@ function gf_pages_form_content( $title = false, $description = true, $ajax = fal
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_content'
 	 *
 	 * @param bool $title Optional. Whether to add the form title. Defaults to false.
 	 * @param bool $description Optional. Whether to add the form description. Defaults to true.
 	 * @param bool $ajax Optional. Whether to add ajax functionality. Defaults to false.
-	 * @param bool $parse Optional. Whether to parse the shortcode. Deafults to false.
+	 * @param bool $parse Optional. Whether to parse the shortcode. Defaults to false.
 	 * @return string Form content
 	 */
 	function gf_pages_get_form_content( $title = false, $description = true, $ajax = false, $parse = false ) {
@@ -346,7 +347,6 @@ function gf_pages_form_content( $title = false, $description = true, $ajax = fal
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_excerpt() To get the form excerpt
  * @param object|int $form Optional. Form data or form ID
  * @param int $length Optional. Length of the excerpt. Defaults to 200 letters
  */
@@ -359,7 +359,7 @@ function gf_pages_form_excerpt( $form = '', $length = 200 ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_excerpt'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @param int $length Optional. Length of the excerpt. Defaults to 200 letters
@@ -397,7 +397,6 @@ function gf_pages_form_excerpt( $form = '', $length = 200 ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_post_date()
  * @param object|int $form Optional. Form data or form ID
  */
 function gf_pages_form_post_date( $form = '' ) {
@@ -409,7 +408,7 @@ function gf_pages_form_post_date( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_post_date'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return string Form post date
@@ -430,7 +429,6 @@ function gf_pages_form_post_date( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_open_date()
  * @param object|int $form Optional. Form data or form ID
  */
 function gf_pages_form_open_date( $form = '' ) {
@@ -442,7 +440,7 @@ function gf_pages_form_open_date( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_open_date'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return string Form open date
@@ -472,7 +470,6 @@ function gf_pages_form_open_date( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_close_date()
  * @param object|int $form Optional. Form data or form ID
  */
 function gf_pages_form_close_date( $form = '' ) {
@@ -484,7 +481,7 @@ function gf_pages_form_close_date( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_close_date'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return string Form close date
@@ -511,8 +508,6 @@ function gf_pages_form_close_date( $form = '' ) {
  * Output HTML with meta information for the current form-date/time
  *
  * @since 1.0.0
- *
- * @uses gf_pages_get_form_posted_on()
  */
 function gf_pages_form_posted_on() {
 	echo gf_pages_get_form_posted_on();
@@ -525,14 +520,15 @@ function gf_pages_form_posted_on() {
 	 *
 	 * @see _s_posted_on()
 	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_form_posted_on'
 	 * @return string Form posted HTML
 	 */
 	function gf_pages_get_form_posted_on() {
-		$posted_on = sprintf( __( 'Opened on <a href="%1$s" title="%2$s" rel="bookmark"><time class="entry-date" datetime="%3$s">%4$s</time></a>', 'gravityforms-pages'), //<span class="byline"> by <span class="author vcard"><a class="url fn n" href="%5$s" title="%6$s" rel="author">%7$s</a></span></span>', 'gravityforms-pages' ),
+		$posted_on = sprintf( __( 'Opened on <a href="%1$s" title="%2$s" rel="bookmark"><time class="entry-date" datetime="%3$s">%4$s</time></a>', 'gravityforms-pages' ), //<span class="byline"> by <span class="author vcard"><a class="url fn n" href="%5$s" title="%6$s" rel="author">%7$s</a></span></span>', 'gravityforms-pages' ),
 			esc_url( gf_pages_get_form_url() ),
 			esc_attr( mysql2date( get_option( 'time_format' ), gf_pages_get_form_open_date(), true ) ),
 			esc_attr( mysql2date( 'c', gf_pages_get_form_open_date(), true ) ),
-			esc_html( mysql2date( get_option( 'date_format'), gf_pages_get_form_open_date(), true ) )
+			esc_html( mysql2date( get_option( 'date_format' ), gf_pages_get_form_open_date(), true ) )
 			// esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ),
 			// esc_attr( sprintf( __( 'View all posts by %s', 'gravityforms-pages' ), get_the_author() ) ),
 			// get_the_author()
@@ -545,6 +541,8 @@ function gf_pages_form_posted_on() {
  * Return whether the form is open for entries
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_is_form_open'
  *
  * @param object|int $form Optional. Form data or form ID
  * @return bool Form is open
@@ -576,6 +574,8 @@ function gf_pages_is_form_open( $form = '' ) {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_is_form_closed'
+ *
  * @param object|int $form Optional. Form data or form ID
  * @return bool Form is closed
  */
@@ -606,7 +606,6 @@ function gf_pages_is_form_closed( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_link()
  * @param object|int $form Optional. Form data or form ID
  */
 function gf_pages_form_link( $form = '' ) {
@@ -618,7 +617,7 @@ function gf_pages_form_link( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_link'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return string Form link
@@ -639,7 +638,6 @@ function gf_pages_form_link( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_url()
  * @param object|int $form Form data or form ID
  */
 function gf_pages_form_url( $form = '' ) {
@@ -651,7 +649,7 @@ function gf_pages_form_url( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_url'
 	 *
 	 * @param object|int $form Form data or form ID
 	 * @return string Form url
@@ -682,7 +680,6 @@ function gf_pages_form_url( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_link()
  * @param string $text Default link text
  * @param string $before HTML before link
  * @param string $after HTML after link
@@ -696,6 +693,8 @@ function gf_pages_edit_form_link( $text = '', $before = '', $after = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_edit_form_link'
+	 *
 	 * @param string $text Default link text
 	 * @param string $before HTML before link
 	 * @param string $after HTML after link
@@ -708,7 +707,7 @@ function gf_pages_edit_form_link( $text = '', $before = '', $after = '' ) {
 		if ( ! empty( $form ) && GFCommon::current_user_can_any( 'gforms_edit_forms' ) ) {
 			if ( empty( $text ) )
 				$text = gf_pages_get_form_title();
-			$link = sprintf( '%s<a href="%s" title="%s">%s</a>%s', $before, gf_pages_get_edit_form_url(), sprintf( __('Edit form %s', 'gravityforms-pages'), gf_pages_get_form_title() ), $text, $after );
+			$link = sprintf( '%s<a href="%s" title="%s">%s</a>%s', $before, gf_pages_get_edit_form_url(), sprintf( __( 'Edit form %s', 'gravityforms-pages' ), gf_pages_get_form_title() ), $text, $after );
 		}
 
 		return apply_filters( 'gf_pages_get_edit_form_link', $link, $form, $text, $before, $after );
@@ -719,7 +718,6 @@ function gf_pages_edit_form_link( $text = '', $before = '', $after = '' ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_edit_form_url()
  * @param object|int $form Optional. Form data or form ID
  */
 function gf_pages_edit_form_url( $form = '' ) {
@@ -730,6 +728,8 @@ function gf_pages_edit_form_url( $form = '' ) {
 	 * Get the edit form url
 	 *
 	 * @since 1.0.0
+	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_edit_form_url'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return string Edit form url
@@ -750,7 +750,6 @@ function gf_pages_edit_form_url( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_view_count()
  * @param object|int $form Optional. Form data or form ID
  */
 function gf_pages_form_view_count( $form = '' ) {
@@ -762,7 +761,7 @@ function gf_pages_form_view_count( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_view_count'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return string Form view count
@@ -783,7 +782,6 @@ function gf_pages_form_view_count( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_entry_count()
  * @param object|int $form Optional. Form data or form ID
  */
 function gf_pages_form_entry_count( $form = '' ) {
@@ -795,7 +793,7 @@ function gf_pages_form_entry_count( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
+	 * @uses apply_filters() Calls 'gf_pages_get_form_entry_count'
 	 *
 	 * @todo Fix corrupt lead count, empty when it should not
 	 *
@@ -818,7 +816,6 @@ function gf_pages_form_entry_count( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_display_entry_count()
  * @param object|int $form Optional. Form data or form ID
  */
 function gf_pages_form_display_entry_count( $form = '' ) {
@@ -830,10 +827,8 @@ function gf_pages_form_display_entry_count( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
-	 * @uses gf_pages_get_form_entry_count()
-	 * @uses gf_pages_has_form_entry_limit()
-	 * @uses gf_pages_get_form_entry_limit()
+	 * @uses apply_filters() Calls 'gf_pages_form_display_entry_count_class'
+	 * @uses apply_filters() Calls 'gf_pages_get_form_display_entry_count'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return string Form entry count display
@@ -849,13 +844,13 @@ function gf_pages_form_display_entry_count( $form = '' ) {
 
 			// Form has entry limit
 			if ( gf_pages_has_form_entry_limit( $form ) ) {
-				$text   = __('%s of %s Entries', 'gravityforms-pages');
+				$text   = __( '%s of %s Entries', 'gravityforms-pages' );
 				$args[] = sprintf( '<span class="%s">%d</span>', $class, $count );
 				$args[] = sprintf( '<span class="entry-count-limit">%d</span>', gf_pages_get_form_entry_limit( $form ) );
 
 			// No limit
 			} else {
-				$text   = _n('%s Entry', '%s Entries', $count, 'gravityforms-pages');
+				$text   = _n( '%s Entry', '%s Entries', $count, 'gravityforms-pages' );
 				$args[] = sprintf( '<span class="%s">%d</span>', $class, $count );
 			}
 
@@ -872,8 +867,6 @@ function gf_pages_form_display_entry_count( $form = '' ) {
  * Output the current form archive title
  *
  * @since 1.0.0
- *
- * @uses gf_pages_get_form_archive_title() To get the form archive title
  */
 function gf_pages_form_archive_title() {
 	echo gf_pages_get_form_archive_title();
@@ -884,12 +877,11 @@ function gf_pages_form_archive_title() {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_get_form()
-	 *
+	 * @uses apply_filters() Calls 'gf_pages_form_archive_title'
 	 * @return string Form archive title
 	 */
 	function gf_pages_get_form_archive_title() {
-		$title = __('Form Archives', 'gravityforms-pages');
+		$title = __( 'Form Archives', 'gravityforms-pages' );
 
 		return apply_filters( 'gf_pages_get_form_archive_title', $title );
 	}
@@ -899,8 +891,6 @@ function gf_pages_form_archive_title() {
  * Output the archive form link
  *
  * @since 1.0.0
- *
- * @uses gf_pages_get_form_link()
  */
 function gf_pages_form_archive_link() {
 	echo gf_pages_get_form_archive_link();
@@ -911,6 +901,7 @@ function gf_pages_form_archive_link() {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_form_archive_link'
 	 * @return string Form link
 	 */
 	function gf_pages_get_form_archive_link() {
@@ -923,8 +914,6 @@ function gf_pages_form_archive_link() {
  * Output the archive form url
  *
  * @since 1.0.0
- *
- * @uses gf_pages_get_form_archive_url()
  */
 function gf_pages_form_archive_url() {
 	echo gf_pages_get_form_archive_url();
@@ -935,6 +924,7 @@ function gf_pages_form_archive_url() {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_form_archive_url'
 	 * @return string Form url
 	 */
 	function gf_pages_get_form_archive_url() {
@@ -960,11 +950,6 @@ function gf_pages_form_archive_url() {
  * @since 1.0.0
  *
  * @see _s_content_nav()
- *
- * @uses gf_pages_get_next_forms_link()
- * @uses gf_pages_next_forms_link()
- * @uses gf_pages_get_previous_forms_link()
- * @uses gf_pages_previous_forms_link()
  *
  * @param string $nav_id Navigation element id
  */
@@ -998,8 +983,6 @@ function gf_pages_content_nav( $nav_id ) {
  *
  * @since 1.0.0
  *
- * @see next_posts_link()
- *
  * @uses gf_pages_get_next_forms_link()
  * @param string $label Content for link text
  * @param int $max_page Optional. Max pages
@@ -1014,8 +997,6 @@ function gf_pages_next_forms_link( $label = null, $max_page = 0 ) {
 	 * @since 1.0.0
 	 *
 	 * @see get_next_posts_link()
-	 *
-	 * @uses get_pagenum_link()
 	 *
 	 * @param string $label Content for link text
 	 * @param int $max_page Optional. Max pages
@@ -1033,7 +1014,7 @@ function gf_pages_next_forms_link( $label = null, $max_page = 0 ) {
 		$nextpage = intval( $paged ) + 1;
 
 		if ( null === $label )
-			$label = __('Next Page &raquo;', 'gravityforms-pages');
+			$label = __( 'Next Page &raquo;', 'gravityforms-pages' );
 
 		if ( ! gf_pages_is_single_form() && $nextpage <= $max_page ) {
 			$attr = apply_filters( 'next_posts_link_attributes', '' );
@@ -1045,8 +1026,6 @@ function gf_pages_next_forms_link( $label = null, $max_page = 0 ) {
  * Output the previous forms link
  *
  * @since 1.0.0
- *
- * @see previous_posts_link()
  *
  * @uses gf_pages_get_previous_forms_link()
  * @param string $label Content for link text
@@ -1063,8 +1042,6 @@ function gf_pages_previous_forms_link( $label = null, $max_page = 0 ) {
 	 *
 	 * @see get_previous_posts_link()
 	 *
-	 * @uses get_pagenum_link()
-	 *
 	 * @param string $label Content for link text
 	 * @param int $max_page Optional. Max pages
 	 * @return string Next forms link
@@ -1078,7 +1055,7 @@ function gf_pages_previous_forms_link( $label = null, $max_page = 0 ) {
 			$prevpage = 1;
 
 		if ( null === $label )
-			$label = __('&laquo; Previous Page', 'gravityforms-pages');
+			$label = __( '&laquo; Previous Page', 'gravityforms-pages' );
 
 		if ( ! gf_pages_is_single_form() && $paged > 1 ) {
 			$attr = apply_filters( 'previous_posts_link_attributes', '' );
@@ -1093,7 +1070,6 @@ function gf_pages_previous_forms_link( $label = null, $max_page = 0 ) {
  *
  * @since 1.0.0
  *
- * @uses gf_pages_get_form_class()
  * @param array $classes Optional. Additional classes.
  */
 function gf_pages_form_class( $classes = array() ) {
@@ -1104,6 +1080,9 @@ function gf_pages_form_class( $classes = array() ) {
 	 * Get the form class HTML tag
 	 *
 	 * @since 1.0.0
+	 *
+	 * @uses apply_filters() Calls 'gf_pages_form_class'
+	 * @uses apply_filters() Calls 'gf_pages_get_form_class'
 	 *
 	 * @param array $classes Optional. Additional classes.
 	 * @return string Form class tag
@@ -1184,6 +1163,8 @@ function gf_pages_is_form_inactive( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses apply_filters() Calls 'gf_pages_is_form_active'
+	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return bool Form is active
 	 */
@@ -1202,6 +1183,8 @@ function gf_pages_is_form_inactive( $form = '' ) {
  * Return whether the form has an entry limit
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_has_form_entry_limit'
  *
  * @param object|int $form Optional. Form data or form ID
  * @return bool Form has entry limit
@@ -1222,6 +1205,8 @@ function gf_pages_has_form_entry_limit( $form = '' ) {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_form_entry_limit'
+	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return int Form entry limit
 	 */
@@ -1240,6 +1225,8 @@ function gf_pages_has_form_entry_limit( $form = '' ) {
 	 * Return the form entry limit period
 	 *
 	 * @since 1.0.0
+	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_form_entry_limit_period'
 	 *
 	 * @param object|int $form Optional. Form data or form ID
 	 * @return string Form entry limit period
@@ -1261,6 +1248,8 @@ function gf_pages_has_form_entry_limit( $form = '' ) {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_form_requires_login'
+ *
  * @param object|int $form Optional. Form data or form ID
  * @return bool Form requires login
  */
@@ -1280,6 +1269,8 @@ function gf_pages_form_requires_login( $form = '' ) {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_is_form_honeypot_enabled'
+ *
  * @param object|int $form Optional. Form data or form ID
  * @return bool Form has honeypot enabled
  */
@@ -1298,6 +1289,8 @@ function gf_pages_is_form_honeypot_enabled( $form = '' ) {
  * Return whether the form has animation enabled
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_is_form_animation_enabled'
  *
  * @param object|int $form Optional. Form data or form ID
  * @return bool Form has animation enabled
@@ -1319,6 +1312,8 @@ function gf_pages_is_form_animation_enabled( $form = '' ) {
  * Return whether the form has an entry from the user
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_has_form_user_entry'
  *
  * @param object|int $form Optional. Form data or form ID
  * @param int $user_id User ID
