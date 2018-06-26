@@ -76,6 +76,7 @@ class GravityForms_Pages {
 		/** Versions **********************************************************/
 
 		$this->version      = '1.0.0';
+		$this->db_version   = 10000;
 
 		/** Paths *************************************************************/
 
@@ -121,6 +122,7 @@ class GravityForms_Pages {
 		require( $this->includes_dir . 'query.php'       );
 		require( $this->includes_dir . 'template.php'    );
 		require( $this->includes_dir . 'sub-actions.php' );
+		require( $this->includes_dir . 'update.php'      );
 
 		// Admin
 		if ( is_admin() ) {
@@ -139,6 +141,10 @@ class GravityForms_Pages {
 		// Add actions to plugin activation and deactivation hooks
 		add_action( 'activate_'   . $this->basename, 'gf_pages_activation'   );
 		add_action( 'deactivate_' . $this->basename, 'gf_pages_deactivation' );
+
+		// Bail when plugins is being deactivated
+		if ( gf_pages_is_deactivation() )
+			return;
 
 		// Rewrite Rules
 		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_tags'  ), 20 );

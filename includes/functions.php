@@ -10,6 +10,68 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/** Versions ***********************************************************/
+
+/**
+ * Output the plugin version
+ *
+ * @since 1.0.0
+ */
+function gf_pages_version() {
+	echo gf_pages_get_version();
+}
+
+	/**
+	 * Return the plugin version
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The plugin version
+	 */
+	function gf_pages_get_version() {
+		return gf_pages()->version;
+	}
+
+/**
+ * Output the plugin database version
+ *
+ * @since 1.0.0
+ */
+function gf_pages_db_version() {
+	echo gf_pages_get_db_version();
+}
+
+	/**
+	 * Return the plugin database version
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The plugin version
+	 */
+	function gf_pages_get_db_version() {
+		return gf_pages()->db_version;
+	}
+
+/**
+ * Output the plugin database version directly from the database
+ *
+ * @since 1.0.0
+ */
+function gf_pages_db_version_raw() {
+	echo gf_pages_get_db_version_raw();
+}
+
+	/**
+	 * Return the plugin database version directly from the database
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The current plugin version
+	 */
+	function gf_pages_get_db_version_raw() {
+		return get_option( 'gf_pages_db_version', '' );
+	}
+
 /** Slugs *********************************************************************/
 
 /**

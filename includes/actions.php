@@ -38,7 +38,8 @@ add_filter( 'gf_pages_get_form_excerpt', 'wpautop',            40 );
 /** Admin *********************************************************************/
 
 if ( is_admin() ) {
-	add_action( 'gf_pages_init',         'gf_pages_admin',     10 );
+	add_action( 'gf_pages_init',         'gf_pages_admin',          10 );
+	add_action( 'gf_pages_admin_init',   'gf_pages_setup_updater', 999 );
 }
 
 /** Template Filters **********************************************************/
