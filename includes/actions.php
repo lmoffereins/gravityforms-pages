@@ -15,12 +15,19 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 add_action( 'init',                      'gf_pages_init',       10 );
 add_action( 'admin_init',                'gf_pages_admin_init', 10 );
 
-// Forms query
+/** Utility *******************************************************************/
+
+add_action( 'gf_pages_activation',       'gf_pages_delete_rewrite_rules', 10 );
+add_action( 'gf_pages_deactivation',     'gf_pages_delete_rewrite_rules', 10 );
+
+/** Query *********************************************************************/
+
 add_filter( 'gf_pages_hide_single_form', 'gf_pages_single_form_filter', 10, 2 );
 add_filter( 'gf_pages_forms_where',      'gf_pages_forms_where',        10, 2 );
 // add_filter( 'gf_pages_the_forms',        'gf_pages_the_forms_filter',   10, 2 );
 
-// Form description
+/** Post **********************************************************************/
+
 add_filter( 'gf_pages_get_form_excerpt', 'wptexturize',        6  );
 add_filter( 'gf_pages_get_form_excerpt', 'convert_chars',      8  );
 add_filter( 'gf_pages_get_form_excerpt', 'capital_P_dangit',   10 );

@@ -136,6 +136,10 @@ class GravityForms_Pages {
 	 */
 	private function setup_actions() {
 
+		// Add actions to plugin activation and deactivation hooks
+		add_action( 'activate_'   . $this->basename, 'gf_pages_activation'   );
+		add_action( 'deactivate_' . $this->basename, 'gf_pages_deactivation' );
+
 		// Rewrite Rules
 		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_tags'  ), 20 );
 		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_rules' ), 30 );
@@ -149,36 +153,6 @@ class GravityForms_Pages {
 		add_action( 'wp_title',         array( $this, 'wp_title'         ), 10, 3 );
 		add_action( 'body_class',       array( $this, 'body_class'       ), 10, 2 );
 		add_action( 'admin_bar_menu',   array( $this, 'admin_bar_menu'   ), 90    );
-	}
-
-	/** (de)Activation ********************************************************/
-
-	/**
-	 * Act on plugin activation
-	 *
-	 * @since 1.1.0
-	 *
-	 * @uses delete_option()
-	 */
-	public static function activate() {
-		do_action( 'gf_pages_activate' );
-
-		// Flush permalinks
-		delete_option('rewrite_rules');
-	}
-
-	/**
-	 * Act on plugin deactivation
-	 *
-	 * @since 1.1.0
-	 *
-	 * @uses delete_option()
-	 */
-	public static function deactivate() {
-		do_action( 'gf_pages_deactivate' );
-
-		// Flush permalinks
-		delete_option('rewrite_rules');
 	}
 
 	/** Rewrite Rules *********************************************************/
@@ -525,10 +499,6 @@ class GravityForms_Pages {
 		}
 	}
 }
-
-// Register (de)activation hooks
-register_activation_hook(   __FILE__, array( 'GravityForms_Pages', 'activate'   ) );
-register_deactivation_hook( __FILE__, array( 'GravityForms_Pages', 'deactivate' ) );
 
 /**
  * Main function responsible for loading plugin functionality and returning

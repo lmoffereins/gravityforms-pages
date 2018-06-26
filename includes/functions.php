@@ -84,6 +84,16 @@ function gf_pages_get_paged_rewrite_id() {
 	return gf_pages()->paged_id;
 }
 
+/**
+ * Delete a blogs rewrite rules, so that they are automatically rebuilt on
+ * the subsequent page load.
+ *
+ * @since 1.0.0
+ */
+function gf_pages_delete_rewrite_rules() {
+	delete_option( 'rewrite_rules' );
+}
+
 /** Options *******************************************************************/
 
 /**
