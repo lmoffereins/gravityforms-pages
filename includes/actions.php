@@ -10,13 +10,14 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-/** Filter ********************************************************************/
+/** Sub-actions ***************************************************************/
 
-add_action( 'init', 'gf_pages_admin' );
+add_action( 'init',                      'gf_pages_init',       10 );
+add_action( 'admin_init',                'gf_pages_admin_init', 10 );
 
 // Forms query
-add_filter( 'gf_pages_hide_single_form',  'gf_pages_single_form_filter', 10, 2 );
-add_filter( 'gf_pages_forms_where',       'gf_pages_forms_where',        10, 2 );
+add_filter( 'gf_pages_hide_single_form', 'gf_pages_single_form_filter', 10, 2 );
+add_filter( 'gf_pages_forms_where',      'gf_pages_forms_where',        10, 2 );
 // add_filter( 'gf_pages_the_forms',        'gf_pages_the_forms_filter',   10, 2 );
 
 // Form description
@@ -26,6 +27,12 @@ add_filter( 'gf_pages_get_form_excerpt', 'capital_P_dangit',   10 );
 add_filter( 'gf_pages_get_form_excerpt', 'convert_smilies',    20 );
 add_filter( 'gf_pages_get_form_excerpt', 'force_balance_tags', 30 );
 add_filter( 'gf_pages_get_form_excerpt', 'wpautop',            40 );
+
+/** Admin *********************************************************************/
+
+if ( is_admin() ) {
+	add_action( 'gf_pages_init',         'gf_pages_admin',     10 );
+}
 
 /** Template Filters **********************************************************/
 

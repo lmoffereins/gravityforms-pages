@@ -116,11 +116,12 @@ class GravityForms_Pages {
 	private function includes() {
 
 		// Core
-		require( $this->includes_dir . 'actions.php'   );
-		require( $this->includes_dir . 'functions.php' );
-		require( $this->includes_dir . 'query.php'     );
-		require( $this->includes_dir . 'settings.php'  );
-		require( $this->includes_dir . 'template.php'  );
+		require( $this->includes_dir . 'actions.php'     );
+		require( $this->includes_dir . 'functions.php'   );
+		require( $this->includes_dir . 'query.php'       );
+		require( $this->includes_dir . 'settings.php'    );
+		require( $this->includes_dir . 'template.php'    );
+		require( $this->includes_dir . 'sub-actions.php' );
 
 		// Admin
 		if ( is_admin() ) {
@@ -136,12 +137,12 @@ class GravityForms_Pages {
 	private function setup_actions() {
 
 		// Rewrite Rules
-		add_action( 'init',        array( $this, 'add_rewrite_tags'  ), 20 );
-		add_action( 'init',        array( $this, 'add_rewrite_rules' ), 30 );
-		add_action( 'init',        array( $this, 'add_permastructs'  ), 40 );
+		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_tags'  ), 20 );
+		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_rules' ), 30 );
+		add_action( 'gf_pages_init',   array( $this, 'add_permastructs'  ), 40 );
 
 		// Queries
-		add_action( 'parse_query', array( $this, 'parse_query'       )     );
+		add_action( 'parse_query',     array( $this, 'parse_query'       )     );
 
 		// Template
 		add_action( 'template_include', array( $this, 'template_include' )        );
