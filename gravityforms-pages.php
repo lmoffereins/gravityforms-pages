@@ -116,8 +116,8 @@ class GravityForms_Pages {
 	private function includes() {
 
 		// Core
+		require( $this->includes_dir . 'actions.php'   );
 		require( $this->includes_dir . 'functions.php' );
-		require( $this->includes_dir . 'hooks.php'     );
 		require( $this->includes_dir . 'query.php'     );
 		require( $this->includes_dir . 'settings.php'  );
 		require( $this->includes_dir . 'template.php'  );
