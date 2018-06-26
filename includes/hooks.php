@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 /** Filter ********************************************************************/
 
+add_action( 'init', 'gf_pages_admin' );
+
 // Forms query
 add_filter( 'gf_pages_hide_single_form',  'gf_pages_single_form_filter', 10, 2 );
 add_filter( 'gf_pages_forms_where',       'gf_pages_forms_where',        10, 2 );
