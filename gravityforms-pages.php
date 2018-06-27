@@ -117,12 +117,16 @@ class GravityForms_Pages {
 	private function includes() {
 
 		// Core
-		require( $this->includes_dir . 'actions.php'     );
-		require( $this->includes_dir . 'functions.php'   );
-		require( $this->includes_dir . 'query.php'       );
-		require( $this->includes_dir . 'template.php'    );
-		require( $this->includes_dir . 'sub-actions.php' );
-		require( $this->includes_dir . 'update.php'      );
+		require( $this->includes_dir . 'actions.php'      );
+		require( $this->includes_dir . 'forms.php'        );
+		require( $this->includes_dir . 'functions.php'    );
+		require( $this->includes_dir . 'template.php'     );
+		require( $this->includes_dir . 'theme-compat.php' );
+		require( $this->includes_dir . 'sub-actions.php'  );
+		require( $this->includes_dir . 'update.php'       );
+
+		// Classes
+		require( $this->includes_dir . 'classes/class-gfp-form-query.php' );
 
 		// Admin
 		if ( is_admin() ) {
