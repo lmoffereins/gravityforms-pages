@@ -155,9 +155,6 @@ class GravityForms_Pages {
 		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_rules' ), 30 );
 		add_action( 'gf_pages_init',   array( $this, 'add_permastructs'  ), 40 );
 
-		// Queries
-		add_action( 'parse_query',     array( $this, 'parse_query'       )     );
-
 		// Template
 		add_action( 'template_include', array( $this, 'template_include' )        );
 		add_action( 'wp_title',         array( $this, 'wp_title'         ), 10, 3 );
@@ -231,119 +228,6 @@ class GravityForms_Pages {
 			'walk_dirs'   => true,
 			'endpoints'   => false,
 		) );
-	}
-
-	/** Queries ***************************************************************/
-
-	/**
-	 * Add checks for GF Pages conditions to parse_query action
-	 *
-	 * If it's a form page, WP_Query::gf_pages_is_single_form is set to true and
-	 * the query var 'gf_pages_form_id' with the form's id is added.
-	 * If it's a form archive page, WP_Query::gf_pages_is_form_archive is set to true.
-	 * In addition, on form/form archive pages, WP_Query::home is set to false
-	 * and WP_Query::gf_pages_is_form is set to true.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param WP_Query $posts_query
-	 *
-	 * @todo Check capabilities
-	 * @todo Overpaging (where no forms are) crashes 404
-	 * @todo 1 forms per page returns not-found with correct form content on last item
-	 */
-	public function parse_query( $posts_query ) {
-
-		// Bail if $posts_query is not the main loop
-		if ( ! $posts_query->is_main_query() )
-			return;
-
-		// Bail if filters are suppressed on this query
-		if ( true === $posts_query->get( 'suppress_filters' ) )
-			return;
-
-		// Bail if in admin
-		if ( is_admin() )
-			return;
-
-		// Get query variables
-		$gf_pages_form = $posts_query->get( gf_pages_get_form_rewrite_id() );
-
-		// Single Form
-		if ( ! empty( $gf_pages_form ) ) {
-
-			/** Find Form *********************************************************/
-
-			// Setup the default form variable
-			$the_form = false;
-
-			// If using pretty permalinks, use the slug
-			if ( get_option( 'permalink_structure' ) ) {
-
-				// Try slug
-				$the_form = gf_pages_get_form_by_slug( $gf_pages_form );
-			}
-
-			// No form found by slug, so try the ID if it's numeric
-			if ( empty( $the_form ) && is_numeric( $gf_pages_form ) ) {
-				$the_form = gf_pages_get_form( $gf_pages_form );
-			}
-
-			// 404 and bail if form is not found
-			if ( empty( $the_form->id ) ) {
-				$posts_query->set_404();
-				return;
-			}
-
-			/** Form Exists *******************************************************/
-
-			// 404 and bail if to hide single form
-			if ( gf_pages_hide_single_form( $the_form ) ) {
-				$posts_query->set_404();
-				return;
-			}
-
-			// Looking at a single form
-			$posts_query->gf_pages_is_single_form = true;
-			$posts_query->gf_pages_is_form        = true;
-
-			// Make sure 404 is not set
-			$posts_query->is_404 = false;
-
-			// Correct is_home variable
-			$posts_query->is_home = false;
-
-			// Set is_singular variable
-			$posts_query->is_singular = true;
-
-			// Set gf_pages_form_id for future reference
-			$posts_query->set( 'gf_pages_form_id', $the_form->id );
-
-			// Set global current form
-			gf_pages()->current_form = $the_form;
-
-		// Archive Page
-		} elseif ( isset( $posts_query->query_vars[ gf_pages_get_archive_rewrite_id() ] ) ) {
-
-			// 404 and bail if to hide archive page
-			if ( gf_pages_hide_form_archive() ) {
-				$posts_query->set_404();
-				return;
-			}
-
-			// We are on an archive page
-			$posts_query->gf_pages_is_form_archive = true;
-			$posts_query->gf_pages_is_form         = true;
-
-			// Make sure 404 is not set
-			$posts_query->is_404 = false;
-
-			// Set is_archive variable
-			$posts_query->is_archive = true;
-
-			// Correct is_home variable
-			$posts_query->is_home = false;
-		}
 	}
 
 	/** Template **************************************************************/

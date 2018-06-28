@@ -13,6 +13,111 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /** Query *********************************************************************/
 
 /**
+ * Add checks for GF Pages conditions to parse_query action
+ *
+ * @since 1.0.0
+ *
+ * @todo Check capabilities
+ * @todo Overpaging (where no forms are) crashes 404
+ * @todo 1 forms per page returns not-found with correct form content on last item
+ *
+ * @param WP_Query $posts_query
+ */
+function gf_pages_parse_query( $posts_query ) {
+
+	// Bail if $posts_query is not the main loop
+	if ( ! $posts_query->is_main_query() )
+		return;
+
+	// Bail if filters are suppressed on this query
+	if ( true === $posts_query->get( 'suppress_filters' ) )
+		return;
+
+	// Bail if in admin
+	if ( is_admin() )
+		return;
+
+	// Get query variables
+	$gf_pages_form = $posts_query->get( gf_pages_get_form_rewrite_id() );
+
+	// Single Form
+	if ( ! empty( $gf_pages_form ) ) {
+
+		/** Find Form *********************************************************/
+
+		// Setup the default form variable
+		$the_form = false;
+
+		// If using pretty permalinks, use the slug
+		if ( get_option( 'permalink_structure' ) ) {
+
+			// Try slug
+			$the_form = gf_pages_get_form_by_slug( $gf_pages_form );
+		}
+
+		// No form found by slug, so try the ID if it's numeric
+		if ( empty( $the_form ) && is_numeric( $gf_pages_form ) ) {
+			$the_form = gf_pages_get_form( $gf_pages_form );
+		}
+
+		// 404 and bail if form is not found
+		if ( empty( $the_form->id ) ) {
+			$posts_query->set_404();
+			return;
+		}
+
+		/** Form Exists *******************************************************/
+
+		// 404 and bail if to hide single form
+		if ( gf_pages_hide_single_form( $the_form ) ) {
+			$posts_query->set_404();
+			return;
+		}
+
+		// Looking at a single form
+		$posts_query->gf_pages_is_single_form = true;
+		$posts_query->gf_pages_is_form        = true;
+
+		// Make sure 404 is not set
+		$posts_query->is_404 = false;
+
+		// Correct is_home variable
+		$posts_query->is_home = false;
+
+		// Set is_singular variable
+		$posts_query->is_singular = true;
+
+		// Set gf_pages_form_id for future reference
+		$posts_query->set( 'gf_pages_form_id', $the_form->id );
+
+		// Set global current form
+		gf_pages()->current_form = $the_form;
+
+	// Archive Page
+	} elseif ( isset( $posts_query->query_vars[ gf_pages_get_archive_rewrite_id() ] ) ) {
+
+		// 404 and bail if to hide archive page
+		if ( gf_pages_hide_form_archive() ) {
+			$posts_query->set_404();
+			return;
+		}
+
+		// We are on an archive page
+		$posts_query->gf_pages_is_form_archive = true;
+		$posts_query->gf_pages_is_form         = true;
+
+		// Make sure 404 is not set
+		$posts_query->is_404 = false;
+
+		// Set is_archive variable
+		$posts_query->is_archive = true;
+
+		// Correct is_home variable
+		$posts_query->is_home = false;
+	}
+}
+
+/**
  * Sanitizes a raw form and sets it up for further usage
  *
  * @since 1.0.0
