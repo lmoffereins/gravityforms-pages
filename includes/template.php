@@ -26,7 +26,7 @@ function gf_pages_sanitize_form( $form ) {
 
 	// Unserialize and attach meta
 	if ( isset( $form->display_meta ) ) {
-		$meta = maybe_unserialize( $form->display_meta );
+		$meta = GFFormsModel::unserialize( $form->display_meta );
 
 		// Unset meta array
 		unset( $form->display_meta );
