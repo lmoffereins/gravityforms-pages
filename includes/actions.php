@@ -24,7 +24,7 @@ add_action( 'gf_pages_deactivation',     'gf_pages_delete_rewrite_rules', 10 );
 
 add_action( 'parse_query',               'gf_pages_parse_query',         2    ); // Early for overrides
 add_filter( 'gf_pages_hide_single_form', 'gf_pages_single_form_filter', 10, 2 );
-add_filter( 'gf_pages_forms_where',      'gf_pages_forms_where',        10, 2 );
+add_filter( 'gf_pages_forms_where',      'gf_pages_forms_where_paged',  10, 2 );
 // add_filter( 'gf_pages_the_forms',        'gf_pages_the_forms_filter',   10, 2 );
 
 /** Post **********************************************************************/
