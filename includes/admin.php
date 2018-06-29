@@ -35,7 +35,7 @@ class GravityForms_Pages_Admin {
 	private function setup_actions() {
 		add_action( 'admin_menu',            array( $this, 'admin_menu'              ), 11 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts'   )     );
-		add_action( 'admin_init',            array( $this, 'admin_register_settings' )     );
+		add_action( 'gf_pages_admin_init',   array( $this, 'admin_register_settings' )     );
 	}
 
 	/** Public methods **************************************************/
