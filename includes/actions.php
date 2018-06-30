@@ -24,9 +24,7 @@ add_action( 'gf_pages_deactivation',     'gf_pages_delete_rewrite_rules', 10 );
 /** Query *********************************************************************/
 
 add_action( 'parse_query',               'gf_pages_parse_query',         2    ); // Early for overrides
-add_filter( 'gf_pages_hide_single_form', 'gf_pages_single_form_filter', 10, 2 );
 add_filter( 'gf_pages_forms_where',      'gf_pages_forms_where_paged',  10, 2 );
-// add_filter( 'gf_pages_the_forms',        'gf_pages_the_forms_filter',   10, 2 );
 
 /** Post **********************************************************************/
 
@@ -138,32 +136,6 @@ function gf_pages_form_excerpt_filter( $excerpt = '' ) {
 /** Query Filters *************************************************************/
 
 /**
- * Filter to hide the single form and return a 404 'Not Found'
- *
- * @since 1.0.0
- *
- * @param bool $hide Whether to hide the single form
- * @param object $form Form data
- * @return bool Hide single form
- */
-function gf_pages_single_form_filter( $hide, $form ) {
-
-	// Form is not yet open
-	if ( ! gf_pages_is_form_open( $form )
-
-		// Form is closed
-		|| ( gf_pages_hide_closed_forms() && gf_pages_is_form_closed( $form ) )
-
-		// Login required
-		|| ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() )
-	) {
-		$hide = true;
-	}
-
-	return $hide;
-}
-
-/**
  * Manipulate the where forms query clause
  *
  * Form meta is stored as a serialized array so to check
@@ -259,38 +231,3 @@ function gf_pages_forms_where_paged( $where, $query ) {
 
 	return $where;
 }
-
-/**
- * Filter the forms query result before query end
- *
- * @since 1.0.0
- *
- * @param array $forms Forms
- * @param GFP_Form_Query $query
- * @return array Forms
- */
-function gf_pages_the_forms_filter( $forms, $query ) {
-
-	// Loop the queried forms
-	foreach ( $forms as $k => $form ) {
-
-		// Form is not yet open
-		if ( ! gf_pages_is_form_open( $form )
-
-		// Form is closed
-		|| ( gf_pages_hide_closed_forms() && gf_pages_is_form_closed( $form ) )
-
-		// Login required
-		|| ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() )
-			) {
-			unset( $forms[$k] );
-			continue;
-		}
-	}
-
-	// Reorder
-	$forms = array_values( $forms );
-
-	return $forms;
-}
-

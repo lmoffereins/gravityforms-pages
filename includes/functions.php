@@ -191,31 +191,6 @@ function gf_pages_hide_form_archive( $default = false ) {
 }
 
 /**
- * Return whether to hide the single form
- *
- * This is not an option actually.
- *
- * @since 1.0.0
- *
- * @uses apply_filters() Calls 'gf_pages_hide_single_form'
- *
- * @param object $form Form data
- * @return bool Hide single form
- */
-function gf_pages_hide_single_form( $form = '' ) {
-	$retval = false;
-
-	if ( ! is_object( $form ) )
-		$form = gf_pages_get_form( $form );
-
-	// Inactive forms should be hidden
-	if ( gf_pages_is_form_inactive( $form ) )
-		$retval = true;
-
-	return (bool) apply_filters( 'gf_pages_hide_single_form', $retval, $form );
-}
-
-/**
  * Return whether to hide closed forms
  *
  * @since 1.0.0
@@ -386,6 +361,57 @@ function gf_pages_get_form( $form_id = 0 ) {
 	}
 
 	return apply_filters( 'gf_pages_get_form', $form, $form_id );
+}
+
+/**
+ * Return whether to hide the form
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_hide_form'
+ *
+ * @param object $form Optional. Form data. Defaults to the current form.
+ * @return bool Hide the form?
+ */
+function gf_pages_hide_form( $form = '' ) {
+
+	// Get form
+	$form   = gf_pages_get_form( $form );
+	$retval = false;
+
+	if ( $form ) {
+
+		// Hide inactive forms
+		if ( gf_pages_is_form_inactive( $form ) ) {
+			$retval = true;
+
+		// Hide not open forms
+		} elseif ( ! gf_pages_is_form_open( $form ) ) {
+			$retval = true;
+
+		// Hide closed forms
+		} elseif ( gf_pages_hide_closed_forms() && gf_pages_is_form_closed( $form ) ) {
+			$retval = true;
+
+		// Hide forms for not logged-in users
+		} elseif ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() ) {
+			$retval = true;
+		}
+	}
+
+	return (bool) apply_filters( 'gf_pages_hide_form', $retval, $form );
+}
+
+/**
+ * Return whether to show the form
+ *
+ * @since 1.0.0
+ *
+ * @param object $form Optional. Form data. Defaults to the current form.
+ * @return bool Show the form?
+ */
+function gf_pages_show_form( $form = '' ) {
+	return ! gf_pages_hide_form( $form );
 }
 
 /** Query *********************************************************************/
