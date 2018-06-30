@@ -53,3 +53,14 @@ function gf_pages_init() {
 function gf_pages_admin_init() {
 	do_action( 'gf_pages_admin_init' );
 }
+
+/**
+ * Run dedicated hook after theme setup for this plugin
+ *
+ * @since 1.0.0
+ *
+ * @uses do_action() Calls 'gf_pages_after_setup_theme'
+ */
+function gf_pages_after_setup_theme() {
+	do_action( 'gf_pages_after_setup_theme' );
+}
