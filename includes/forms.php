@@ -1119,7 +1119,7 @@ function gf_pages_has_form_user_entry( $form = '', $user_id = 0 ) {
 	$has_entry = false;
 
 	if ( ! empty( $form ) ) {
-		$table = RGFormsModel::get_lead_table_name();
+		$table = GFFormsModel::get_lead_table_name();
 
 		// Logged in user
 		if ( ! empty( $user_id ) ) {
@@ -1132,8 +1132,9 @@ function gf_pages_has_form_user_entry( $form = '', $user_id = 0 ) {
 		} else {
 
 			// Find user entry
-			if ( $wpdb->query( $wpdb->prepare( "SELECT id FROM $table WHERE form_id = %d AND ip = %s", $form->id, RGFormsModel::get_ip() ) ) )
+			if ( $wpdb->query( $wpdb->prepare( "SELECT id FROM $table WHERE form_id = %d AND ip = %s", $form->id, GFFormsModel::get_ip() ) ) ) {
 				$has_entry = true;
+			}
 		}
 	}
 

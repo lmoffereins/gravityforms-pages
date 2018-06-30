@@ -253,7 +253,7 @@ function gf_pages_forms_where_paged( $where, $query ) {
 			$not_like = '(' . $not_like . ')';
 
 		// Build where clause
-		$meta_table = RGFormsModel::get_meta_table_name();
+		$meta_table = GFFormsModel::get_meta_table_name();
 		$where     .= sprintf( " AND $meta_table.display_meta NOT LIKE %s", $not_like );
 	}
 

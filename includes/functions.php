@@ -330,11 +330,15 @@ function gf_pages_get_form_by_slug( $slug = '' ) {
 	// Assume not found
 	$form = false;
 
-	// Walk all forms. This can be expensive!
-	// GF does the same with RGFormsModel::get_form_id()
-	foreach ( RGFormsModel::get_forms() as $_form ) {
-		if ( sanitize_title_with_dashes( $_form->title ) == $slug ) {
-			$form = gf_pages_get_form( $_form->id );
+	/**
+	 * Walk all forms. This can be expensive, but GF does the
+	 * same with GFFormsModel::get_form_id().
+	 */
+	foreach ( GFFormsModel::get_forms() as $_form ) {
+
+		// Look for a matching slug until we have a match
+		if ( sanitize_title_with_dashes( $_form->title ) === $slug ) {
+			$form = gf_pages_get_form( $_form );
 			break;
 		}
 	}
@@ -434,7 +438,7 @@ if ( ! function_exists( 'gf_get_form' ) ) {
 			return new stdClass();
 
 		// Get the form data
-		$form = RGFormsModel::get_form( $form_id );
+		$form = GFFormsModel::get_form( $form_id );
 
 		return (object) apply_filters( 'gf_get_form', $form, $form_id );
 	}
@@ -458,7 +462,7 @@ if ( ! function_exists( 'gf_get_form_meta' ) ) {
 			return array();
 
 		// Get the form meta data
-		$form = RGFormsModel::get_form_meta( $form_id );
+		$form = GFFormsModel::get_form_meta( $form_id );
 
 		return (object) apply_filters( 'gf_get_form_meta', $form, $form_id );
 	}
