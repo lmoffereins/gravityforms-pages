@@ -184,10 +184,11 @@ function gf_pages_form_excerpt( $form = '', $length = 200 ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param string $format Optional. Date format. Defaults to 'Y-m-d'.
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_post_date( $form = '' ) {
-	echo gf_pages_get_form_post_date( $form );
+function gf_pages_form_post_date( $format = 'Y-m-d', $form = '' ) {
+	echo gf_pages_get_form_post_date( $format, $form );
 }
 
 	/**
@@ -197,18 +198,25 @@ function gf_pages_form_post_date( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_post_date'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param string $format Optional. Date format. Defaults to 'Y-m-d'.
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form post date
 	 */
-	function gf_pages_get_form_post_date( $form = '' ) {
-		$form = gf_pages_get_form( $form );
-		$date = '';
+	function gf_pages_get_form_post_date( $format = 'Y-m-d', $form = '' ) {
+		$form      = gf_pages_get_form( $form );
+		$date      = false;
+		$formatted = '';
 
 		if ( ! empty( $form ) ) {
 			$date = $form->date_created;
+
+			if ( $date ) {
+				$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $date );
+				$formatted = $date->format( $format );
+			}
 		}
 
-		return apply_filters( 'gf_pages_get_form_post_date', $date, $form );
+		return apply_filters( 'gf_pages_get_form_post_date', $formatted, $format, $form, $date );
 	}
 
 /**
@@ -216,10 +224,11 @@ function gf_pages_form_post_date( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param string $format Optional. Date format. Defaults to 'Y-m-d'.
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_open_date( $form = '' ) {
-	echo gf_pages_get_form_open_date( $form );
+function gf_pages_form_open_date( $format = 'Y-m-d', $form = '' ) {
+	echo gf_pages_get_form_open_date( $format, $form );
 }
 
 	/**
@@ -229,27 +238,33 @@ function gf_pages_form_open_date( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_open_date'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param string $format Optional. Date format. Defaults to 'Y-m-d'.
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form open date
 	 */
-	function gf_pages_get_form_open_date( $form = '' ) {
-		$form = gf_pages_get_form( $form );
-		$date = '';
+	function gf_pages_get_form_open_date( $format = 'Y-m-d', $form = '' ) {
+		$form      = gf_pages_get_form( $form );
+		$date      = false;
+		$formatted = '';
 
 		if ( ! empty( $form ) ) {
 
 			// Form is scheduled and has defined start date
 			if ( isset( $form->scheduleForm ) && $form->scheduleForm && ! empty( $form->scheduleStart ) ) {
 
+				// Force leading zeros on minutes
+				$minutes = sprintf( '%02d', $form->scheduleStartMinute );
+
 				// Create readable date format
-				$start = $form->scheduleStart . ' ' . $form->scheduleStartHour . ':' . $form->scheduleStartMinute . ' ' . $form->scheduleStartAmpm;
-				$date  = DateTime::createFromFormat( 'm/d/Y g:i a', $start )->format( 'Y-m-d H:i:s' );
+				$date = "{$form->scheduleStart} {$form->scheduleStartHour}:{$minutes} {$form->scheduleStartAmpm}";
+				$date = DateTime::createFromFormat( 'm/d/Y g:i a', $date );
+				$formatted = $date->format( $format );
 			} else {
-				$date = gf_pages_get_form_post_date();
+				$formatted = gf_pages_get_form_post_date( $format, $form );
 			}
 		}
 
-		return apply_filters( 'gf_pages_get_form_open_date', $date, $form );
+		return apply_filters( 'gf_pages_get_form_open_date', $formatted, $format, $form, $date );
 	}
 
 /**
@@ -257,10 +272,11 @@ function gf_pages_form_open_date( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param string $format Optional. Date format. Defaults to 'Y-m-d'.
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_close_date( $form = '' ) {
-	echo gf_pages_get_form_close_date( $form );
+function gf_pages_form_close_date( $format = 'Y-m-d', $form = '' ) {
+	echo gf_pages_get_form_close_date( $format, $form );
 }
 
 	/**
@@ -270,25 +286,32 @@ function gf_pages_form_close_date( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_close_date'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param string $format Optional. Date format. Defaults to 'Y-m-d'.
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form close date
 	 */
-	function gf_pages_get_form_close_date( $form = '' ) {
-		$form = gf_pages_get_form( $form );
-		$date = '';
+	function gf_pages_get_form_close_date( $format = 'Y-m-d', $form = '' ) {
+		$form      = gf_pages_get_form( $form );
+		$date      = false;
+		$formatted = '';
 
 		if ( ! empty( $form ) ) {
 
 			// Form is scheduled and has defined end date
 			if ( isset( $form->scheduleForm ) && $form->scheduleForm && ! empty( $form->scheduleEnd ) ) {
 
+				// Force leading zeros on minutes
+				$minutes = sprintf( '%02d', $form->scheduleEndMinute );
+
 				// Create readable date format
-				$end  = $form->scheduleEnd . ' ' . $form->scheduleEndHour . ':' . $form->scheduleEndMinute . ' ' . $form->scheduleEndAmpm;
-				$date = DateTime::createFromFormat( 'm/d/Y g:i a', $end )->format( 'Y-m-d H:i:s' );
+				$date = "{$form->scheduleEnd} {$form->scheduleEndHour}:{$minutes} {$form->scheduleEndAmpm}";
+				$date = DateTime::createFromFormat( 'm/d/Y g:i a', $date );
+				$formatted = $date->format( $format );
+				d( $date, $formatted, $date->format('U') );
 			}
 		}
 
-		return apply_filters( 'gf_pages_get_form_close_date', $date, $form );
+		return apply_filters( 'gf_pages_get_form_close_date', $formatted, $format, $form, $date );
 	}
 
 /**
