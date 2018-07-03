@@ -533,6 +533,38 @@ function gf_pages_edit_form_url( $form = '' ) {
 	}
 
 /**
+ * Output the view form entries url
+ *
+ * @since 1.0.0
+ *
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
+ */
+function gf_pages_view_form_entries_url( $form = '' ) {
+	echo gf_pages_get_view_form_entries_url( $form );
+}
+
+	/**
+	 * Get the view form entries url
+	 *
+	 * @since 1.0.0
+	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_view_form_entries_url'
+	 *
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
+	 * @return string Edit form url
+	 */
+	function gf_pages_get_view_form_entries_url( $form = '' ) {
+		$form = gf_pages_get_form( $form );
+		$url  = '';
+
+		if ( ! empty( $form ) ) {
+			$url = add_query_arg( array( 'page' => 'gf_entries', 'id' => $form->id ), admin_url( '/admin.php' ) );
+		}
+
+		return apply_filters( 'gf_pages_get_view_form_entries_url', $url, $form );
+	}
+
+/**
  * Output the current form view count
  *
  * @since 1.0.0
