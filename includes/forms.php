@@ -412,10 +412,10 @@ function gf_pages_is_form_closed( $form = 0 ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or ID. Defaults to the current form.
+ * @param array $args See {@see gf_pages_get_form_link()}.
  */
-function gf_pages_the_form_link( $form = 0 ) {
-	echo gf_pages_get_form_link( $form );
+function gf_pages_the_form_link( $args = array() ) {
+	echo gf_pages_get_form_link( $args );
 }
 
 	/**
@@ -425,18 +425,39 @@ function gf_pages_the_form_link( $form = 0 ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_link'
 	 *
-	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
+	 * @param array $args Function arguments, supports these args:
+	 *  - form: Optional. Form object or ID. Defaults to the current form.
+	 *  - link_before: Optional. Markup to put before the link. Defaults to an empty string.
+	 *  - link_after: Optional. Markup to put after the link. Defaults to an empty string.
+	 *  - link_text: Optional. Link text. Defaults to the form title.
 	 * @return string Form link
 	 */
-	function gf_pages_get_form_link( $form = 0 ) {
-		$form = gf_pages_get_form( $form );
+	function gf_pages_get_form_link( $args = array() ) {
+		$r = wp_parse_args( $args, array(
+			'form'        => 0,
+			'link_before' => '',
+			'link_after'  => '',
+			'link_text'   => '',
+		) );
+
+		$form = gf_pages_get_form( $r['form'] );
 		$link = '';
 
 		if ( ! empty( $form ) ) {
-			$link = sprintf( '<a href="%s">%s</a>', gf_pages_get_form_url( $form ), gf_pages_get_form_title( $form ) );
+			$url = gf_pages_get_form_url( $form );
+
+			if ( $url ) {
+				$link = sprintf( '%s<a href="%s" title="%s">%s</a>%s',
+					$r['link_before'],
+					esc_url( $url ),
+					sprintf( esc_html__( 'Edit form %s', 'gravityforms-pages' ), gf_pages_get_form_title( $form ) ),
+					! empty( $r['link_text'] ) ? $r['link_text'] : gf_pages_get_form_title( $form ),
+					$r['link_after']
+				);
+			}
 		}
 
-		return apply_filters( 'gf_pages_get_form_link', $link, $form );
+		return apply_filters( 'gf_pages_get_form_link', $link, $form, $r );
 	}
 
 /**
@@ -482,75 +503,88 @@ function gf_pages_the_form_url( $form = 0 ) {
 	}
 
 /**
- * Output the edit form link
+ * Output the form's edit link
  *
  * @since 1.0.0
  *
- * @param string $text Default link text
- * @param string $before HTML before link
- * @param string $after HTML after link
+ * @param array $args See {@see gf_pages_get_form_edit_link()}.
  */
-function gf_pages_the_edit_form_link( $text = '', $before = '', $after = '' ) {
-	echo gf_pages_get_edit_form_link( $text, $before, $after );
+function gf_pages_the_form_edit_link( $args = array() ) {
+	echo gf_pages_get_form_edit_link( $args );
 }
 
 	/**
-	 * Get the edit form link
+	 * Get the form's edit link
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses apply_filters() Calls 'gf_pages_get_edit_form_link'
+	 * @uses apply_filters() Calls 'gf_pages_get_form_edit_link'
 	 *
-	 * @param string $text Default link text
-	 * @param string $before HTML before link
-	 * @param string $after HTML after link
+	 * @param array $args Function arguments, supports these args:
+	 *  - form: Optional. Form object or ID. Defaults to the current form.
+	 *  - link_before: Optional. Markup to put before the link. Defaults to an empty string.
+	 *  - link_after: Optional. Markup to put after the link. Defaults to an empty string.
+	 *  - link_text: Optional. Link text. Defaults to 'Edit'.
 	 * @return string Edit form link
 	 */
-	function gf_pages_get_edit_form_link( $text = '', $before = '', $after = '' ) {
-		$form = gf_pages_get_form();
+	function gf_pages_get_form_edit_link( $args = array() ) {
+		$r = wp_parse_args( $args, array(
+			'form'        => 0,
+			'link_before' => '',
+			'link_after'  => '',
+			'link_text'   => esc_html__( 'Edit', 'gravityforms-pages' ),
+		) );
+
+		$form = gf_pages_get_form( $r['form'] );
 		$link = '';
 
 		if ( ! empty( $form ) ) {
-			if ( empty( $text ) ) {
-				$text = gf_pages_get_form_title();
-			}
+			$url = gf_pages_get_form_edit_url( $form );
 
-			$link = sprintf( '%s<a href="%s" title="%s">%s</a>%s', $before, gf_pages_get_edit_form_url(), sprintf( __( 'Edit form %s', 'gravityforms-pages' ), gf_pages_get_form_title() ), $text, $after );
+			if ( $url ) {
+				$link = sprintf( '%s<a href="%s" title="%s">%s</a>%s',
+					$r['link_before'],
+					esc_url( $url ),
+					sprintf( esc_html__( 'Edit form %s', 'gravityforms-pages' ), gf_pages_get_form_title( $form ) ),
+					$r['link_text'],
+					$r['link_after']
+				);
+			}
 		}
 
-		return apply_filters( 'gf_pages_get_edit_form_link', $link, $form, $text, $before, $after );
+		return apply_filters( 'gf_pages_get_form_edit_link', $link, $form, $r );
 	}
 
 /**
- * Output the edit form url
+ * Output the form's edit url
  *
  * @since 1.0.0
  *
  * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_the_edit_form_url( $form = 0 ) {
-	echo gf_pages_get_edit_form_url( $form );
+function gf_pages_the_form_edit_url( $form = 0 ) {
+	echo gf_pages_get_form_edit_url( $form );
 }
 
 	/**
-	 * Get the edit form url
+	 * Get the form's edit url
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses apply_filters() Calls 'gf_pages_get_edit_form_url'
+	 * @uses apply_filters() Calls 'gf_pages_get_form_edit_url'
 	 *
 	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Edit form url
 	 */
-	function gf_pages_get_edit_form_url( $form = 0 ) {
+	function gf_pages_get_form_edit_url( $form = 0 ) {
 		$form = gf_pages_get_form( $form );
 		$url  = '';
 
 		if ( ! empty( $form ) ) {
-			$url = add_query_arg( array( 'page' => 'gf_edit_forms', 'id' => $form->id ), admin_url( '/admin.php' ) );
+			$url = add_query_arg( array( 'page' => 'gf_edit_forms', 'id' => $form->id ), admin_url( 'admin.php' ) );
 		}
 
-		return apply_filters( 'gf_pages_get_edit_form_url', $url, $form );
+		return apply_filters( 'gf_pages_get_form_edit_url', $url, $form );
 	}
 
 /**
@@ -729,9 +763,11 @@ function gf_pages_the_form_archive_title() {
  * Output the archive form link
  *
  * @since 1.0.0
+ *
+ * @param array $args See {@see gf_pages_get_form_archive_link()}.
  */
-function gf_pages_the_form_archive_link() {
-	echo gf_pages_get_form_archive_link();
+function gf_pages_the_form_archive_link( $args = array() ) {
+	echo gf_pages_get_form_archive_link( $args );
 }
 
 	/**
@@ -740,12 +776,33 @@ function gf_pages_the_form_archive_link() {
 	 * @since 1.0.0
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_archive_link'
+	 *
+	 * @param array $args Function arguments, supports these args:
+	 *  - link_before: Optional. Markup to put before the link. Defaults to an empty string.
+	 *  - link_after: Optional. Markup to put after the link. Defaults to an empty string.
+	 *  - link_text: Optional. Link text. Defaults to the archive title.
 	 * @return string Form link
 	 */
-	function gf_pages_get_form_archive_link() {
-		$link = sprintf( '<a href="%s">%s</a>', gf_pages_get_form_archive_url(), gf_pages_get_form_archive_title() );
+	function gf_pages_get_form_archive_link( $args = array() ) {
+		$r = wp_parse_args( $args, array(
+			'link_before' => '',
+			'link_after'  => '',
+			'link_text'   => gf_pages_get_form_archive_title(),
+		) );
 
-		return apply_filters( 'gf_pages_get_form_archive_link', $link );
+		$url  = gf_pages_get_form_archive_url();
+		$link = '';
+
+		if ( $url ) {
+			$link = sprintf( '%s<a href="%s">%s</a>%s',
+				$r['link_before'],
+				esc_url( $url ),
+				$r['link_text'],
+				$r['link_after']
+			);
+		}
+
+		return apply_filters( 'gf_pages_get_form_archive_link', $link, $r );
 	}
 
 /**
