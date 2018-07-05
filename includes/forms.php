@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  */
-function gf_pages_form_id() {
+function gf_pages_the_form_id() {
 	echo gf_pages_get_form_id();
 }
 
@@ -45,10 +45,10 @@ function gf_pages_form_id() {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_title( $form = '' ) {
-	echo gf_pages_get_form_title( $form = '' );
+function gf_pages_the_form_title( $form = 0 ) {
+	echo gf_pages_get_form_title( $form );
 }
 
 	/**
@@ -58,10 +58,10 @@ function gf_pages_form_title( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_title'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form title
 	 */
-	function gf_pages_get_form_title( $form = '' ) {
+	function gf_pages_get_form_title( $form = 0 ) {
 		$form  = gf_pages_get_form( $form );
 		$title = '';
 
@@ -79,7 +79,7 @@ function gf_pages_form_title( $form = '' ) {
  *
  * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_description( $form = 0 ) {
+function gf_pages_the_form_description( $form = 0 ) {
 	echo gf_pages_get_form_description( $form );
 }
 
@@ -114,12 +114,13 @@ function gf_pages_form_description( $form = 0 ) {
  *
  * @since 1.0.0
  *
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @param bool $title Optional. Whether to add the form title. Defaults to false.
  * @param bool $description Optional. Whether to add the form description. Defaults to true.
  * @param bool $ajax Optional. Whether to add ajax functionality. Defaults to false.
  */
-function gf_pages_form_content( $title = false, $description = true, $ajax = false ) {
-	echo gf_pages_get_form_content( $title, $description, $ajax, true );
+function gf_pages_the_form_content( $form = 0, $title = false, $description = true, $ajax = false ) {
+	echo gf_pages_get_form_content( $form, $title, $description, $ajax );
 }
 
 	/**
@@ -131,14 +132,14 @@ function gf_pages_form_content( $title = false, $description = true, $ajax = fal
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_content'
 	 *
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @param bool $title Optional. Whether to add the form title. Defaults to false.
 	 * @param bool $description Optional. Whether to add the form description. Defaults to true.
 	 * @param bool $ajax Optional. Whether to add ajax functionality. Defaults to false.
-	 * @param bool $parse Optional. Whether to parse the shortcode. Defaults to false.
 	 * @return string Form content
 	 */
-	function gf_pages_get_form_content( $title = false, $description = true, $ajax = false, $parse = false ) {
-		$form    = gf_pages_get_form();
+	function gf_pages_get_form_content( $form = 0, $title = false, $description = true, $ajax = false ) {
+		$form    = gf_pages_get_form( $form );
 		$content = '';
 
 		// Build shortcode
@@ -147,23 +148,25 @@ function gf_pages_form_content( $title = false, $description = true, $ajax = fal
 			// Start shortcode
 			$content = '[gravityforms id="' . $form->id . '"';
 
-			// Attributes
-			if ( ! $title )
+			if ( ! $title ) {
 				$content .= ' title="false"';
-			if ( ! $description )
+			}
+
+			// With description
+			if ( ! $description ) {
 				$content .= ' description="false"';
-			if ( $ajax || gf_pages_force_ajax() )
+			}
+
+			// With AJAX
+			if ( $ajax || gf_pages_force_ajax() ) {
 				$content .= ' ajax="true"';
+			}
 
 			// End shortcode
 			$content .= ']';
-
-			// Parse shortcode
-			if ( $parse )
-				$content = do_shortcode( $content );
 		}
 
-		return apply_filters( 'gf_pages_get_form_content', $content, $form, $title, $description, $ajax, $parse );
+		return apply_filters( 'gf_pages_get_form_content', $content, $form, $title, $description, $ajax );
 	}
 
 /**
@@ -171,10 +174,10 @@ function gf_pages_form_content( $title = false, $description = true, $ajax = fal
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
- * @param int $length Optional. Length of the excerpt. Defaults to 200 letters
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
+ * @param int $length Optional. Length of the excerpt. Defaults to 55 words.
  */
-function gf_pages_form_excerpt( $form = '', $length = 200 ) {
+function gf_pages_the_form_excerpt( $form = 0, $length = 55 ) {
 	echo gf_pages_get_form_excerpt( $form );
 }
 
@@ -185,32 +188,20 @@ function gf_pages_form_excerpt( $form = '', $length = 200 ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_excerpt'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
-	 * @param int $length Optional. Length of the excerpt. Defaults to 200 letters
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
+	 * @param int $length Optional. Length of the excerpt in words. Defaults to 55 words.
 	 * @return string Form excerpt
 	 */
-	function gf_pages_get_form_excerpt( $form = '', $length = 200 ) {
+	function gf_pages_get_form_excerpt( $form = 0, $length = 55 ) {
 		$form    = gf_pages_get_form( $form );
 		$length  = (int) $length;
+		$desc    = gf_get_form_description( $form );
 		$excerpt = '';
 
-		// var_dump( maybe_serialize( gf_get_form_meta( $form->id ) ) );
-
 		// When form description is available
-		if ( ! empty( $form ) && isset( $form->description ) ) {
-			$excerpt = trim( strip_tags( $form->description ) );
-
-			// Multibyte support
-			if ( function_exists( 'mb_strlen' ) ) {
-				$excerpt_length = mb_strlen( $excerpt );
-			} else {
-				$excerpt_length = strlen( $excerpt );
-			}
-
-			if ( ! empty( $length ) && ( $excerpt_length > $length ) ) {
-				$excerpt  = substr( $excerpt, 0, $length - 1 );
-				$excerpt .= '&hellip;';
-			}
+		if ( ! empty( $form ) && $desc ) {
+			$excerpt = trim( strip_tags( $desc ) );
+			$excerpt = wp_trim_words( $excerpt, $length );
 		}
 
 		return apply_filters( 'gf_pages_get_form_excerpt', $excerpt, $form, $length );
@@ -224,7 +215,7 @@ function gf_pages_form_excerpt( $form = '', $length = 200 ) {
  * @param string $format Optional. Date format. Defaults to 'Y-m-d'.
  * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_post_date( $format = 'Y-m-d', $form = '' ) {
+function gf_pages_the_form_post_date( $format = 'Y-m-d', $form = 0 ) {
 	echo gf_pages_get_form_post_date( $format, $form );
 }
 
@@ -239,7 +230,7 @@ function gf_pages_form_post_date( $format = 'Y-m-d', $form = '' ) {
 	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form post date
 	 */
-	function gf_pages_get_form_post_date( $format = 'Y-m-d', $form = '' ) {
+	function gf_pages_get_form_post_date( $format = 'Y-m-d', $form = 0 ) {
 		$form      = gf_pages_get_form( $form );
 		$date      = false;
 		$formatted = '';
@@ -264,7 +255,7 @@ function gf_pages_form_post_date( $format = 'Y-m-d', $form = '' ) {
  * @param string $format Optional. Date format. Defaults to 'Y-m-d'.
  * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_open_date( $format = 'Y-m-d', $form = '' ) {
+function gf_pages_the_form_open_date( $format = 'Y-m-d', $form = 0 ) {
 	echo gf_pages_get_form_open_date( $format, $form );
 }
 
@@ -279,7 +270,7 @@ function gf_pages_form_open_date( $format = 'Y-m-d', $form = '' ) {
 	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form open date
 	 */
-	function gf_pages_get_form_open_date( $format = 'Y-m-d', $form = '' ) {
+	function gf_pages_get_form_open_date( $format = 'Y-m-d', $form = 0 ) {
 		$form      = gf_pages_get_form( $form );
 		$date      = false;
 		$formatted = '';
@@ -312,7 +303,7 @@ function gf_pages_form_open_date( $format = 'Y-m-d', $form = '' ) {
  * @param string $format Optional. Date format. Defaults to 'Y-m-d'.
  * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_close_date( $format = 'Y-m-d', $form = '' ) {
+function gf_pages_the_form_close_date( $format = 'Y-m-d', $form = 0 ) {
 	echo gf_pages_get_form_close_date( $format, $form );
 }
 
@@ -327,7 +318,7 @@ function gf_pages_form_close_date( $format = 'Y-m-d', $form = '' ) {
 	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form close date
 	 */
-	function gf_pages_get_form_close_date( $format = 'Y-m-d', $form = '' ) {
+	function gf_pages_get_form_close_date( $format = 'Y-m-d', $form = 0 ) {
 		$form      = gf_pages_get_form( $form );
 		$date      = false;
 		$formatted = '';
@@ -344,44 +335,10 @@ function gf_pages_form_close_date( $format = 'Y-m-d', $form = '' ) {
 				$date = "{$form->scheduleEnd} {$form->scheduleEndHour}:{$minutes} {$form->scheduleEndAmpm}";
 				$date = DateTime::createFromFormat( 'm/d/Y g:i a', $date );
 				$formatted = $date->format( $format );
-				d( $date, $formatted, $date->format('U') );
 			}
 		}
 
 		return apply_filters( 'gf_pages_get_form_close_date', $formatted, $format, $form, $date );
-	}
-
-/**
- * Output HTML with meta information for the current form-date/time
- *
- * @since 1.0.0
- */
-function gf_pages_form_posted_on() {
-	echo gf_pages_get_form_posted_on();
-}
-
-	/**
-	 * Get the HTML with meta information for the current form-date/time
-	 *
-	 * @since 1.0.0
-	 *
-	 * @see _s_posted_on()
-	 *
-	 * @uses apply_filters() Calls 'gf_pages_get_form_posted_on'
-	 * @return string Form posted HTML
-	 */
-	function gf_pages_get_form_posted_on() {
-		$posted_on = sprintf( __( 'Opened on <a href="%1$s" title="%2$s" rel="bookmark"><time class="entry-date" datetime="%3$s">%4$s</time></a>', 'gravityforms-pages' ), //<span class="byline"> by <span class="author vcard"><a class="url fn n" href="%5$s" title="%6$s" rel="author">%7$s</a></span></span>', 'gravityforms-pages' ),
-			esc_url( gf_pages_get_form_url() ),
-			esc_attr( mysql2date( get_option( 'time_format' ), gf_pages_get_form_open_date(), true ) ),
-			esc_attr( mysql2date( 'c', gf_pages_get_form_open_date(), true ) ),
-			esc_html( mysql2date( get_option( 'date_format' ), gf_pages_get_form_open_date(), true ) )
-			// esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ),
-			// esc_attr( sprintf( __( 'View all posts by %s', 'gravityforms-pages' ), get_the_author() ) ),
-			// get_the_author()
-		);
-
-		return apply_filters( 'gf_pages_get_form_posted_on', $posted_on );
 	}
 
 /**
@@ -391,10 +348,10 @@ function gf_pages_form_posted_on() {
  *
  * @uses apply_filters() Calls 'gf_pages_is_form_open'
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return bool Form is open
  */
-function gf_pages_is_form_open( $form = '' ) {
+function gf_pages_is_form_open( $form = 0 ) {
 	$form = gf_pages_get_form( $form );
 	$open = true;
 
@@ -408,8 +365,9 @@ function gf_pages_is_form_open( $form = '' ) {
 		} elseif ( isset( $form->scheduleForm ) && $form->scheduleForm ) {
 
 			// We're here before opening hours
-			if ( time() < gf_pages_get_form_open_date( $form ) )
+			if ( time() < gf_pages_get_form_open_date( 'U', $form ) ) {
 				$open = false;
+			}
 		}
 	}
 
@@ -423,10 +381,10 @@ function gf_pages_is_form_open( $form = '' ) {
  *
  * @uses apply_filters() Calls 'gf_pages_is_form_closed'
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return bool Form is closed
  */
-function gf_pages_is_form_closed( $form = '' ) {
+function gf_pages_is_form_closed( $form = 0 ) {
 	$form   = gf_pages_get_form( $form );
 	$closed = false;
 
@@ -440,8 +398,9 @@ function gf_pages_is_form_closed( $form = '' ) {
 		} elseif ( isset( $form->scheduleForm ) && $form->scheduleForm ) {
 
 			// We're past due date
-			if ( time() > gf_pages_get_form_close_date( $form ) )
+			if ( time() > gf_pages_get_form_close_date( 'U', $form ) ) {
 				$closed = true;
+			}
 		}
 	}
 
@@ -453,9 +412,9 @@ function gf_pages_is_form_closed( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_link( $form = '' ) {
+function gf_pages_the_form_link( $form = 0 ) {
 	echo gf_pages_get_form_link( $form );
 }
 
@@ -466,10 +425,10 @@ function gf_pages_form_link( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_link'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form link
 	 */
-	function gf_pages_get_form_link( $form = '' ) {
+	function gf_pages_get_form_link( $form = 0 ) {
 		$form = gf_pages_get_form( $form );
 		$link = '';
 
@@ -485,9 +444,9 @@ function gf_pages_form_link( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_url( $form = '' ) {
+function gf_pages_the_form_url( $form = 0 ) {
 	echo gf_pages_get_form_url( $form );
 }
 
@@ -498,10 +457,10 @@ function gf_pages_form_url( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_url'
 	 *
-	 * @param object|int $form Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form url
 	 */
-	function gf_pages_get_form_url( $form = '' ) {
+	function gf_pages_get_form_url( $form = 0 ) {
 		global $wp_rewrite;
 
 		$form = gf_pages_get_form( $form );
@@ -531,7 +490,7 @@ function gf_pages_form_url( $form = '' ) {
  * @param string $before HTML before link
  * @param string $after HTML after link
  */
-function gf_pages_edit_form_link( $text = '', $before = '', $after = '' ) {
+function gf_pages_the_edit_form_link( $text = '', $before = '', $after = '' ) {
 	echo gf_pages_get_edit_form_link( $text, $before, $after );
 }
 
@@ -551,9 +510,11 @@ function gf_pages_edit_form_link( $text = '', $before = '', $after = '' ) {
 		$form = gf_pages_get_form();
 		$link = '';
 
-		if ( ! empty( $form ) && GFCommon::current_user_can_any( 'gforms_edit_forms' ) ) {
-			if ( empty( $text ) )
+		if ( ! empty( $form ) ) {
+			if ( empty( $text ) ) {
 				$text = gf_pages_get_form_title();
+			}
+
 			$link = sprintf( '%s<a href="%s" title="%s">%s</a>%s', $before, gf_pages_get_edit_form_url(), sprintf( __( 'Edit form %s', 'gravityforms-pages' ), gf_pages_get_form_title() ), $text, $after );
 		}
 
@@ -565,9 +526,9 @@ function gf_pages_edit_form_link( $text = '', $before = '', $after = '' ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_edit_form_url( $form = '' ) {
+function gf_pages_the_edit_form_url( $form = 0 ) {
 	echo gf_pages_get_edit_form_url( $form );
 }
 
@@ -578,10 +539,10 @@ function gf_pages_edit_form_url( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_edit_form_url'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Edit form url
 	 */
-	function gf_pages_get_edit_form_url( $form = '' ) {
+	function gf_pages_get_edit_form_url( $form = 0 ) {
 		$form = gf_pages_get_form( $form );
 		$url  = '';
 
@@ -599,7 +560,7 @@ function gf_pages_edit_form_url( $form = '' ) {
  *
  * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_view_form_entries_url( $form = '' ) {
+function gf_pages_the_view_form_entries_url( $form = 0 ) {
 	echo gf_pages_get_view_form_entries_url( $form );
 }
 
@@ -613,7 +574,7 @@ function gf_pages_view_form_entries_url( $form = '' ) {
 	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Edit form url
 	 */
-	function gf_pages_get_view_form_entries_url( $form = '' ) {
+	function gf_pages_get_view_form_entries_url( $form = 0 ) {
 		$form = gf_pages_get_form( $form );
 		$url  = '';
 
@@ -629,9 +590,9 @@ function gf_pages_view_form_entries_url( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_view_count( $form = '' ) {
+function gf_pages_the_form_view_count( $form = 0 ) {
 	echo gf_pages_get_form_view_count( $form );
 }
 
@@ -642,12 +603,12 @@ function gf_pages_form_view_count( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_view_count'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form view count
 	 */
-	function gf_pages_get_form_view_count( $form = '' ) {
+	function gf_pages_get_form_view_count( $form = 0 ) {
 		$form  = gf_pages_get_form( $form );
-		$count = false;
+		$count = 0;
 
 		if ( ! empty( $form ) ) {
 			$count = $form->view_count;
@@ -661,9 +622,9 @@ function gf_pages_form_view_count( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_entry_count( $form = '' ) {
+function gf_pages_the_form_entry_count( $form = 0 ) {
 	echo gf_pages_get_form_entry_count( $form );
 }
 
@@ -676,12 +637,12 @@ function gf_pages_form_entry_count( $form = '' ) {
 	 *
 	 * @todo Fix corrupt lead count, empty when it should not
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form lead count
 	 */
-	function gf_pages_get_form_entry_count( $form = '' ) {
+	function gf_pages_get_form_entry_count( $form = 0 ) {
 		$form  = gf_pages_get_form( $form );
-		$count = false;
+		$count = 0;
 
 		if ( ! empty( $form ) ) {
 			$count = $form->lead_count;
@@ -695,9 +656,9 @@ function gf_pages_form_entry_count( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  */
-function gf_pages_form_display_entry_count( $form = '' ) {
+function gf_pages_the_form_display_entry_count( $form = 0 ) {
 	echo gf_pages_get_form_display_entry_count( $form );
 }
 
@@ -709,10 +670,10 @@ function gf_pages_form_display_entry_count( $form = '' ) {
 	 * @uses apply_filters() Calls 'gf_pages_form_display_entry_count_class'
 	 * @uses apply_filters() Calls 'gf_pages_get_form_display_entry_count'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form entry count display
 	 */
-	function gf_pages_get_form_display_entry_count( $form = '' ) {
+	function gf_pages_get_form_display_entry_count( $form = 0 ) {
 		$form   = gf_pages_get_form( $form );
 		$retval = '';
 
@@ -747,7 +708,7 @@ function gf_pages_form_display_entry_count( $form = '' ) {
  *
  * @since 1.0.0
  */
-function gf_pages_form_archive_title() {
+function gf_pages_the_form_archive_title() {
 	echo gf_pages_get_form_archive_title();
 }
 
@@ -760,9 +721,7 @@ function gf_pages_form_archive_title() {
 	 * @return string Form archive title
 	 */
 	function gf_pages_get_form_archive_title() {
-		$title = __( 'Form Archives', 'gravityforms-pages' );
-
-		return apply_filters( 'gf_pages_get_form_archive_title', $title );
+		return apply_filters( 'gf_pages_get_form_archive_title', esc_html_x( 'Forms', 'Plugin page title', 'gravityforms-pages' ) );
 	}
 
 
@@ -771,7 +730,7 @@ function gf_pages_form_archive_title() {
  *
  * @since 1.0.0
  */
-function gf_pages_form_archive_link() {
+function gf_pages_the_form_archive_link() {
 	echo gf_pages_get_form_archive_link();
 }
 
@@ -794,7 +753,7 @@ function gf_pages_form_archive_link() {
  *
  * @since 1.0.0
  */
-function gf_pages_form_archive_url() {
+function gf_pages_the_form_archive_url() {
 	echo gf_pages_get_form_archive_url();
 }
 
@@ -1028,12 +987,12 @@ function gf_pages_form_class( $classes = array() ) {
 /**
  * Return whether the form is inactive
  *
- * @since 1.1.0
+ * @since 1.0.0
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return bool Form is inactive
  */
-function gf_pages_is_form_inactive( $form = '' ) {
+function gf_pages_is_form_inactive( $form = 0 ) {
 	return ! gf_pages_is_form_active( $form );
 }
 
@@ -1044,10 +1003,10 @@ function gf_pages_is_form_inactive( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_is_form_active'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return bool Form is active
 	 */
-	function gf_pages_is_form_active( $form = '' ) {
+	function gf_pages_is_form_active( $form = 0 ) {
 		$form   = gf_pages_get_form( $form );
 		$active = false;
 
@@ -1065,10 +1024,10 @@ function gf_pages_is_form_inactive( $form = '' ) {
  *
  * @uses apply_filters() Calls 'gf_pages_has_form_entry_limit'
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return bool Form has entry limit
  */
-function gf_pages_has_form_entry_limit( $form = '' ) {
+function gf_pages_has_form_entry_limit( $form = 0 ) {
 	$form  = gf_pages_get_form( $form );
 	$limit = false;
 
@@ -1086,10 +1045,10 @@ function gf_pages_has_form_entry_limit( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_entry_limit'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return int Form entry limit
 	 */
-	function gf_pages_get_form_entry_limit( $form = '' ) {
+	function gf_pages_get_form_entry_limit( $form = 0 ) {
 		$form  = gf_pages_get_form( $form );
 		$count = 0;
 
@@ -1107,10 +1066,10 @@ function gf_pages_has_form_entry_limit( $form = '' ) {
 	 *
 	 * @uses apply_filters() Calls 'gf_pages_get_form_entry_limit_period'
 	 *
-	 * @param object|int $form Optional. Form data or form ID
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
 	 * @return string Form entry limit period
 	 */
-	function gf_pages_get_form_entry_limit_period( $form = '' ) {
+	function gf_pages_get_form_entry_limit_period( $form = 0 ) {
 		$form   = gf_pages_get_form( $form );
 		$period = false;
 
@@ -1129,10 +1088,10 @@ function gf_pages_has_form_entry_limit( $form = '' ) {
  *
  * @uses apply_filters() Calls 'gf_pages_form_requires_login'
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return bool Form requires login
  */
-function gf_pages_form_requires_login( $form = '' ) {
+function gf_pages_form_requires_login( $form = 0 ) {
 	$form     = gf_pages_get_form( $form );
 	$required = false;
 
@@ -1150,10 +1109,10 @@ function gf_pages_form_requires_login( $form = '' ) {
  *
  * @uses apply_filters() Calls 'gf_pages_is_form_honeypot_enabled'
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return bool Form has honeypot enabled
  */
-function gf_pages_is_form_honeypot_enabled( $form = '' ) {
+function gf_pages_is_form_honeypot_enabled( $form = 0 ) {
 	$form    = gf_pages_get_form( $form );
 	$enabled = false;
 
@@ -1171,10 +1130,10 @@ function gf_pages_is_form_honeypot_enabled( $form = '' ) {
  *
  * @uses apply_filters() Calls 'gf_pages_is_form_animation_enabled'
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return bool Form has animation enabled
  */
-function gf_pages_is_form_animation_enabled( $form = '' ) {
+function gf_pages_is_form_animation_enabled( $form = 0 ) {
 	$form    = gf_pages_get_form( $form );
 	$enabled = false;
 
@@ -1185,46 +1144,49 @@ function gf_pages_is_form_animation_enabled( $form = '' ) {
 	return (bool) apply_filters( 'gf_pages_is_form_animation_enabled', $enabled, $form );
 }
 
-/** Form Entry Tags ***********************************************************/
+/** Form Entry ****************************************************************/
 
 /**
  * Return whether the form has an entry from the user
  *
  * @since 1.0.0
  *
+ * @uses WPDB $wpdb
  * @uses apply_filters() Calls 'gf_pages_has_form_user_entry'
  *
- * @param object|int $form Optional. Form data or form ID
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @param int $user_id User ID
  * @return bool User has form filled
  */
-function gf_pages_has_form_user_entry( $form = '', $user_id = 0 ) {
+function gf_pages_has_form_user_entry( $form = 0, $user_id = 0 ) {
 	global $wpdb;
 
 	// Find form
 	$form = gf_pages_get_form( $form );
 
-	// Find user
-	if ( empty( $user_id ) )
+	// Default to current user
+	if ( empty( $user_id ) ) {
 		$user_id = get_current_user_id();
+	}
 
 	$has_entry = false;
 
 	if ( ! empty( $form ) ) {
-		$table = GFFormsModel::get_lead_table_name();
+		$lead_table = GFFormsModel::get_lead_table_name();
 
 		// Logged in user
 		if ( ! empty( $user_id ) ) {
 
 			// Find user entry
-			if ( $wpdb->query( $wpdb->prepare( "SELECT id FROM $table WHERE form_id = %d AND created_by = %d", $form->id, $user_id ) ) )
+			if ( $wpdb->query( $wpdb->prepare( "SELECT id FROM {$lead_table} WHERE form_id = %d AND created_by = %d", $form->id, $user_id ) ) ) {
 				$has_entry = true;
+			}
 
 		// IP check
 		} else {
 
 			// Find user entry
-			if ( $wpdb->query( $wpdb->prepare( "SELECT id FROM $table WHERE form_id = %d AND ip = %s", $form->id, GFFormsModel::get_ip() ) ) ) {
+			if ( $wpdb->query( $wpdb->prepare( "SELECT id FROM {$lead_table} WHERE form_id = %d AND ip = %s", $form->id, GFFormsModel::get_ip() ) ) ) {
 				$has_entry = true;
 			}
 		}
