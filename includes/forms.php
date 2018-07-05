@@ -102,7 +102,7 @@ function gf_pages_form_description( $form = 0 ) {
 
 			// Provide default description
 			if ( empty( $desc ) ) {
-				$desc = esc_html__( 'There is no description provided for this form.', 'gravityforms-pages' );
+				$desc = apply_filters( 'gf_pages_default_form_description', esc_html__( 'There is no description provided for this form.', 'gravityforms-pages' ), $form );
 			}
 		}
 
