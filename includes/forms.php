@@ -73,6 +73,43 @@ function gf_pages_form_title( $form = '' ) {
 	}
 
 /**
+ * Output the current form description
+ *
+ * @since 1.0.0
+ *
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
+ */
+function gf_pages_form_description( $form = 0 ) {
+	echo gf_pages_get_form_description( $form );
+}
+
+	/**
+	 * Get the current form description
+	 *
+	 * @since 1.0.0
+	 *
+	 * @uses apply_filters() Calls 'gf_pages_get_form_description'
+	 *
+	 * @param object|int $form Optional. Form data or ID. Defaults to the current form.
+	 * @return string Form description
+	 */
+	function gf_pages_get_form_description( $form = 0 ) {
+		$form = gf_pages_get_form( $form );
+		$desc = '';
+
+		if ( ! empty( $form ) ) {
+			$desc = $form->description;
+
+			// Provide default description
+			if ( empty( $desc ) ) {
+				$desc = esc_html__( 'There is no description provided for this form.', 'gravityforms-pages' );
+			}
+		}
+
+		return apply_filters( 'gf_pages_get_form_description', $desc, $form );
+	}
+
+/**
  * Output the current form content
  *
  * @since 1.0.0
