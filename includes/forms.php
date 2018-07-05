@@ -10,6 +10,164 @@
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
+/** Query *********************************************************************/
+
+/**
+ * Setup and run the Forms query
+ *
+ * @since 1.0.0
+ *
+ * @param array $args Query arguments.
+ * @return bool Has the query returned any results?
+ */
+function gf_pages_query_forms( $args = array() ) {
+
+	// Get query object
+	$query = gf_pages()->form_query;
+
+	// Reset query defaults
+	$query->in_the_loop  = false;
+	$query->current_form = -1;
+	$query->form_count   = 0;
+	$query->form         = null;
+	$query->forms        = array();
+
+	// Define query args
+	$r = wp_parse_args( $args, array(
+		'number'      => gf_pages_get_forms_per_page(),
+		'paged'       => gf_pages_get_paged(),
+		'fields'      => 'all',
+		'show_active' => true,
+		'orderby'     => 'date_created',
+		'order'       => 'DESC'
+	) );
+
+	// Pagination
+	if ( $r['number'] != -1 ) {
+		$r['paged'] = absint( $r['paged'] );
+		if ( $r['paged'] == 0 ) {
+			$r['paged'] = 1;
+		}
+		$r['offset'] = absint( ( $r['paged'] - 1 ) * $r['number'] );
+	}
+
+	// Run query to get the forms
+	if ( is_a( $query, 'GFP_Form_Query' ) ) {
+		$query->query( $r );
+	} else {
+		$query->forms = gf_pages_get_forms( $r );
+		$query->found_forms = count( $query->forms );
+
+		// Paginate the GF way
+		if ( isset( $r['offset'] ) ) {
+			$query->forms = array_slice( $query->forms, $r['offset'], $r['number'] );
+		}
+	}
+
+	// Set query results
+	$query->form_count = count( $query->forms );
+	if ( $query->form_count > 0 ) {
+		$query->form = $query->forms[0];
+	}
+
+	// Determine the total form count
+	if ( ! isset( $query->found_forms ) ) {
+		if ( isset( $r['offset'] ) && ! $query->form_count < $r['number'] ) {
+			$query->found_forms = gf_pages_query_forms_found_rows( $r );
+		} else {
+			$query->found_forms = $query->form_count;
+		}
+	}
+	if ( $query->found_forms > $query->form_count ) {
+		$query->max_num_pages = (int) ceil( $query->found_forms / $r['number'] );
+	} else {
+		$query->max_num_pages = 1;
+	}
+
+	// Return whether the query has returned results
+	return gf_pages_has_forms();
+}
+
+/**
+ * Return whether the query has Forms to loop over
+ *
+ * @since 1.0.0
+ *
+ * @return bool Query has Forms
+ */
+function gf_pages_has_forms() {
+
+	// Get query object
+	$query = gf_pages()->form_query;
+
+	// Get array keys
+	$form_keys = array_keys( $query->forms );
+
+	// Current element is not the last
+	$has_next = $query->form_count && $query->current_form < end( $form_keys );
+
+	// We're in the loop when there are still elements
+	if ( ! $has_next ) {
+		$query->in_the_loop = false;
+
+		// Clean up after the loop
+		gf_pages_rewind_forms();
+	}
+
+	return $has_next;
+}
+
+/**
+ * Setup next Volume in the current loop
+ *
+ * @since 1.0.0
+ */
+function gf_pages_the_form() {
+
+	// Get query object
+	$query = gf_pages()->form_query;
+
+	// We're looping
+	$query->in_the_loop = true;
+
+	// Increase current form index
+	$query->current_form++;
+
+	// Get next form in list
+	if ( isset( $query->forms[ $query->current_form ] ) ) {
+		$query->form = $query->forms[ $query->current_form ];
+	}
+}
+
+/**
+ * Rewind the forms and reset form index
+ *
+ * @since 1.0.0
+ */
+function gf_pages_rewind_forms() {
+
+	// Get query object
+	$query = gf_pages()->form_query;
+
+	// Reset current form index
+	$query->current_form = -1;
+
+	if ( $query->form_count > 0 ) {
+		$query->form = $query->forms[0];
+	}
+}
+
+/**
+ * Return whether we're in the Form loop
+ *
+ * @since 1.0.0
+ *
+ * @return bool Are we in the Form loop?
+ */
+function gf_pages_in_the_form_loop() {
+	return isset( gf_pages()->form_query->in_the_loop ) ? gf_pages()->form_query->in_the_loop : false;
+}
+
 /** Single Form ***************************************************************/
 
 /**
@@ -837,209 +995,7 @@ function gf_pages_the_form_archive_url() {
 		return apply_filters( 'gf_pages_get_form_archive_url', $url );
 	}
 
-/** Form Navigation ***********************************************************/
-
-/**
- * Display navigation to next/previous pages when applicable
- *
- * @since 1.0.0
- *
- * @see _s_content_nav()
- *
- * @param string $nav_id Navigation element id
- */
-function gf_pages_content_nav( $nav_id ) {
-
-	// Don't print empty markup on single pages if there's nowhere to navigate.
-	if ( gf_pages_is_single_form() )
-		return;
-
-	// Don't print empty markup in archives if there's only one page.
-	if ( gf_pages()->form_query->max_num_pages < 2 )
-		return; ?>
-
-	<nav role="navigation" id="<?php echo esc_attr( $nav_id ); ?>" class="navigation-paging">
-		<h1 class="screen-reader-text"><?php _e( 'Form navigation', 'gravityforms-pages' ); ?></h1>
-
-		<?php if ( gf_pages_get_next_forms_link() ) : ?>
-		<div class="nav-previous"><?php gf_pages_next_forms_link( __( '<span class="meta-nav">&larr;</span> Older forms', 'gravityforms-pages' ) ); ?></div>
-		<?php endif; ?>
-
-		<?php if ( gf_pages_get_previous_forms_link() ) : ?>
-		<div class="nav-next"><?php gf_pages_previous_forms_link( __( 'Newer forms <span class="meta-nav">&rarr;</span>', 'gravityforms-pages' ) ); ?></div>
-		<?php endif; ?>
-
-	</nav><!-- #<?php echo esc_html( $nav_id ); ?> -->
-	<?php
-}
-
-/**
- * Output the next forms link
- *
- * @since 1.0.0
- *
- * @uses gf_pages_get_next_forms_link()
- * @param string $label Content for link text
- * @param int $max_page Optional. Max pages
- */
-function gf_pages_next_forms_link( $label = null, $max_page = 0 ) {
-	echo gf_pages_get_next_forms_link( $label, $max_page );
-}
-
-	/**
-	 * Get the next forms link
-	 *
-	 * @since 1.0.0
-	 *
-	 * @see get_next_posts_link()
-	 *
-	 * @param string $label Content for link text
-	 * @param int $max_page Optional. Max pages
-	 * @return string Next forms link
-	 */
-	function gf_pages_get_next_forms_link( $label = null, $max_page = 0 ) {
-		global $paged;
-
-		if ( ! $max_page )
-			$max_page = gf_pages()->form_query->max_num_pages;
-
-		if ( ! $paged )
-			$paged = 1;
-
-		$nextpage = intval( $paged ) + 1;
-
-		if ( null === $label )
-			$label = __( 'Next Page &raquo;', 'gravityforms-pages' );
-
-		if ( ! gf_pages_is_single_form() && $nextpage <= $max_page ) {
-			$attr = apply_filters( 'next_posts_link_attributes', '' );
-			return '<a href="' . get_pagenum_link( $nextpage, false ) . "\" $attr>" . preg_replace( '/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $label ) . '</a>';
-		}
-	}
-
-/**
- * Output the previous forms link
- *
- * @since 1.0.0
- *
- * @uses gf_pages_get_previous_forms_link()
- * @param string $label Content for link text
- * @param int $max_page Optional. Max pages
- */
-function gf_pages_previous_forms_link( $label = null, $max_page = 0 ) {
-	echo gf_pages_get_previous_forms_link( $label, $max_page );
-}
-
-	/**
-	 * Get the previous forms link
-	 *
-	 * @since 1.0.0
-	 *
-	 * @see get_previous_posts_link()
-	 *
-	 * @param string $label Content for link text
-	 * @param int $max_page Optional. Max pages
-	 * @return string Next forms link
-	 */
-	function gf_pages_get_previous_forms_link( $label = null, $max_page = 0 ) {
-		global $paged;
-
-		$prevpage = intval( $paged ) - 1;
-
-		if ( $prevpage < 1 )
-			$prevpage = 1;
-
-		if ( null === $label )
-			$label = __( '&laquo; Previous Page', 'gravityforms-pages' );
-
-		if ( ! gf_pages_is_single_form() && $paged > 1 ) {
-			$attr = apply_filters( 'previous_posts_link_attributes', '' );
-			return '<a href="' . get_pagenum_link( $prevpage, false ) . "\" $attr>" . preg_replace( '/&([^#])(?![a-z]{1,8};)/i', '&#038;$1', $label ) . '</a>';
-		}
-	}
-
-/** Form Settings Tags ********************************************************/
-
-/**
- * Output the form class HTML tag
- *
- * @since 1.0.0
- *
- * @param array $classes Optional. Additional classes.
- */
-function gf_pages_form_class( $classes = array() ) {
-	echo gf_pages_get_form_class( $classes );
-}
-
-	/**
-	 * Get the form class HTML tag
-	 *
-	 * @since 1.0.0
-	 *
-	 * @uses apply_filters() Calls 'gf_pages_form_class'
-	 * @uses apply_filters() Calls 'gf_pages_get_form_class'
-	 *
-	 * @param array $classes Optional. Additional classes.
-	 * @return string Form class tag
-	 */
-	function gf_pages_get_form_class( $classes = array() ) {
-		if ( ! is_array( $classes ) )
-			$classes = explode( ' ', $classes );
-
-		// Get form specific classes
-		if ( $form = gf_pages_get_form() && ! empty( $form ) )
-			$classes = array_merge( $classes, explode( ' ', $form->cssClass ) );
-
-		// Setup base classes
-		$classes[] = 'form';
-		$classes[] = 'gfp-form';
-
-		// Form is active
-		if ( gf_pages_is_form_active() )
-			$classes[] = 'form-active';
-		else
-			$classes[] = 'form-inactive';
-
-		// Form is closed
-		if ( gf_pages_is_form_closed() )
-			$classes[] = 'form-closed';
-
-		// Form is not yet open
-		if ( ! gf_pages_is_form_open() )
-			$classes[] = 'form-not-open';
-
-		// Login required
-		if ( gf_pages_form_requires_login() )
-			$classes[] = 'form-requires-login';
-
-		// Form has user entry
-		if ( gf_pages_has_form_user_entry() )
-			$classes[] = 'form-user-entry';
-		else
-			$classes[] = 'form-no-user-entry';
-
-		// Form has entry limit
-		if ( gf_pages_has_form_entry_limit() )
-			$classes[] = 'form-entry-limit';
-
-		// Honeypot enabled
-		if ( gf_pages_is_form_honeypot_enabled() )
-			$classes[] = 'form-honeypot';
-
-		// Animation enabled
-		if ( gf_pages_is_form_animation_enabled() )
-			$classes[] = 'form-animation';
-
-		// Make classes filterable
-		$classes = apply_filters( 'gf_pages_form_class', $classes );
-
-		// Build class tag
-		$class = '';
-		if ( ! empty( $classes ) )
-			$class = 'class="' . implode( ' ', array_unique( $classes ) ) . '"';
-
-		return apply_filters( 'gf_pages_get_form_class', $class );
-	}
+/** Form Settings *************************************************************/
 
 /**
  * Return whether the form is inactive

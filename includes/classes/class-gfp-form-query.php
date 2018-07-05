@@ -293,7 +293,7 @@ class GFP_Form_Query extends WP_Query {
 		if ( $this->current_post == -1 ) // Loop has just started
 			do_action_ref_array( 'loop_start', array( &$this ) );
 
-		gf_pages()->current_form = $form = $this->next_post();
+		$this->current_form = $form = $this->next_post();
 		// gf_pages_setup_postdata( $form );
 	}
 

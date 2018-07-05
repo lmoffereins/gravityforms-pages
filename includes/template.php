@@ -13,11 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /** Query *********************************************************************/
 
 /**
- * Add checks for GF Pages conditions to parse_query action
+ * Add checks for plugin conditions to parse_query action
  *
  * @since 1.0.0
  *
- * @todo Check capabilities
  * @todo Overpaging (where no forms are) crashes 404
  * @todo 1 forms per page returns not-found with correct form content on last item
  *
@@ -37,16 +36,19 @@ function gf_pages_parse_query( $posts_query ) {
 	if ( is_admin() )
 		return;
 
+	// Get plugin
+	$plugin = gf_pages();
+
 	// Get query variables
-	$is_single_form  = $posts_query->get( gf_pages_get_form_rewrite_id()    );
 	$is_form_archive = $posts_query->get( gf_pages_get_archive_rewrite_id() );
+	$is_form         = $posts_query->get( gf_pages_get_form_rewrite_id()    );
 
 	// Form archives
 	if ( $is_form_archive ) {
 
-		// 404 and bail if to hide archive page
-		if ( gf_pages_hide_form_archive() ) {
-			$posts_query->set_404();
+		// 404 and bail when to hide archive page or when Forms are not returned in query
+		if ( gf_pages_hide_form_archive() || ! gf_pages_query_forms() ) {
+			gf_pages_do_404();
 			return;
 		}
 
@@ -60,43 +62,29 @@ function gf_pages_parse_query( $posts_query ) {
 		// Correct is_home variable
 		$posts_query->is_home = false;
 
+		// Define query result
+		$posts_query->found_posts   = $plugin->form_query->found_forms;
+		$posts_query->max_num_pages = $plugin->form_query->max_num_pages;
+
 	// Single Form
-	} elseif ( ! empty( $is_single_form ) ) {
+	} elseif ( ! empty( $is_form ) ) {
 
-		/** Find Form *********************************************************/
+		// Get Form, by slug when using pretty permalinks
+		$get_by   = ( '' !== get_option( 'permalink_structure' ) ) ? 'slug' : 'id';
+		$the_form = gf_pages_get_form( $is_form, $get_by );
 
-		// Setup the default form variable
-		$the_form = false;
-
-		// If using pretty permalinks, use the slug
-		if ( get_option( 'permalink_structure' ) ) {
-
-			// Try slug
-			$the_form = gf_pages_get_form_by_slug( $is_single_form );
-		}
-
-		// No form found by slug, so try the ID if it's numeric
-		if ( empty( $the_form ) && is_numeric( $is_single_form ) ) {
-			$the_form = gf_pages_get_form( $is_single_form );
-		}
-
-		// 404 and bail if form is not found
-		if ( empty( $the_form->id ) ) {
-			$posts_query->set_404();
+		// 404 and bail when Form does not exist or should be hidden
+		if ( ! $the_form || gf_pages_hide_form( $the_form ) ) {
+			gf_pages_do_404();
 			return;
 		}
 
-		/** Form Exists *******************************************************/
-
-		// 404 and bail if to hide single form
-		if ( gf_pages_hide_single_form( $the_form ) ) {
-			$posts_query->set_404();
-			return;
-		}
+		// Set gf_pages_form for future reference
+		$posts_query->set( 'gf_pages_form', $the_form->id );
 
 		// Looking at a single form
-		$posts_query->gf_pages_is_single_form = true;
-		$posts_query->is_singular             = true;
+		$posts_query->gf_pages_is_form = true;
+		$posts_query->is_single        = true;
 
 		// Make sure 404 is not set
 		$posts_query->is_404 = false;
@@ -104,255 +92,113 @@ function gf_pages_parse_query( $posts_query ) {
 		// Correct is_home variable
 		$posts_query->is_home = false;
 
-		// Set gf_pages_form_id for future reference
-		$posts_query->set( 'gf_pages_form_id', $the_form->id );
-
-		// Set global current form
-		gf_pages()->current_form = $the_form;
+		// Set queried object vars
+		$posts_query->queried_object    = $the_form;
+		$posts_query->queried_object_id = $the_form->id;
 	}
 }
 
 /**
- * Sanitizes a raw form and sets it up for further usage
+ * Overwrite the main WordPress query
  *
  * @since 1.0.0
  *
- * @uses apply_filters() Calls 'gf_pages_sanitize_form'
- *
- * @param object $form Raw form
- * @return object Form
+ * @param string $request SQL query
+ * @param WP_Query $query Query object
+ * @return string SQL query
  */
-function gf_pages_sanitize_form( $form ) {
+function gf_pages_filter_wp_query( $request, $query ) {
+	global $wpdb;
 
-	// Unserialize and attach meta
-	if ( isset( $form->display_meta ) ) {
-		$meta = GFFormsModel::unserialize( $form->display_meta );
+	// Bail when this is not the main query
+	if ( ! $query->is_main_query() )
+		return $request;
 
-		// Unset meta array
-		unset( $form->display_meta );
+	// When displaying plugin pages...
+	if ( is_gf_pages() ) {
 
-		// Set meta properties
-		foreach ( $meta as $key => $value ) {
-			$form->$key = $value;
-		}
+		// ... query for nothing and your chicks for free
+		$request = "SELECT 1 FROM {$wpdb->posts} WHERE 0=1";
 	}
 
-	// Default view count
-	if ( ! isset( $form->view_count ) )
-		$form->view_count = 0;
-
-	// Default lead count
-	if ( ! isset( $form->lead_count ) )
-		$form->lead_count = 0;
-
-	return apply_filters( 'gf_pages_sanitize_form', $form );
+	return $request;
 }
 
 /**
- * Whether there are more forms available in the loop
+ * Stop WordPress performing a DB query for its main loop
  *
  * @since 1.0.0
  *
- * @uses GF_Pages::form_query::have_posts()
- * @return object Form information
+ * @param null $retval Current return value
+ * @param WP_Query $query Query object
+ * @return null|array
  */
-function gf_pages_forms() {
+function gf_pages_bypass_wp_query( $retval, $query ) {
 
-	// Put into variable to check against next
-	$have_posts = gf_pages()->form_query->have_posts();
+	// Bail when this is not the main query
+	if ( ! $query->is_main_query() )
+		return $retval;
 
-	// Reset the post data when finished
-	if ( empty( $have_posts ) ) {
-		wp_reset_postdata();
+	// When displaying plugin pages...
+	if ( is_gf_pages() ) {
+
+		// ... return something other than a null value to bypass WP_Query
+		$retval = array();
 	}
 
-	return $have_posts;
+	return $retval;
 }
 
 /**
- * Loads up the current form in the loop
+ * Trigger a 404.
+ *
+ * @see bp_do_404()
  *
  * @since 1.0.0
  *
- * @uses GF_Pages::form_query::the_post()
- * @return object Form information
+ * @uses WP_Query $wp_query
+ *
+ * @param string $redirect If 'remove_canonical_direct', remove WordPress' "helpful"
+ *                         redirect_canonical action. Default: 'remove_canonical_redirect'.
  */
-function gf_pages_the_form() {
-	return gf_pages()->form_query->the_post();
-}
+function gf_pages_do_404( $redirect = 'remove_canonical_direct' ) {
+	global $wp_query;
 
-/**
- * Mimic WP's setup_postdata for the current form
- *
- * @since 1.0.0
- *
- * @uses do_action() Calls 'gf_pages_the_form'
- *
- * @param object $form Form data.
- * @return bool True when finished
- */
-function gf_pages_setup_postdata( $form ) {
-	global $id, $authordata, $currentday, $currentmonth, $page, $pages, $multipage, $more, $numpages;
+	// Mock a non-existent post type query in order to remove
+	// any suggestions of an existing post type query.
+	$wp_query->set( 'post_type', '_' );
 
-	$id = (int) $form->id;
+	$wp_query->set_404();
+	status_header( 404 );
+	nocache_headers();
 
-	// $authordata = get_userdata($post->post_author);
-
-	$currentday = mysql2date('d.m.y', $form->date_created, false);
-	$currentmonth = mysql2date('m', $form->date_created, false);
-	$numpages = 1;
-	$multipage = 0;
-	$page = get_query_var('page');
-	if ( ! $page )
-		$page = 1;
-
-	/* Handle form paging
-	$content = $form->post_content;
-	if ( false !== strpos( $content, '<!--nextpage-->' ) ) {
-		if ( $page > 1 )
-			$more = 1;
-		$content = str_replace( "\n<!--nextpage-->\n", '<!--nextpage-->', $content );
-		$content = str_replace( "\n<!--nextpage-->", '<!--nextpage-->', $content );
-		$content = str_replace( "<!--nextpage-->\n", '<!--nextpage-->', $content );
-		// Ignore nextpage at the beginning of the content.
-		if ( 0 === strpos( $content, '<!--nextpage-->' ) )
-			$content = substr( $content, 15 );
-		$pages = explode('<!--nextpage-->', $content);
-		$numpages = count($pages);
-		if ( $numpages > 1 )
-			$multipage = 1;
-	} else {
-		$pages = array( $form->post_content );
+	if ( 'remove_canonical_direct' === $redirect ) {
+		remove_action( 'template_redirect', 'redirect_canonical' );
 	}
-	*/
-
-	do_action_ref_array( 'gf_pages_the_form', array( &$form ) );
-
-	return true;
-}
-
-/**
- * Setup the form query
- *
- * @since 1.0.0
- *
- * @uses apply_filters() Calls 'gf_pages_form_pagination'
- * @uses apply_filters() Calls 'gf_pages_has_forms'
- *
- * @param array $args Optional. Query arguments
- * @return array Queried forms
- */
-function gf_pages_has_forms( $args = array() ) {
-	global $wp_rewrite;
-
-	// Default argument array
-	$default = array(
-		'order'          => 'DESC',                        // 'ASC', 'DESC'
-		'posts_per_page' => gf_pages_get_forms_per_page(), // Forms per page
-		'paged'          => gf_pages_get_paged(),          // Page Number
-		'max_num_pages'  => false,                         // Maximum number of pages to show
-		'is_active'      => true,                          // Only active forms
-	);
-
-	/** Setup *****************************************************************/
-
-	// Parse arguments against default values
-	$r = wp_parse_args( $args, $default );
-
-	// Get GF Pages
-	$gfp = gf_pages();
-
-	// Call the query
-	$gfp->form_query = new GFP_Form_Query( $r );
-
-	// Limited the number of pages shown
-	if ( ! empty( $r['max_num_pages'] ) )
-		$gfp->form_query->max_num_pages = $r['max_num_pages'];
-
-	// If no limit to posts per page, set it to the current post_count
-	if ( -1 === $r['posts_per_page'] )
-		$r['posts_per_page'] = $gfp->form_query->post_count;
-
-	// Add pagination values to query object
-	$gfp->form_query->posts_per_page = $r['posts_per_page'];
-	$gfp->form_query->paged          = $r['paged'];
-
-	// Only add pagination if query returned results
-	if ( ( (int) $gfp->form_query->post_count || (int) $gfp->form_query->found_posts ) && (int) $gfp->form_query->posts_per_page ) {
-
-		// Limit the number of forms shown based on maximum allowed pages
-		if ( ( ! empty( $r['max_num_pages'] ) ) && $gfp->form_query->found_posts > $gfp->form_query->max_num_pages * $gfp->form_query->post_count )
-			$gfp->form_query->found_posts = $gfp->form_query->max_num_pages * $gfp->form_query->post_count;
-
-		// If pretty permalinks are enabled, make our pagination pretty
-		if ( $wp_rewrite->using_permalinks() ) {
-
-			// Single form
-			if ( gf_pages_is_single_form() ) {
-				$base = gf_pages_get_form_url( get_query_var( 'gf_pages_form_id' ) );
-
-			// Form archive
-			} elseif ( gf_pages_is_form_archive() ) {
-				$base = gf_pages_get_form_archive_url();
-
-			// Default
-			} else {
-				$base = get_permalink();
-			}
-
-			// Use pagination base
-			$base = trailingslashit( $base ) . user_trailingslashit( $wp_rewrite->pagination_base . '/%#%/' );
-
-		// Unpretty pagination
-		} else {
-			$base = add_query_arg( 'paged', '%#%' );
-		}
-
-		// Pagination settings with filter
-		$gf_pages_form_pagination = apply_filters( 'gf_pages_form_pagination', array (
-			'base'      => $base,
-			'format'    => '',
-			'total'     => $r['posts_per_page'] === $gfp->form_query->found_posts ? 1 : ceil( (int) $gfp->form_query->found_posts / (int) $r['posts_per_page'] ),
-			'current'   => (int) $gfp->form_query->paged,
-			'prev_text' => is_rtl() ? '&rarr;' : '&larr;',
-			'next_text' => is_rtl() ? '&larr;' : '&rarr;',
-			'mid_size'  => 1
-		) );
-
-		// Add pagination to query object
-		$gfp->form_query->pagination_links = paginate_links( $gf_pages_form_pagination );
-
-		// Remove first page from pagination
-		$gfp->form_query->pagination_links = str_replace( $wp_rewrite->pagination_base . "/1/'", "'", $gfp->form_query->pagination_links );
-	}
-
-	// Return object
-	return apply_filters( 'gf_pages_has_forms', $gfp->form_query->have_posts(), $gfp->form_query );
 }
 
 /** Is_* **********************************************************************/
 
 /**
- * Check if current page is any form page
+ * Check if current page is a form archive page
  *
  * @since 1.0.0
  *
- * @global WP_Query $wp_query
- *
- * @uses apply_filters() Calls 'gf_pages_is_form'
- * @return bool Page is form page
+ * @global WP_Query $wp_query To check if WP_Query::gf_pages_is_form_archive is true
+ * @return bool Page is form archive page
  */
-function gf_pages_is_form() {
+function gf_pages_is_form_archive() {
 	global $wp_query;
 
-	// Assume false
+	// Default to false
 	$retval = false;
 
-	// Either single form or form archive
-	if ( gf_pages_is_single_form() || gf_pages_is_form_archive() )
+	// Check query
+	if ( ! empty( $wp_query->gf_pages_is_form_archive ) && ( true === $wp_query->gf_pages_is_form_archive ) ) {
 		$retval = true;
+	}
 
-	return (bool) apply_filters( 'gf_pages_is_form', $retval );
+	return (bool) $retval;
 }
 
 /**
@@ -360,51 +206,500 @@ function gf_pages_is_form() {
  *
  * @since 1.0.0
  *
- * @global WP_Query $wp_query
+ * @global WP_Query $wp_query To check if WP_Query::gf_pages_is_form is true
  *
- * @uses apply_filters() Calls 'gf_pages_is_single_form'
+ * @param bool $singular Optional. Whether to check for a singular page. Defaults to false.
  * @return bool Page is single form page
  */
-function gf_pages_is_single_form() {
+function gf_pages_is_form( $singular = false ) {
 	global $wp_query;
 
-	// Assume false
+	// Default to false
 	$retval = false;
 
 	// Check query
-	if ( ! empty( $wp_query->gf_pages_is_single_form ) && ( true === $wp_query->gf_pages_is_single_form ) )
+	if ( ! empty( $wp_query->gf_pages_is_form ) && ( true === $wp_query->gf_pages_is_form ) && ( ! $singular || is_singular() ) ) {
 		$retval = true;
 
-	// Check $_GET
-	if ( empty( $retval ) && isset( $_REQUEST[ gf_pages_get_form_rewrite_id() ] ) && empty( $_REQUEST[ gf_pages_get_form_rewrite_id() ] ) )
+	// Or we're in the forms loop
+	} elseif ( ! $singular && gf_pages_in_the_form_loop() ) {
 		$retval = true;
+	}
 
-	return (bool) apply_filters( 'gf_pages_is_single_form', $retval );
+	return (bool) $retval;
 }
 
 /**
- * Check if current page is a form archive page
+ * Use the is_() functions to return if on any plugin page
  *
  * @since 1.0.0
  *
- * @global WP_Query $wp_query
- *
- * @uses apply_filters() Calls 'gf_pages_is_form_archive'
- * @return bool Page is form archive page
+ * @return bool On a plugin page
  */
-function gf_pages_is_form_archive() {
-	global $wp_query;
+function is_gf_pages() {
 
-	// Assume false
+	// Default to false
 	$retval = false;
 
-	// Check query
-	if ( ! empty( $wp_query->gf_pages_is_form_archive ) && ( true === $wp_query->gf_pages_is_form_archive ) )
+	/** Pages *****************************************************************/
+
+	if ( gf_pages_is_form_archive() ) {
 		$retval = true;
 
-	// Check $_GET
-	if ( empty( $retval ) && isset( $_REQUEST[ gf_pages_get_archive_rewrite_id() ] ) && empty( $_REQUEST[ gf_pages_get_archive_rewrite_id() ] ) )
+	} elseif ( gf_pages_is_form() ) {
 		$retval = true;
+	}
 
-	return (bool) apply_filters( 'gf_pages_is_form_archive', $retval );
+	return (bool) $retval;
 }
+
+/** Theme *********************************************************************/
+
+/**
+ * Filter the theme's template for supporting themes
+ *
+ * @since 1.0.0
+ *
+ * @param string $template Path to template file
+ * @return string Path to template file
+ */
+function gf_pages_template_include_theme_supports( $template = '' ) {
+
+	// Define local var
+	$_template = '';
+
+	// Form archives
+	if (     gf_pages_is_form_archive() && ( $_template = gf_pages_get_form_archive_template() ) ) :
+
+	// Single Form
+	elseif ( gf_pages_is_form()         && ( $_template = gf_pages_get_form_template()         ) ) :
+	endif;
+
+	// Set included template file
+	if ( ! empty( $_template ) ) {
+		$template = gf_pages_set_template_included( $_template );
+
+		// Provide dummy post global, but theme compat is not active
+		gf_pages_theme_compat_reset_post();
+		gf_pages_set_theme_compat_active( false );
+	}
+
+	return $template;
+}
+
+/**
+ * Set the included template
+ *
+ * @since 1.0.0
+ *
+ * @param string|bool $template Path to template file. Defaults to false.
+ * @return string|bool Path to template file. False if empty.
+ */
+function gf_pages_set_template_included( $template = false ) {
+	gf_pages()->theme_compat->gf_pages_template = $template;
+
+	return gf_pages()->theme_compat->gf_pages_template;
+}
+
+/**
+ * Return whether a template is included
+ *
+ * @since 1.0.0
+ *
+ * @return bool Template is included.
+ */
+function gf_pages_is_template_included() {
+	return ! empty( gf_pages()->theme_compat->gf_pages_template );
+}
+
+/**
+ * Retreive path to a template
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_{$type}_template'
+ *
+ * @param string $type Filename without extension.
+ * @param array $templates Optional. Template candidates.
+ * @return string Path to template file
+ */
+function gf_pages_get_query_template( $type, $templates = array() ) {
+	$type = preg_replace( '|[^a-z0-9-]+|', '', $type );
+
+	// Fallback file
+	if ( empty( $templates ) ) {
+		$templates = array( "{$type}.php" );
+	}
+
+	// Locate template file
+	$template = gf_pages_locate_template( $templates );
+
+	return apply_filters( "gf_pages_{$type}_template", $template );
+}
+
+/**
+ * Locate and return the Form archive page template
+ *
+ * @since 1.0.0
+ *
+ * @return string Path to template file
+ */
+function gf_pages_get_form_archive_template() {
+	$templates = array(
+		'archive-gf-pages-form.php', // Generic Form archive
+		'archive-gf-pages.php',      // Gravity Forms Pages archive
+		'gf-pages-forms.php',        // Gravity Forms Pages Forms
+	);
+
+	return gf_pages_get_query_template( 'gf-pages-forms', $templates );
+}
+
+/**
+ * Locate and return the single Form page template
+ *
+ * @since 1.0.0
+ *
+ * @return string Path to template file
+ */
+function gf_pages_get_form_template() {
+	$form_id   = gf_pages_get_form_id();
+	$templates = array(
+		'gf-pages-form-' . $form_id . '.php', // Single Form ID
+		'single-gf-pages-form.php',           // Single Form
+		'gf-pages-form.php',                  // Gravity Forms Pages Form
+	);
+
+	return gf_pages_get_query_template( 'gf-pages-form', $templates );
+}
+
+/**
+ * Locate and return the generic plugin page template
+ *
+ * @since 1.0.0
+ *
+ * @return string Path to template file
+ */
+function gf_pages_get_theme_compat_template() {
+	$templates = array(
+		'gf-pages-compat.php',
+		'gf-pages.php'
+	);
+
+	// Use archive.php for archive pages
+	if ( gf_pages_is_form_archive() ) {
+		$templates[] = 'archive.php';
+	}
+
+	// Append generic templates
+	$templates = array_merge( $templates, array(
+		'generic.php',
+		'single.php',
+		'page.php',
+		'index.php'
+	) );
+
+	return gf_pages_get_query_template( 'gf-pages-compat', $templates );
+}
+
+/** Archives ******************************************************************/
+
+/**
+ * Return whether we're in a custom query loop
+ *
+ * @since 1.0.0
+ *
+ * @return bool Are we in a custom query loop?
+ */
+function gf_pages_in_the_loop() {
+
+	// Define return value
+	$retval = false;
+
+	// Form archives
+	if ( gf_pages_is_form_archive() && gf_pages_in_the_form_loop() ) {
+		$retval = true;
+	}
+
+	return $retval;
+}
+
+/**
+ * Return the currently queried page number
+ *
+ * @since 1.0.0
+ *
+ * @return int Queried page number
+ */
+function gf_pages_get_paged() {
+	global $wp_query;
+
+	// Check the query var
+	if ( get_query_var( 'paged' ) ) {
+		$paged = get_query_var( 'paged' );
+
+	// Check query paged
+	} elseif ( ! empty( $wp_query->query['paged'] ) ) {
+		$paged = $wp_query->query['paged'];
+	}
+
+	// Paged found
+	if ( ! empty( $paged ) )
+		return (int) $paged;
+
+	// Default to first page
+	return 1;
+}
+
+/**
+ * Modify the document title parts for plugin pages
+ *
+ * @since 1.0.0
+ *
+ * @param array $title Title parts
+ * @return array Title parts
+ */
+function gf_pages_document_title_parts( $title = array() ) {
+
+	// Define local var
+	$_title = '';
+
+	// Plugin page, not the archive page
+	if ( is_gf_pages() && ! gf_pages_is_form_archive() ) {
+
+		// Define parent title part
+		$parent = array( 'parent' => esc_html_x( 'Forms', 'Plugin page title', 'gravityforms-pages' ) );
+
+		// Insert 'Forms' part after title part, creates 'Title - Forms - Site'
+		$title = array_slice( $title, 0, 1, true ) + $parent + array_slice( $title, 1, count( $title ) - 1, true );
+	}
+
+	// Root page
+	if ( gf_pages_is_form_archive() ) {
+		$_title = esc_html_x( 'Forms', 'Plugin page title', 'gravityforms-pages' );
+
+	// Single Form
+	} elseif ( gf_pages_is_form() ) {
+		$_title = gf_pages_get_form_title();
+	}
+
+	// Overwrite document title
+	if ( ! empty( $_title ) ) {
+		$title['title'] = $_title;
+	}
+
+	return $title;
+}
+
+/**
+ * Return the plugin's archive title
+ *
+ * @since 1.0.0
+ *
+ * @param string $title Archive title
+ * @return string Archive title
+ */
+function gf_pages_get_the_archive_title( $title = '' ) {
+
+	// Form archives
+	if ( gf_pages_is_form_archive() ) {
+		$title = esc_html_x( 'Forms', 'Plugin page title', 'gravityforms-pages' );
+
+	// Single Form
+	} elseif ( gf_pages_is_form() ) {
+		$title = gf_pages_get_form_title();
+	}
+
+	return $title;
+}
+
+/**
+ * Return the plugin's archive description
+ *
+ * @since 1.0.0
+ *
+ * @param string $description Archive description
+ * @return string Archive description
+ */
+function gf_pages_get_the_archive_description( $description = '' ) {
+
+	// Form archives
+	if ( gf_pages_is_form_archive() ) {
+		$description = esc_html__( 'This page lists all available forms for you.', 'gravityforms-pages' );
+
+	// Single Form
+	} elseif ( gf_pages_is_form() ) {
+		$description = gf_pages_get_form_description();
+	}
+
+	return $description;
+}
+
+/**
+ * Modify the item's CSS classes
+ *
+ * Applies to both post and term items.
+ *
+ * @since 1.0.0
+ *
+ * @param array $classes Item CSS classes
+ * @return array Item CSS classes
+ */
+function gf_pages_filter_item_class( $classes ) {
+
+	// When in Theme Compat mode and looping items on the page
+	if ( gf_pages_is_theme_compat_active() && gf_pages_in_the_loop() ) {
+
+		// Remove 'hentry' class, because when doing theme-compat
+		// it messes with the common logic of theme styling
+		if ( false !== ( $key = array_search( 'hentry', $classes ) ) ) {
+			unset( $classes[ $key ] );
+		}
+	}
+
+	return $classes;
+}
+
+/** Template Tags *************************************************************/
+
+/**
+ * Output the classes for the form div.
+ *
+ * @see post_class()
+ *
+ * @since 1.0.0
+ *
+ * @param string $class Optional. One or more classes to add to the class list.
+ * @param object|int $form Optional. Form object or ID. Defaults to the current form.
+ */
+function gf_pages_form_class( $class = '', $form = 0 ) {
+	echo 'class="' . join( ' ', gf_pages_get_form_class( $class, $form ) ) . '"';
+}
+
+/**
+ * Return the classes for the form div.
+ *
+ * @see get_post_class()
+ *
+ * @since 1.0.0
+ *
+ * @param string $class Optional. One or more classes to add to the class list.
+ * @param object|int $form Optional. Form object or ID. Defaults to the current form.
+ * @return array Classes
+ */
+function gf_pages_get_form_class( $class = '', $form = 0 ) {
+	$form    = gf_pages_get_form( $form );
+	$classes = array();
+
+	if ( $class ) {
+		if ( ! is_array( $class ) ) {
+			$class = preg_split( '#\s+#', $class );
+		}
+		$classes = array_map( 'esc_attr', $class );
+	} else {
+		// Ensure that we always coerce class to being an array.
+		$class = array();
+	}
+
+	if ( ! $form ) {
+		return $classes;
+	}
+
+	// Get form specific classes
+	if ( isset( $form->cssClass ) ) {
+		$classes = array_merge( $classes, explode( ' ', $form->cssClass ) );
+	}
+
+	$classes[] = 'gravityforms-form';
+	$classes[] = 'form-' . $form->id;
+
+	// hentry for hAtom compliance
+	$classes[] = 'hentry';
+
+	// Form is (in)active
+	$classes[] = gf_pages_is_form_active( $form ) ? 'form-active' : 'form-inactive';
+
+	// Form is not open
+	if ( ! gf_pages_is_form_open( $form ) ) {
+		$classes[] = 'form-not-open';
+	}
+
+	// Form is closed
+	if ( gf_pages_hide_closed_forms() && gf_pages_is_form_closed( $form ) ) {
+		$classes[] = 'form-closed';
+	}
+
+	// Form requires login
+	if ( gf_pages_form_requires_login( $form ) && ! is_user_logged_in() ) {
+		$classes[] = 'form-login-required';
+	}
+
+	// Form user entry
+	$classes[] = gf_pages_has_form_user_entry() ? 'form-user-entry' : 'form-no-user-entry';
+
+	// Form has entry limit
+	if ( gf_pages_has_form_entry_limit() ) {
+		$classes[] = 'form-entry-limit';
+	}
+
+	// Honeypot enabled
+	if ( gf_pages_is_form_honeypot_enabled() ) {
+		$classes[] = 'form-honeypot';
+	}
+
+	// Animation enabled
+	if ( gf_pages_is_form_animation_enabled() ) {
+		$classes[] = 'form-animation';
+	}
+
+	$classes = array_map( 'esc_attr', $classes );
+
+	/**
+	 * Filter the list of CSS classes for the current term.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $classes An array of term classes.
+	 * @param array $class   An array of additional classes added to the term.
+	 * @param object $form   Form data.
+	 */
+	$classes = apply_filters( 'gf_pages_form_class', $classes, $class, $form );
+
+	return array_unique( $classes );
+}
+
+/**
+ * Output navigation markup to next/previous plugin pages
+ *
+ * @see the_posts_navigation()
+ *
+ * @since 1.0.0
+ *
+ * @param array $args Arguments for {@see get_the_posts_navigation()}
+ */
+function gf_pages_the_posts_navigation( $args = array() ) {
+	echo gf_pages_get_the_posts_navigation( $args );
+}
+
+	/**
+	 * Return navigation markup to next/previous plugin pages
+	 *
+	 * @see get_the_posts_navigation()
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $args Arguments for {@see get_the_posts_navigation()}
+	 * @return string Navigation markup
+	 */
+	function gf_pages_get_the_posts_navigation( $args = array() ) {
+
+		// Form archives
+		if ( gf_pages_is_form_archive() ) {
+			$args = array(
+				'prev_text'          => esc_html__( 'Previous forms',   'gravityforms-pages' ),
+				'next_text'          => esc_html__( 'Next forms',       'gravityforms-pages' ),
+				'screen_reader_text' => esc_html__( 'Forms navigation', 'gravityforms-pages' )
+			);
+		}
+
+		return get_the_posts_navigation( $args );
+	}

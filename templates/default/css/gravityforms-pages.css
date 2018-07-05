@@ -1,0 +1,15 @@
+/**
+ * Gravity Forms Pages Default Theme-Compat Styles
+ *
+ * @package Gravity Forms Pages
+ * @subpackage Theme
+ */
+
+#gravityforms-forms .gravityforms-form:first-child .form-title {
+	margin-top: 0px;
+}
+
+#gravityforms-forms .gravityforms-form:not(:first-child) {
+	margin-top: 35px;
+	border-top: 1px solid #efefef;
+}

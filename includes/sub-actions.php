@@ -64,3 +64,17 @@ function gf_pages_admin_init() {
 function gf_pages_after_setup_theme() {
 	do_action( 'gf_pages_after_setup_theme' );
 }
+
+/**
+ * Run dedicated template include filter for this plugin
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_template_include'
+ *
+ * @param string $template Template name
+ * @return string Template name
+ */
+function gf_pages_template_include( $template = '' ) {
+	return apply_filters( 'gf_pages_template_include', $template );
+}

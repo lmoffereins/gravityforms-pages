@@ -89,9 +89,9 @@ class GravityForms_Pages {
 		$this->includes_dir = trailingslashit( $this->plugin_dir . 'includes' );
 		$this->includes_url = trailingslashit( $this->plugin_url . 'includes' );
 
-		// Templates
-		$this->template_dir = trailingslashit( $this->plugin_dir . 'templates' );
-		$this->template_url = trailingslashit( $this->plugin_url . 'templates' );
+		// Themes
+		$this->themes_dir   = trailingslashit( $this->plugin_dir . 'templates' );
+		$this->themes_url   = trailingslashit( $this->plugin_url . 'templates' );
 
 		/** Identifiers *******************************************************/
 
@@ -101,11 +101,12 @@ class GravityForms_Pages {
 
 		/** Query *************************************************************/
 
-		$this->current_form = new stdClass(); // Current form
-		$this->form_query   = new stdClass(); // Form query
+		$this->form_query   = new stdClass(); // Main Form query
 
 		/** Misc **************************************************************/
 
+		$this->theme_compat = new stdClass();
+		$this->extend       = new stdClass();
 		$this->domain       = 'gravityforms-pages';
 	}
 
@@ -156,7 +157,6 @@ class GravityForms_Pages {
 		add_action( 'gf_pages_init',   array( $this, 'add_permastructs'  ), 40 );
 
 		// Template
-		add_action( 'template_include', array( $this, 'template_include' )        );
 		add_action( 'wp_title',         array( $this, 'wp_title'         ), 10, 3 );
 		add_action( 'body_class',       array( $this, 'body_class'       ), 10, 2 );
 		add_action( 'admin_bar_menu',   array( $this, 'admin_bar_menu'   ), 90    );
@@ -233,56 +233,6 @@ class GravityForms_Pages {
 	/** Template **************************************************************/
 
 	/**
-	 * Replace and load the template for form pages
-	 *
-	 * @since 1.0.0
-	 *
-	 * @uses apply_filters() Calls 'gf_pages_get_single_form_template'
-	 * @uses apply_filters() Calls 'gf_pages_get_form_archive_template'
-	 * @uses apply_filters() Calls 'gf_pages_template_include'
-	 *
-	 * @param string $template Template file
-	 * @return string Template
-	 */
-	public function template_include( $template = '' ) {
-
-		// Setup local vars
-		$file = '';
-
-		// Single Form
-		if ( gf_pages_is_single_form() ) {
-			$file      = 'single-form.php';
-			$templates = apply_filters( 'gf_pages_get_single_form_template', array(
-				'page-' . $file,
-				$file,
-				'gravityforms/page-' . $file,
-				'gravityforms/' . $file,
-			) );
-
-		// Form Archive
-		} elseif ( gf_pages_is_form_archive() ) {
-			$file      = 'archive-form.php';
-			$templates = apply_filters( 'gf_pages_get_form_archive_template', array(
-				'page-' . $file,
-				$file,
-				'gravityforms/page-' . $file,
-				'gravityforms/' . $file,
-			) );
-		}
-
-
-		// Locate template
-		if ( ! empty( $file ) ) {
-			$template = locate_template( $templates );
-			if ( ! $template ) {
-				$template = $this->template_dir . $file;
-			}
-		}
-
-		return apply_filters( 'gf_pages_template_include', $template, $file );
-	}
-
-	/**
 	 * Return the forms page title element
 	 *
 	 * @since 1.0.0
@@ -297,7 +247,7 @@ class GravityForms_Pages {
 	public function wp_title( $title, $sep, $seplocation ) {
 
 		// Single Form
-		if ( gf_pages_is_single_form() ) {
+		if ( gf_pages_is_form() ) {
 			$single = gf_pages_get_form_title();
 			$form   = __( 'Form', 'gravityforms-pages' );
 
@@ -335,7 +285,7 @@ class GravityForms_Pages {
 		$form_classes = array();
 
 		// Single Form
-		if ( gf_pages_is_single_form() ) {
+		if ( gf_pages_is_form() ) {
 			$form_classes[] = 'form-' . gf_pages_get_form_slug();
 			$form_classes[] = 'form-' . gf_pages_get_form_id();
 			$form_classes[] = 'single';
@@ -365,18 +315,12 @@ class GravityForms_Pages {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @uses gf_pages_is_single_form()
-	 * @uses WP_Admin_Bar::remove_menu()
-	 * @uses GFCommon::current_user_can_any()
-	 * @uses WP_Admin_Bar::add_menu()
-	 * @uses gf_pages_get_edit_form_url()
-	 *
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
 	public function admin_bar_menu( $wp_admin_bar ) {
 
 		// Bail if not on single form page
-		if ( ! gf_pages_is_single_form() )
+		if ( ! gf_pages_is_form() )
 			return;
 
 		// Remove 'Edit Post' menu - hacky!
@@ -389,7 +333,7 @@ class GravityForms_Pages {
 			$wp_admin_bar->add_menu( array(
 				'id'     => 'edit',
 				'title'  => __( 'Edit Form', 'gravityforms-pages' ),
-				'href'   => gf_pages_get_edit_form_url()
+				'href'   => gf_pages_get_form_edit_url()
 			) );
 		}
 	}

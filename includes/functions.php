@@ -264,19 +264,15 @@ function gf_pages_show_entry_count( $default = false ) {
  *
  * @uses apply_filters() Calls 'gf_pages_get_form_slug'
  *
- * @param object $form Form data
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return string Form slug
  */
 function gf_pages_get_form_slug( $form = '' ) {
-	if ( ! is_object( $form ) )
-		$form = gf_pages_get_form( $form );
-
+	$form = gf_pages_get_form( $form );
 	$slug = '';
 
-	// Bail if no form found
+	// Get slug from title
 	if ( ! empty( $form ) ) {
-
-		// Get slug from title
 		$slug = sanitize_title_with_dashes( $form->title );
 	}
 
@@ -328,39 +324,123 @@ function gf_pages_get_form_by_slug( $slug = '' ) {
  *
  * @since 1.0.0
  *
- * @uses apply_filters() Calls 'gf_pages_get_form'
- *
- * @param int|object $form_id Optional. Defaults to current form
- * @return object Form data
+ * @param int|string|object $form Optional. Form object, ID or slug. Defaults to current form.
+ * @param string $by Optional. How to query for the form. Defaults to 'id'.
+ * @return object|bool Form data when found, else False.
  */
-function gf_pages_get_form( $form_id = 0 ) {
+function gf_pages_get_form( $form = 0, $by = 'id' ) {
 
-	// Form data object given
-	if ( is_object( $form_id ) && isset( $form_id->id ) ) {
-		$form    = $form_id;
-		$form_id = $form->id;
+	// Default empty parameter to ...
+	if ( empty( $form ) ) {
 
-	// Query requested form
-	} elseif ( is_numeric( $form_id ) && ! empty( $form_id ) ) {
-		$form    = (object) array_merge( (array) gf_get_form( $form_id ), (array) gf_get_form_meta( $form_id ) );
-		$form_id = (int) $form_id;
+		// ... the Form in the loop
+		if ( gf_pages_in_the_form_loop() ) {
+			$form = gf_pages()->form_query->form;
 
-	// Get current form
-	} elseif ( ! empty( gf_pages()->current_form ) ) {
-		$form    = gf_pages()->current_form;
-		$form_id = $form->id;
+		// ... the queried object
+		} elseif ( gf_pages_is_form() ) {
+			$form = get_queried_object();
 
-	// Query page form
-	} elseif ( get_query_var( 'gf_pages_form_id' ) ) {
-		$form_id = get_query_var( 'gf_pages_form_id' );
-		$form    = (object) array_merge( (array) gf_get_form( $form_id ), (array) gf_get_form_meta( $form_id ) );
+		// ... the query var on Form pages
+		} elseif ( get_query_var( 'gf_pages_form' ) ) {
+			$form = gf_pages_get_form_object( (int) get_query_var( 'gf_pages_form' ) );
+		}
 
-	// Nothing found
-	} else {
-		$form    = new stdClass();
+	// Get Form by the slug
+	} elseif ( is_string( $form ) && 'slug' === $by ) {
+		$form = gf_pages_get_form_by_slug( $form );
+
+	// Get Form by ID
+	} elseif ( is_numeric( $form ) && 'id' === $by ) {
+		$form = gf_pages_get_form_object( $form );
+
+	// Form data object provided
+	} elseif ( is_object( $form ) && isset( $form->id ) ) {
+		$form = gf_pages_get_form_object( $form->id );
 	}
 
-	return apply_filters( 'gf_pages_get_form', $form, $form_id );
+	// Reduce error to false
+	if ( ! is_object( $form ) || is_wp_error( $form ) ) {
+		$form = false;
+	}
+
+	return $form;
+}
+
+/**
+ * Return the full form data object
+ *
+ * @since 1.0.0
+ *
+ * @param int $form_id Form ID
+ * @param bool $with_meta Optional. Whether to return form meta as well. Defaults to true.
+ * @return object|bool Form data or False when not found
+ */
+function gf_pages_get_form_object( $form_id, $with_meta = true ) {
+
+	// Bail when there's no form ID
+	if ( empty( $form_id ) ) {
+		return false;
+	}
+
+	// Get the form data
+	if ( ! is_object( $form_id ) || ! isset( $form->id ) ) {
+		$form = GFFormsModel::get_form( (int) $form_id );
+	} else {
+		$form = $form_id;
+		$form_id = $form->id;
+	}
+
+	// Combine form data
+	if ( $form && $with_meta && ! isset( $form->display_meta ) ) {
+		$form = (object) array_merge( (array) $form, (array) GFFormsModel::get_form_meta( $form_id ) );
+
+		// Sanitize form
+		$form = gf_pages_sanitize_form( $form );
+	}
+
+	return $form;
+}
+
+/**
+ * Sanitizes a raw form and sets it up for further usage
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_sanitize_form'
+ *
+ * @param object $form Raw form
+ * @return object Form
+ */
+function gf_pages_sanitize_form( $form ) {
+
+	// Unserialize and attach meta
+	if ( isset( $form->display_meta ) ) {
+		$meta = GFFormsModel::unserialize( $form->display_meta );
+
+		// Unset meta array
+		unset( $form->display_meta );
+
+		// Set meta properties
+		foreach ( $meta as $key => $value ) {
+			$form->$key = $value;
+		}
+	}
+
+	// Default view count
+	if ( ! isset( $form->view_count ) ) {
+		$views = wp_list_filter( GFFormsModel::get_view_count_per_form(), array( 'form_id' => $form->id ) );
+		$views = reset( $views );
+
+		$form->view_count = $views ? (int) $views->view_count : 0;
+	}
+
+	// Default lead count
+	if ( ! isset( $form->lead_count ) ) {
+		$form->lead_count = (int) GFFormsModel::get_lead_count( $form->id, null );
+	}
+
+	return apply_filters( 'gf_pages_sanitize_form', $form );
 }
 
 /**
@@ -414,83 +494,43 @@ function gf_pages_show_form( $form = '' ) {
 	return ! gf_pages_hide_form( $form );
 }
 
-/** Query *********************************************************************/
-
 /**
- * Assist pagination by returning correct page number
+ * Query and return forms
  *
  * @since 1.0.0
  *
- * @uses get_query_var() To get the 'paged' value
- * @return int Current page number
+ * @uses apply_filters() Calls 'gf_pages_get_forms'
+ *
+ * @param array $args Query arguments
+ * @return array Form objects
  */
-function gf_pages_get_paged() {
-	global $wp_query;
+function gf_pages_get_forms( $args = array() ) {
 
-	// Check the query var
-	if ( get_query_var( 'paged' ) ) {
-		$paged = get_query_var( 'paged' );
+	// Parse arguments
+	$r = wp_parse_args( $args, array(
+		'show_active' => true,
+		'orderby'     => 'date_created',
+		'order'       => 'DESC'
+	) );
 
-	// Check query paged
-	} elseif ( ! empty( $wp_query->query['paged'] ) ) {
-		$paged = $wp_query->query['paged'];
-	}
+	// Query forms the GF way
+	$forms = GFFormsModel::get_forms( $r['show_active'], $r['orderby'], $r['order'] );
 
-	// Paged found
-	if ( !empty( $paged ) )
-		return (int) $paged;
+	// Force form objects
+	$forms = array_map( 'gf_pages_get_form', $forms );
 
-	// Default to first page
-	return 1;
+	return (array) apply_filters( 'gf_pages_get_forms', $forms, $r );
 }
 
-/** Helpers *******************************************************************/
-
-if ( ! function_exists( 'gf_get_form' ) ) {
-	/**
-	 * Get the form by given ID
-	 *
-	 * @since 1.0.0
-	 *
-	 * @uses apply_filters() Calls 'gf_get_form'
-	 *
-	 * @param int $form_id Form ID
-	 * @return object The form
-	 */
-	function gf_get_form( $form_id = 0 ) {
-
-		// Bail if no form ID
-		if ( empty( $form_id ) )
-			return new stdClass();
-
-		// Get the form data
-		$form = GFFormsModel::get_form( $form_id );
-
-		return (object) apply_filters( 'gf_get_form', $form, $form_id );
-	}
+/**
+ * Modify the list of queried forms by removing forms to hide
+ *
+ * @since 1.0.0
+ *
+ * @param array $forms Forms
+ * @param array $args Query arguments
+ * @return array Forms
+ */
+function gf_pages_filter_forms_query( $forms, $args ) {
+	return array_filter( $forms, 'gf_pages_show_form' );
 }
-
-if ( ! function_exists( 'gf_get_form_meta' ) ) {
-	/**
-	 * Get the form meta data by given ID
-	 *
-	 * @since 1.0.0
-	 *
-	 * @uses apply_filters() Calls 'gf_get_form_meta'
-	 *
-	 * @param int $form_id Form ID
-	 * @return object The form meta data
-	 */
-	function gf_get_form_meta( $form_id = 0 ) {
-
-		// Bail if no form ID
-		if ( empty( $form_id ) )
-			return array();
-
-		// Get the form meta data
-		$form = GFFormsModel::get_form_meta( $form_id );
-
-		return (object) apply_filters( 'gf_get_form_meta', $form, $form_id );
-	}
-}
-
