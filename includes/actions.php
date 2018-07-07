@@ -24,10 +24,9 @@ add_action( 'gf_pages_deactivation',     'gf_pages_delete_rewrite_rules', 10 );
 
 /** Query *********************************************************************/
 
-add_action( 'parse_query',               'gf_pages_parse_query',         2    ); // Early for overrides
-add_filter( 'posts_request',             'gf_pages_filter_wp_query',    10, 2 );
-add_filter( 'posts_pre_query',           'gf_pages_bypass_wp_query',    10, 2 ); // Since WP 4.6
-add_filter( 'gf_pages_get_forms',        'gf_pages_filter_forms_query', 10, 2 );
+add_action( 'parse_query',               'gf_pages_parse_query',        2    ); // Early for overrides
+add_filter( 'posts_request',             'gf_pages_filter_wp_query',   10, 2 );
+add_filter( 'posts_pre_query',           'gf_pages_bypass_wp_query',   10, 2 ); // Since WP 4.6
 
 /** Post **********************************************************************/
 

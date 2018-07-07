@@ -516,21 +516,11 @@ function gf_pages_get_forms( $args = array() ) {
 	// Query forms the GF way
 	$forms = GFFormsModel::get_forms( $r['show_active'], $r['orderby'], $r['order'] );
 
-	// Force form objects
+	// Setup form objects
 	$forms = array_map( 'gf_pages_get_form', $forms );
 
-	return (array) apply_filters( 'gf_pages_get_forms', $forms, $r );
-}
+	// Remove unavailable forms
+	$forms = array_filter( $forms, 'gf_pages_show_form' );
 
-/**
- * Modify the list of queried forms by removing forms to hide
- *
- * @since 1.0.0
- *
- * @param array $forms Forms
- * @param array $args Query arguments
- * @return array Forms
- */
-function gf_pages_filter_forms_query( $forms, $args ) {
-	return array_filter( $forms, 'gf_pages_show_form' );
+	return (array) apply_filters( 'gf_pages_get_forms', $forms, $r );
 }
