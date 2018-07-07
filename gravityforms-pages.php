@@ -126,9 +126,6 @@ class GravityForms_Pages {
 		require( $this->includes_dir . 'sub-actions.php'  );
 		require( $this->includes_dir . 'update.php'       );
 
-		// Classes
-		require( $this->includes_dir . 'classes/class-gfp-form-query.php' );
-
 		// Admin
 		if ( is_admin() ) {
 			require( $this->includes_dir . 'admin.php'    );

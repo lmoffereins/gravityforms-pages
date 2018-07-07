@@ -52,7 +52,7 @@ function gf_pages_query_forms( $args = array() ) {
 	}
 
 	// Run query to get the forms
-	if ( is_a( $query, 'GFP_Form_Query' ) ) {
+	if ( method_exists( $query, 'query' ) ) {
 		$query->query( $r );
 	} else {
 		$query->forms = gf_pages_get_forms( $r );
