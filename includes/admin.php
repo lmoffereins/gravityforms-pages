@@ -24,7 +24,17 @@ class GravityForms_Pages_Admin {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
+		$this->setup_globals();
 		$this->setup_actions();
+	}
+
+	/**
+	 * Define class globals
+	 *
+	 * @since 1.0.0
+	 */
+	private function setup_globals() {
+		$this->minimum_capability = 'manage_options';
 	}
 
 	/**
@@ -51,7 +61,7 @@ class GravityForms_Pages_Admin {
 		$parent = RGForms::get_parent_menu( apply_filters( 'gform_addon_navigation', array() ) );
 
 		// Add the plugin menu page
-		$hook = add_submenu_page( $parent['name'], esc_html_x( 'Forms Pages', 'Admin page title', 'gravityforms-pages' ), esc_html_x( 'Pages', 'Admin menu title', 'gravityforms-pages' ), 'manage_options', 'gf_pages', array( $this, 'admin_page' ) );
+		$hook = add_submenu_page( $parent['name'], esc_html_x( 'Forms Pages', 'Admin page title', 'gravityforms-pages' ), esc_html_x( 'Pages', 'Admin menu title', 'gravityforms-pages' ), $this->minimum_capability, 'gf-pages', array( $this, 'admin_page' ) );
 
 		// Add hooks
 		add_action( "admin_head-$hook", array( $this, 'admin_head' ) );
