@@ -27,21 +27,21 @@ function gf_pages_admin_get_settings_sections() {
 		'gf_pages_settings_slugs' => array(
 			'title'    => esc_html__( 'Form slugs', 'gravityforms-pages' ),
 			'callback' => 'gf_pages_admin_setting_callback_slugs_section',
-			'page'     => 'gf_pages'
+			'page'     => 'gf-pages'
 		),
 
 		// Query
 		'gf_pages_settings_query' => array(
 			'title'    => esc_html__( 'Query settings', 'gravityforms-pages' ),
 			'callback' => 'gf_pages_admin_setting_callback_query_section',
-			'page'     => 'gf_pages'
+			'page'     => 'gf-pages'
 		),
 
 		// Additional
 		'gf_pages_settings_additional' => array(
 			'title'    => esc_html__( 'Additional settings', 'gravityforms-pages' ),
 			'callback' => 'gf_pages_admin_setting_callback_additional_section',
-			'page'     => 'gf_pages'
+			'page'     => 'gf-pages'
 		)
 	) );
 }

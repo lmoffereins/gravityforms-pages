@@ -130,16 +130,13 @@ class GravityForms_Pages_Admin {
 	public function admin_page() { ?>
 
 		<div class="wrap">
-
-            <div id="gravity-settings-icon" class="icon32"><br></div>
-			<h2><?php echo esc_html_x( 'Forms Pages', 'Admin page heading', 'gravityforms-pages' ); ?></h2>
+			<h1><?php echo esc_html_x( 'Forms Pages', 'Admin page heading', 'gravityforms-pages' ); ?></h1>
 
 			<form method="post" action="options.php">
-				<?php settings_fields( 'gf_pages' ); ?>
-				<?php do_settings_sections( 'gf_pages' ); ?>
+				<?php settings_fields( 'gf-pages' ); ?>
+				<?php do_settings_sections( 'gf-pages' ); ?>
 				<?php submit_button(); ?>
 			</form>
-
 		</div>
 
 		<?php
