@@ -45,12 +45,11 @@ class GravityForms_Pages_Admin {
 	private function setup_actions() {
 
 		// Plugin
-		add_filter( 'plugin_action_links',   array( $this, 'plugin_action_links'     ), 10, 2 );
+		add_filter( 'plugin_action_links', array( $this, 'plugin_action_links' ), 10, 2 );
 
 		// Settings
-		add_action( 'admin_menu',            array( $this, 'admin_menu'              ), 11 );
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts'   )     );
-		add_action( 'gf_pages_admin_init',   array( $this, 'admin_register_settings' )     );
+		add_action( 'gf_pages_admin_init', array( $this, 'admin_register_settings' ) );
+		add_action( 'gf_pages_admin_init', array( $this, 'register_settings_page'  ) );
 	}
 
 	/** Public methods **************************************************/
@@ -70,77 +69,13 @@ class GravityForms_Pages_Admin {
 		if ( gf_pages()->basename === $basename && current_user_can( $this->minimum_capability ) ) {
 
 			// Settings page
-			$links['settings'] = '<a href="' . esc_url( add_query_arg( 'page', 'gf-pages', admin_url( 'admin.php' ) ) ) . '">' . esc_html_x( 'Settings', 'Plugin action link', 'gravityforms-pages' ) . '</a>';
+			$links['settings'] = '<a href="' . esc_url( add_query_arg( array( 'page' => 'gf_settings', 'subview' => 'gf-pages' ), admin_url( 'admin.php' ) ) ) . '">' . esc_html_x( 'Settings', 'Plugin action link', 'gravityforms-pages' ) . '</a>';
 		}
 
 		return $links;
 	}
 
 	/** Settings ********************************************************/
-
-	/**
-	 * Add the plugin admin menu
-	 *
-	 * @since 1.0.0
-	 */
-	public function admin_menu() {
-
-		// Get GF parent menu
-		$parent = RGForms::get_parent_menu( apply_filters( 'gform_addon_navigation', array() ) );
-
-		// Add the plugin menu page
-		$hook = add_submenu_page( $parent['name'], esc_html_x( 'Forms Pages', 'Admin page title', 'gravityforms-pages' ), esc_html_x( 'Pages', 'Admin menu title', 'gravityforms-pages' ), $this->minimum_capability, 'gf-pages', array( $this, 'admin_page' ) );
-
-		// Add hooks
-		add_action( "admin_head-$hook", array( $this, 'admin_head' ) );
-	}
-
-	/**
-	 * Enqueue admin scripts
-	 *
-	 * @since 1.0.0
-	 */
-	public function admin_enqueue_scripts() {
-
-		// Enqueue Gravity Forms admin style that GF didn't register
-		wp_enqueue_style( 'gforms-admin', GFCommon::get_base_url() . '/css/admin.css' );
-	}
-
-	/**
-	 * Load additional code in the admin page head
-	 *
-	 * @since 1.0.0
-	 */
-	public function admin_head() { ?>
-
-		<style type="text/css">
-			input, textarea {
-				padding: 3px;
-			}
-		</style>
-
-		<?php
-	}
-
-	/**
-	 * Output the plugin admin page
-	 *
-	 * @since 1.0.0
-	 */
-	public function admin_page() { ?>
-
-		<div class="wrap">
-			<h1><?php echo esc_html_x( 'Forms Pages', 'Admin page heading', 'gravityforms-pages' ); ?></h1>
-
-			<form method="post" action="options.php">
-				<?php settings_fields( 'gf-pages' ); ?>
-				<?php do_settings_sections( 'gf-pages' ); ?>
-				<?php submit_button(); ?>
-			</form>
-		</div>
-
-		<?php
-	}
 
 	/**
 	 * Register plugin settings
@@ -177,6 +112,44 @@ class GravityForms_Pages_Admin {
 				register_setting( $section['page'], $field_id, $field['sanitize_callback'] );
 			}
 		}
+	}
+
+	/**
+	 * Register a GF settings page
+	 *
+	 * @since 1.0.0
+	 */
+	public function register_settings_page() {
+
+		// Bailw hen the user cannot edit settings
+		if ( ! current_user_can( $this->minimum_capability ) )
+			return;
+
+		// Register GF settings tab
+		RGForms::add_settings_page( array(
+			'name'      => 'gf-pages',
+			'tab_label' => esc_html_x( 'Pages', 'Settings tab title' ),
+			'title'     => esc_html_x( 'Forms Pages', 'Settings page title' ),
+			'handler'   => array( $this, 'settings_page' )
+		) );
+	}
+
+	/**
+	 * Display contents of the settings page
+	 *
+	 * @since 1.0.0
+	 */
+	public function settings_page() { ?>
+
+		<h3><?php echo esc_html_x( 'Forms Pages', 'Admin page heading', 'gravityforms-pages' ); ?></h3>
+
+		<form method="post" action="options.php">
+			<?php settings_fields( 'gf-pages' ); ?>
+			<?php do_settings_sections( 'gf-pages' ); ?>
+			<?php submit_button(); ?>
+		</form>
+
+		<?php
 	}
 }
 
