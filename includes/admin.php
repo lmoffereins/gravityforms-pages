@@ -43,12 +43,40 @@ class GravityForms_Pages_Admin {
 	 * @since 1.0.0
 	 */
 	private function setup_actions() {
+
+		// Plugin
+		add_filter( 'plugin_action_links',   array( $this, 'plugin_action_links'     ), 10, 2 );
+
+		// Settings
 		add_action( 'admin_menu',            array( $this, 'admin_menu'              ), 11 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts'   )     );
 		add_action( 'gf_pages_admin_init',   array( $this, 'admin_register_settings' )     );
 	}
 
 	/** Public methods **************************************************/
+
+	/**
+	 * Modify the plugin action links
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $links Plugin action links
+	 * @param string $basename Plugin basename
+	 * @return array Plugin action links
+	 */
+	public function plugin_action_links( $links, $basename ) {
+
+		// Add plugin action links for this plugin
+		if ( gf_pages()->basename === $basename && current_user_can( $this->minimum_capability ) ) {
+
+			// Settings page
+			$links['settings'] = '<a href="' . esc_url( add_query_arg( 'page', 'gf-pages', admin_url( 'admin.php' ) ) ) . '">' . esc_html_x( 'Settings', 'Plugin action link', 'gravityforms-pages' ) . '</a>';
+		}
+
+		return $links;
+	}
+
+	/** Settings ********************************************************/
 
 	/**
 	 * Add the plugin admin menu
