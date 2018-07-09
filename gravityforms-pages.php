@@ -182,28 +182,27 @@ class GravityForms_Pages {
 	public function add_rewrite_rules() {
 
 		// Priority
-		$priority     = 'top';
+		$priority   = 'top';
 
 		// Slugs
-		$archive_slug = gf_pages_get_form_archive_slug(); // Prepend $wp_rewrite->root ?
-		$paged_slug   = gf_pages_get_paged_slug();
+		$forms_slug = gf_pages_get_forms_slug(); // Prepend $wp_rewrite->root?
+		$paged_slug = gf_pages_get_paged_slug();
 
 		// Unique rewrite ID
-		$form_id      = gf_pages_get_form_rewrite_id();
-		$archive_id   = gf_pages_get_archive_rewrite_id();
-		$paged_id     = gf_pages_get_paged_rewrite_id();
+		$archive_id = gf_pages_get_archive_rewrite_id();
+		$paged_id   = gf_pages_get_paged_rewrite_id();
 
 		// Rewrite rules
-		$root_rule    = '/?$';
-		$paged_rule   = '/' . $paged_slug . '/?([0-9]{1,})/?$';
+		$root_rule  = '/?$';
+		$paged_rule = '/' . $paged_slug . '/?([0-9]{1,})/?$';
 
 		// Form Archive
-		add_rewrite_rule( $archive_slug . $root_rule,  'index.php?' . $archive_id . '=1',                              $priority );
-		add_rewrite_rule( $archive_slug . $paged_rule, 'index.php?' . $archive_id . '=1&' . $paged_id .'=$matches[1]', $priority );
+		add_rewrite_rule( $forms_slug . $root_rule,  'index.php?' . $archive_id . '=1',                              $priority );
+		add_rewrite_rule( $forms_slug . $paged_rule, 'index.php?' . $archive_id . '=1&' . $paged_id .'=$matches[1]', $priority );
 	}
 
 	/**
-	 * Add permalink stucture for archive-style destinations.
+	 * Add permalink stucture for archive-style single form destinations.
 	 *
 	 * @since 1.0.0
 	 */
@@ -213,10 +212,10 @@ class GravityForms_Pages {
 		$form_id = gf_pages_get_form_rewrite_id();
 
 		// Get root slug
-		$form_slug = gf_pages_get_single_form_slug();
+		$forms_slug = gf_pages_get_forms_slug();
 
 		// Form Permastruct
-		add_permastruct( $form_id, $form_slug . '/%' . $form_id . '%', array(
+		add_permastruct( $form_id, $forms_slug . '/%' . $form_id . '%', array(
 			'with_front'  => false,
 			'ep_mask'     => EP_NONE,
 			'paged'       => false,

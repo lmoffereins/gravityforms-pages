@@ -75,31 +75,17 @@ function gf_pages_db_version_raw() {
 /** Slugs *********************************************************************/
 
 /**
- * Get the single form slug
+ * Get the forms slug
  *
  * @since 1.0.0
  *
- * @uses apply_filters() Calls 'gf_pages_get_single_form_slug'
+ * @uses apply_filters() Calls 'gf_pages_get_forms_slug'
  *
  * @param string $default Optional. Default value
  * @return string Form slug
  */
-function gf_pages_get_single_form_slug( $default = 'form' ) {
-	return apply_filters( 'gf_pages_get_single_form_slug', get_option( '_gf_pages_form_slug', $default ) );
-}
-
-/**
- * Get the form archive slug
- *
- * @since 1.0.0
- *
- * @uses apply_filters() Calls 'gf_pages_get_form_archive_slug'
- *
- * @param string $default Optional. Default value
- * @return string Form archive slug
- */
-function gf_pages_get_form_archive_slug( $default = 'forms' ) {
-	return apply_filters( 'gf_pages_get_form_archive_slug', get_option( '_gf_pages_form_archive_slug', $default ) );
+function gf_pages_get_forms_slug( $default = 'forms' ) {
+	return apply_filters( 'gf_pages_get_forms_slug', get_option( '_gf_pages_forms_slug', $default ) );
 }
 
 /**

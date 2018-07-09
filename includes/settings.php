@@ -60,21 +60,13 @@ function gf_pages_admin_get_settings_fields() {
 		// Form Slugs
 		'gf_pages_settings_slugs' => array(
 
-			// Form Slug
-			'_gf_pages_form_slug' => array(
-				'title'             => esc_html__( 'Single Form Slug', 'gravityforms-pages' ),
-				'callback'          => 'gf_pages_admin_setting_callback_form_slug',
+			// Forms Slug
+			'_gf_pages_forms_slug' => array(
+				'title'             => esc_html__( 'Forms Slug', 'gravityforms-pages' ),
+				'callback'          => 'gf_pages_admin_setting_callback_forms_slug',
 				'sanitize_callback' => 'sanitize_title',
 				'args'              => array()
 			),
-
-			// Form Archive Slug
-			'_gf_pages_form_archive_slug' => array(
-				'title'             => esc_html__( 'Form Archive Slug', 'gravityforms-pages' ),
-				'callback'          => 'gf_pages_admin_setting_callback_form_archive_slug',
-				'sanitize_callback' => 'sanitize_title',
-				'args'              => array()
-			)
 		),
 
 		// Query
@@ -160,25 +152,13 @@ function gf_pages_admin_setting_callback_slugs_section() {
 }
 
 /**
- * Output the form slug setting field
+ * Output the forms slug setting field
  *
  * @since 1.0.0
  */
-function gf_pages_admin_setting_callback_form_slug() { ?>
+function gf_pages_admin_setting_callback_forms_slug() { ?>
 
-	<input id="_gf_pages_form_slug" name="_gf_pages_form_slug" type="text" class="regular-text code" value="<?php echo get_option( '_gf_pages_form_slug', 'form' ); ?>" />
-
-	<?php
-}
-
-/**
- * Output the form archive slug setting field
- *
- * @since 1.0.0
- */
-function gf_pages_admin_setting_callback_form_archive_slug() { ?>
-
-	<input id="_gf_pages_form_archive_slug" name="_gf_pages_form_archive_slug" type="text" class="regular-text code" value="<?php echo get_option( '_gf_pages_form_archive_slug', 'forms' ); ?>" />
+	<input id="_gf_pages_forms_slug" name="_gf_pages_forms_slug" type="text" class="regular-text code" value="<?php echo get_option( '_gf_pages_forms_slug', 'forms' ); ?>" />
 
 	<?php
 }

@@ -649,7 +649,7 @@ function gf_pages_the_form_url( $form = 0 ) {
 
 			// Using pretty permalinks
 			if ( $wp_rewrite->using_permalinks() ) {
-				$url = home_url( trailingslashit( $wp_rewrite->root . gf_pages_get_single_form_slug() . '/' . gf_pages_get_form_slug( $form ) ) );
+				$url = home_url( trailingslashit( $wp_rewrite->root . gf_pages_get_forms_slug() . '/' . gf_pages_get_form_slug( $form ) ) );
 
 			// Unpretty permalinks
 			} else {
@@ -985,7 +985,7 @@ function gf_pages_the_form_archive_url() {
 
 		// Using pretty permalinks
 		if ( $wp_rewrite->using_permalinks() ) {
-			$url = home_url( trailingslashit( $wp_rewrite->root . gf_pages_get_form_archive_slug() . '/' ) );
+			$url = home_url( trailingslashit( $wp_rewrite->root . gf_pages_get_forms_slug() . '/' ) );
 
 		// Unpretty permalinks
 		} else {
