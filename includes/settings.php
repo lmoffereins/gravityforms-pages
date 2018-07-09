@@ -172,7 +172,7 @@ function gf_pages_admin_setting_callback_forms_slug() { ?>
  */
 function gf_pages_admin_setting_callback_query_section() { ?>
 
-	<p><?php esc_html_e( 'Set single form and form archive query settings here.', 'gravityforms-pages' ); ?></p>
+	<p><?php esc_html_e( 'Customize single form and form archive query settings here.', 'gravityforms-pages' ); ?></p>
 
 	<?php
 }
@@ -185,7 +185,7 @@ function gf_pages_admin_setting_callback_query_section() { ?>
 function gf_pages_admin_setting_callback_hide_form_archive() { ?>
 
 	<input id="_gf_pages_hide_form_archive" name="_gf_pages_hide_form_archive" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_hide_form_archive' ) ); ?> />
-	<label for="_gf_pages_hide_form_archive"><span class="description"><?php _e("Disable the forms archive listing page. Users will be routed to a 404 'Not Found' page.", 'gravityforms-pages' ); ?></span></label>
+	<label for="_gf_pages_hide_form_archive"><span class="description"><?php printf( esc_html__( "Disable the paged forms archive listing. Visitors of %s will be routed to a 404 'Not Found' page.", 'gravityforms-pages' ), '<code>' . gf_pages_get_form_archive_url() . '</code>' ); ?></span></label>
 
 	<?php
 }
@@ -210,7 +210,7 @@ function gf_pages_admin_setting_callback_forms_per_page() { ?>
 function gf_pages_admin_setting_callback_hide_closed_forms() { ?>
 
 	<input id="_gf_pages_hide_closed_forms" name="_gf_pages_hide_closed_forms" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_hide_closed_forms' ) ); ?> />
-	<label for="_gf_pages_hide_closed_forms"><span class="description"><?php _e( 'Hide forms that are closed to new entries.', 'gravityforms-pages' ); ?></span></label>
+	<label for="_gf_pages_hide_closed_forms"><span class="description"><?php esc_html_e( 'Hide paged forms that are closed to new entries.', 'gravityforms-pages' ); ?></span></label>
 
 	<?php
 }
@@ -224,7 +224,7 @@ function gf_pages_admin_setting_callback_hide_closed_forms() { ?>
  */
 function gf_pages_admin_setting_callback_additional_section() { ?>
 
-	<p><?php esc_html_e( 'Set additional settings here.', 'gravityforms-pages' ); ?></p>
+	<p><?php esc_html_e( 'Customize additional settings here.', 'gravityforms-pages' ); ?></p>
 
 	<?php
 }
@@ -237,7 +237,7 @@ function gf_pages_admin_setting_callback_additional_section() { ?>
 function gf_pages_admin_setting_callback_force_ajax() { ?>
 
 	<input id="_gf_pages_force_ajax" name="_gf_pages_force_ajax" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_force_ajax' ) ); ?> />
-	<label for="_gf_pages_force_ajax"><span class="description"><?php _e( 'Always use interactive ajax functionality in forms.', 'gravityforms-pages' ); ?></span></label>
+	<label for="_gf_pages_force_ajax"><span class="description"><?php esc_html_e( 'Always use interactive ajax functionality in paged forms.', 'gravityforms-pages' ); ?></span></label>
 
 	<?php
 }
