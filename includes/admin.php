@@ -50,6 +50,9 @@ class GravityForms_Pages_Admin {
 		// Settings
 		add_action( 'gf_pages_admin_init', array( $this, 'admin_register_settings' ) );
 		add_action( 'gf_pages_admin_init', array( $this, 'register_settings_page'  ) );
+
+		// Forms
+		add_filter( 'gform_form_actions', array( $this, 'form_actions' ), 10, 2 );
 	}
 
 	/** Public methods **************************************************/
@@ -150,6 +153,41 @@ class GravityForms_Pages_Admin {
 		</form>
 
 		<?php
+	}
+
+	/** Form ************************************************************/
+
+	/**
+	 * Modify the form actions in the form list table
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $actions Form actions
+	 * @param int $form_id Form ID
+	 * @return array Form actions
+	 */
+	public function form_actions( $actions, $form_id ) {
+
+		// Get the form
+		$form = gf_pages_get_form( $form_id );
+
+		/**
+		 * Add View link when the Form is available as a page
+		 *
+		 * GF has no easy way of conditionally showing the View link, so we're
+		 * just showing the link based on the current condition when the forms
+		 * list is rendered.
+		 */
+		if ( $form && gf_pages_show_form( $form ) ) {
+			$actions['view'] = array(
+				'label'    => esc_html__( 'View', 'gravityforms-pages' ),
+				'title'    => esc_html__( 'View this form', 'gravityforms-pages' ),
+				'url'      => gf_pages_get_form_url( $form ),
+				'priority' => 450,
+			);
+		}
+
+		return $actions;
 	}
 }
 
