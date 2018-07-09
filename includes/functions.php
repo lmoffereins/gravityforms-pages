@@ -218,34 +218,6 @@ function gf_pages_force_ajax( $default = false ) {
 	return (bool) apply_filters( 'gf_pages_force_ajax', get_option( '_gf_pages_force_ajax', $default ) );
 }
 
-/**
- * Return whether to show form view counts
- *
- * @since 1.0.0
- *
- * @uses apply_filters() Calls 'gf_pages_show_view_count'
- *
- * @param bool $default Optional. Default value
- * @return bool Show view count
- */
-function gf_pages_show_view_count( $default = false ) {
-	return (bool) apply_filters( 'gf_pages_show_view_count', get_option( '_gf_pages_show_view_count', $default ) );
-}
-
-/**
- * Return whether to show form entry counts
- *
- * @since 1.0.0
- *
- * @uses apply_filters() Calls 'gf_pages_show_entry_count'
- *
- * @param bool $default Optional. Default value
- * @return bool Show entry count
- */
-function gf_pages_show_entry_count( $default = false ) {
-	return (bool) apply_filters( 'gf_pages_show_entry_count', get_option( '_gf_pages_show_entry_count', $default ) );
-}
-
 /** Form Names ****************************************************************/
 
 /**

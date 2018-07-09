@@ -115,22 +115,6 @@ function gf_pages_admin_get_settings_fields() {
 				'sanitize_callback' => 'intval',
 				'args'              => array()
 			),
-
-			// Show view count
-			'_gf_pages_show_view_count' => array(
-				'title'             => esc_html__( 'Show View Count', 'gravityforms-pages' ),
-				'callback'          => 'gf_pages_admin_setting_callback_show_view_count',
-				'sanitize_callback' => 'intval',
-				'args'              => array()
-			),
-
-			// Show entry count
-			'_gf_pages_show_entry_count' => array(
-				'title'             => esc_html__( 'Show Entry Count', 'gravityforms-pages' ),
-				'callback'          => 'gf_pages_admin_setting_callback_show_entry_count',
-				'sanitize_callback' => 'intval',
-				'args'              => array()
-			),
 		)
 	) );
 }
@@ -277,30 +261,3 @@ function gf_pages_admin_setting_callback_force_ajax() { ?>
 
 	<?php
 }
-
-/**
- * Output the show view count setting field
- *
- * @since 1.0.0
- */
-function gf_pages_admin_setting_callback_show_view_count() { ?>
-
-	<input id="_gf_pages_show_view_count" name="_gf_pages_show_view_count" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_show_view_count' ) ); ?> />
-	<label for="_gf_pages_show_view_count"><span class="description"><?php _e( 'Show the form view count on form pages.', 'gravityforms-pages' ); ?></span></label>
-
-	<?php
-}
-
-/**
- * Output the show entry count setting field
- *
- * @since 1.0.0
- */
-function gf_pages_admin_setting_callback_show_entry_count() { ?>
-
-	<input id="_gf_pages_show_entry_count" name="_gf_pages_show_entry_count" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_show_entry_count' ) ); ?> />
-	<label for="_gf_pages_show_entry_count"><span class="description"><?php _e( 'Show the form entry count on form pages.', 'gravityforms-pages' ); ?></span></label>
-
-	<?php
-}
-
