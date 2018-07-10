@@ -58,6 +58,10 @@ add_filter( 'gf_pages_form_class',         'gf_pages_filter_item_class'         
 add_filter( 'gf_pages_template_include', 'gf_pages_template_include_theme_supports', 10 );
 add_filter( 'gf_pages_template_include', 'gf_pages_template_include_theme_compat',   12 );
 
+/** Misc **********************************************************************/
+
+add_action( 'admin_bar_menu',            'gf_pages_admin_bar_menu', 90 );
+
 /** Admin *********************************************************************/
 
 if ( is_admin() ) {

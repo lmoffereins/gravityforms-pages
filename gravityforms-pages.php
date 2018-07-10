@@ -156,7 +156,6 @@ class GravityForms_Pages {
 		// Template
 		add_action( 'wp_title',         array( $this, 'wp_title'         ), 10, 3 );
 		add_action( 'body_class',       array( $this, 'body_class'       ), 10, 2 );
-		add_action( 'admin_bar_menu',   array( $this, 'admin_bar_menu'   ), 90    );
 	}
 
 	/** Rewrite Rules *********************************************************/
@@ -303,34 +302,6 @@ class GravityForms_Pages {
 		$classes = array_unique( array_merge( $wp_classes, $form_classes ) );
 
 		return apply_filters( 'gf_pages_body_class', $classes, $form_classes, $wp_classes, $custom_classes );
-	}
-
-	/**
-	 * Add 'Edit Form' admin bar menu item for single forms
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param WP_Admin_Bar $wp_admin_bar
-	 */
-	public function admin_bar_menu( $wp_admin_bar ) {
-
-		// Bail if not on single form page
-		if ( ! gf_pages_is_form() )
-			return;
-
-		// Remove 'Edit Post' menu - hacky!
-		$wp_admin_bar->remove_menu( 'edit' );
-
-		// If user can edit forms
-		if ( GFCommon::current_user_can_any( 'gforms_edit_forms' ) ) {
-
-			// Add 'Edit Form' menu item
-			$wp_admin_bar->add_menu( array(
-				'id'     => 'edit',
-				'title'  => __( 'Edit Form', 'gravityforms-pages' ),
-				'href'   => gf_pages_get_form_edit_url()
-			) );
-		}
 	}
 }
 

@@ -482,3 +482,30 @@ function gf_pages_get_forms( $args = array() ) {
 
 	return (array) apply_filters( 'gf_pages_get_forms', $forms, $r );
 }
+
+/** Misc **********************************************************************/
+
+/**
+ * Modify the admin bar menu items
+ *
+ * @since 1.0.0
+ *
+ * @param WP_Admin_Bar $wp_admin_bar
+ */
+function gf_pages_admin_bar_menu( $wp_admin_bar ) {
+
+	// When on a single form page
+	if ( gf_pages_is_form( true ) ) {
+
+		// When the user can edit forms
+		if ( GFCommon::current_user_can_any( 'gforms_edit_forms' ) ) {
+
+			// Add 'Edit Form' menu item
+			$wp_admin_bar->add_menu( array(
+				'id'     => 'edit',
+				'title'  => esc_html__( 'Edit Form', 'gravityforms-pages' ),
+				'href'   => gf_pages_get_form_edit_url()
+			) );
+		}
+	}
+}
