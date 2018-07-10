@@ -152,9 +152,6 @@ class GravityForms_Pages {
 		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_tags'  ), 20 );
 		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_rules' ), 30 );
 		add_action( 'gf_pages_init',   array( $this, 'add_permastructs'  ), 40 );
-
-		// Template
-		add_action( 'wp_title',         array( $this, 'wp_title'         ), 10, 3 );
 	}
 
 	/** Rewrite Rules *********************************************************/
@@ -221,47 +218,6 @@ class GravityForms_Pages {
 			'walk_dirs'   => true,
 			'endpoints'   => false,
 		) );
-	}
-
-	/** Template **************************************************************/
-
-	/**
-	 * Return the forms page title element
-	 *
-	 * @since 1.0.0
-	 *
-	 * @uses apply_filters() Calls 'gf_pages_wp_title'
-	 *
-	 * @param string $title Page title
-	 * @param string $sep Separator
-	 * @param string $seplocation Page title direction
-	 * @return string $title
-	 */
-	public function wp_title( $title, $sep, $seplocation ) {
-
-		// Single Form
-		if ( gf_pages_is_form() ) {
-			$single = gf_pages_get_form_title();
-			$form   = __( 'Form', 'gravityforms-pages' );
-
-			if ( 'right' == $seplocation ) {
-				$title = $single . " $sep " . $form . " $sep " . $title;
-			} else {
-				$title .= " $sep " . $form . " $sep " . $single;
-			}
-
-		// Form Archive
-		} elseif ( gf_pages_is_form_archive() ) {
-			$archive = gf_pages_get_form_archive_title();
-
-			if ( 'right' == $seplocation ) {
-				$title = $archive . " $sep " . $title;
-			} else {
-				$title .= " $sep " . $archive;
-			}
-		}
-
-		return apply_filters( 'gf_pages_wp_title', $title, $sep, $seplocation );
 	}
 }
 
