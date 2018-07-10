@@ -84,13 +84,16 @@ function gf_pages_parse_query( $posts_query ) {
 
 		// Looking at a single form
 		$posts_query->gf_pages_is_form = true;
-		$posts_query->is_single        = true;
 
 		// Make sure 404 is not set
 		$posts_query->is_404 = false;
 
 		// Correct is_home variable
 		$posts_query->is_home = false;
+
+		// Mock a form's WP_Post properties, used in WP_Query
+		$the_form->ID        = 0;
+		$the_form->post_type = '';
 
 		// Set queried object vars
 		$posts_query->queried_object    = $the_form;
@@ -218,7 +221,7 @@ function gf_pages_is_form( $singular = false ) {
 	$retval = false;
 
 	// Check query
-	if ( ! empty( $wp_query->gf_pages_is_form ) && ( true === $wp_query->gf_pages_is_form ) && ( ! $singular || is_singular() ) ) {
+	if ( ! empty( $wp_query->gf_pages_is_form ) && ( true === $wp_query->gf_pages_is_form ) ) {
 		$retval = true;
 
 	// Or we're in the forms loop
