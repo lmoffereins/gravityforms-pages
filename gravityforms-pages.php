@@ -155,7 +155,6 @@ class GravityForms_Pages {
 
 		// Template
 		add_action( 'wp_title',         array( $this, 'wp_title'         ), 10, 3 );
-		add_action( 'body_class',       array( $this, 'body_class'       ), 10, 2 );
 	}
 
 	/** Rewrite Rules *********************************************************/
@@ -263,45 +262,6 @@ class GravityForms_Pages {
 		}
 
 		return apply_filters( 'gf_pages_wp_title', $title, $sep, $seplocation );
-	}
-
-	/**
-	 * Add form specific classes to the body class
-	 *
-	 * @since 1.0.0
-	 *
-	 * @uses apply_filters() Calls 'gf_pages_body_class'
-	 *
-	 * @param array $classes Body classes
-	 * @return array Classes
-	 */
-	public function body_class( $wp_classes = array(), $custom_classes = false ) {
-		$form_classes = array();
-
-		// Single Form
-		if ( gf_pages_is_form() ) {
-			$form_classes[] = 'form-' . gf_pages_get_form_slug();
-			$form_classes[] = 'form-' . gf_pages_get_form_id();
-			$form_classes[] = 'single';
-			$form_classes[] = 'single-form';
-			$form_classes[] = 'singular';
-
-		// Form Archive
-		} elseif ( gf_pages_is_form_archive() ) {
-			$form_classes[] = 'archive';
-			$form_classes[] = 'form-archive';
-			$form_classes[] = 'forms';
-		}
-
-		if ( ! empty( $form_classes ) ) {
-			$form_classes[] = 'form';
-			$form_classes[] = 'gfp-form';
-		}
-
-		// Merge WP classes with form classes and remove duplicates
-		$classes = array_unique( array_merge( $wp_classes, $form_classes ) );
-
-		return apply_filters( 'gf_pages_body_class', $classes, $form_classes, $wp_classes, $custom_classes );
 	}
 }
 

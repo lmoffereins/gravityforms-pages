@@ -49,6 +49,7 @@ add_filter( 'gf_pages_get_form_excerpt',     'wpautop',            40 );
 /** Template ******************************************************************/
 
 add_action( 'gf_pages_after_setup_theme',  'gf_pages_load_theme_functions'        );
+add_filter( 'body_class',                  'gf_pages_body_class',           10, 2 );
 add_filter( 'get_the_archive_title',       'gf_pages_get_the_archive_title'       );
 add_filter( 'get_the_archive_description', 'gf_pages_get_the_archive_description' );
 add_filter( 'post_class',                  'gf_pages_filter_item_class'           );

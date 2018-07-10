@@ -233,6 +233,45 @@ function gf_pages_is_form( $singular = false ) {
 }
 
 /**
+ * Add form specific classes to the body class
+ *
+ * @since 1.0.0
+ *
+ * @param array $wp_classes Body classes
+ * @param array $custom_classes Additional classes
+ * @return array Body classes
+ */
+function gf_pages_body_class( $wp_classes, $custom_classes = false ) {
+
+	// Define local var
+	$form_classes = array();
+
+	/** Pages *****************************************************************/
+
+	if ( gf_pages_is_form_archive() ) {
+		$form_classes[] = 'archive';
+		$form_classes[] = 'form-archive';
+
+	} elseif ( gf_pages_is_form() ) {
+		$form_classes[] = 'single';
+		$form_classes[] = 'single-form';
+		$form_classes[] = 'formid-' . gf_pages_get_form_id();
+	}
+
+	/** Clean up **************************************************************/
+
+	// Add plugin class when on a plugin page
+	if ( ! empty( $form_classes ) ) {
+		$form_classes[] = 'gravityforms-pages';
+	}
+
+	// Merge WP classes with plugin classes and remove duplicates
+	$classes = array_unique( array_merge( (array) $wp_classes, $form_classes ) );
+
+	return $classes;
+}
+
+/**
  * Use the is_() functions to return if on any plugin page
  *
  * @since 1.0.0
