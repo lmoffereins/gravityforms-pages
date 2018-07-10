@@ -70,3 +70,7 @@ if ( is_admin() ) {
 	add_action( 'gf_pages_init',         'gf_pages_admin',          10 );
 	add_action( 'gf_pages_admin_init',   'gf_pages_setup_updater', 999 );
 }
+
+/** Extend ********************************************************************/
+
+add_action( 'gf_pages_init', 'gfp_wpseo' );

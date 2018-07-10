@@ -131,6 +131,9 @@ class GravityForms_Pages {
 			require( $this->includes_dir . 'admin.php'    );
 			require( $this->includes_dir . 'settings.php' );
 		}
+
+		// Extensions
+		require( $this->includes_dir . 'extend/wordpress-seo.php' );
 	}
 
 	/**
