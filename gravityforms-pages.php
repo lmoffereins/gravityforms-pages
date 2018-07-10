@@ -168,13 +168,12 @@ class GravityForms_Pages {
 	 */
 	public function add_rewrite_tags() {
 		add_rewrite_tag( '%' . gf_pages_get_form_rewrite_id()    . '%', '([^/]+)' ); // Form Page tag
-		add_rewrite_tag( '%' . gf_pages_get_archive_rewrite_id() . '%', '([^/]+)' ); // Form Archive page tag
+		add_rewrite_tag( '%' . gf_pages_get_archive_rewrite_id() . '%', '([^/]+)' ); // Form archives page tag
 	}
 
 	/**
 	 * Add form-specific rewrite rules for uri's that are not setup
 	 * for us by way of custom post types or taxonomies. This includes:
-	 * - Single forms
 	 * - Forms archive
 	 *
 	 * @since 1.0.0
