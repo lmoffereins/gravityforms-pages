@@ -459,26 +459,57 @@ function gf_pages_show_form( $form = '' ) {
  *
  * @uses apply_filters() Calls 'gf_pages_get_forms'
  *
- * @param array $args Query arguments
+ * @param array $args Query arguments, supports these args:
+ *  - number: The number of forms to query. Accepts -1 for all forms. Defaults to -1.
+ *  - paged: The number of the current page for pagination.
+ *  - count: Whether to return the form count. Defaults to false.
+ *  - show_active: Whether to return active (true) or inactive (false) forms only. Accepts null for either status. Defaults to true.
+ *  - orderby: The database column to order the results by. Defaults to 'date_created'.
+ *  - order: Designates ascending or descending of ordered forms. Defaults to 'DESC'.
+ *  - s: Search terms that could match a form's title.
  * @return array Form objects
  */
 function gf_pages_get_forms( $args = array() ) {
 
 	// Parse arguments
 	$r = wp_parse_args( $args, array(
+		'number'      => -1,
+		'paged'       => 1,
+		'count'       => false,
 		'show_active' => true,
 		'orderby'     => 'date_created',
-		'order'       => 'DESC'
+		'order'       => 'DESC',
+		's'           => ''
 	) );
 
-	// Query forms the GF way
-	$forms = GFFormsModel::get_forms( $r['show_active'], $r['orderby'], $r['order'] );
+	// Query forms the GF way: fetch all
+	if ( ! empty( $r['s'] ) ) {
+		$forms = GFFormsModel::search_forms( $r['s'], $r['show_active'], $r['orderby'], $r['order'] );
+	} else {
+		$forms = GFFormsModel::get_forms( $r['show_active'], $r['orderby'], $r['order'] );
+	}
 
 	// Setup form objects
 	$forms = array_map( 'gf_pages_get_form', $forms );
 
 	// Remove unavailable forms
 	$forms = array_filter( $forms, 'gf_pages_show_form' );
+
+	// Return count early
+	if ( $r['count'] ) {
+		return count( $forms );
+	}
+
+	// Paginate the GF way, after the query
+	if ( $r['number'] > 0 ) {
+		$r['paged'] = absint( $r['paged'] );
+		if ( $r['paged'] == 0 ) {
+			$r['paged'] = 1;
+		}
+		$r['offset'] = absint( ( $r['paged'] - 1 ) * $r['number'] );
+
+		$forms = array_slice( $forms, $r['offset'], $r['number'] );
+	}
 
 	return (array) apply_filters( 'gf_pages_get_forms', $forms, $r );
 }

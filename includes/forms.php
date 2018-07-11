@@ -43,12 +43,14 @@ function gf_pages_query_forms( $args = array() ) {
 	) );
 
 	// Pagination
-	if ( $r['number'] != -1 ) {
+	if ( (int) $r['number'] > 0 ) {
 		$r['paged'] = absint( $r['paged'] );
 		if ( $r['paged'] == 0 ) {
 			$r['paged'] = 1;
 		}
 		$r['offset'] = absint( ( $r['paged'] - 1 ) * $r['number'] );
+	} else {
+		$r['number'] = -1;
 	}
 
 	// Run query to get the forms
