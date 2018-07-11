@@ -514,6 +514,29 @@ function gf_pages_get_forms( $args = array() ) {
 	return (array) apply_filters( 'gf_pages_get_forms', $forms, $r );
 }
 
+/**
+ * Return the total found rows for the form query arguments
+ *
+ * @since 1.0.0
+ *
+ * @param array $query_args Original form query arguments.
+ * @return int Total found rows
+ */
+function gf_pages_query_forms_found_rows( $query_args ) {
+
+	// Remove paging arguments
+	unset( $query_args['offset'], $query_args['paged'] );
+
+	// Define count query args
+	$query_args['count']  = true;
+	$query_args['number'] = -1;
+
+	// Run count query
+	$count = gf_pages_get_forms( $query_args );
+
+	return (int) $count;
+}
+
 /** Misc **********************************************************************/
 
 /**

@@ -58,12 +58,6 @@ function gf_pages_query_forms( $args = array() ) {
 		$query->query( $r );
 	} else {
 		$query->forms = gf_pages_get_forms( $r );
-		$query->found_forms = count( $query->forms );
-
-		// Paginate the GF way
-		if ( isset( $r['offset'] ) ) {
-			$query->forms = array_slice( $query->forms, $r['offset'], $r['number'] );
-		}
 	}
 
 	// Set query results
@@ -73,12 +67,10 @@ function gf_pages_query_forms( $args = array() ) {
 	}
 
 	// Determine the total form count
-	if ( ! isset( $query->found_forms ) ) {
-		if ( isset( $r['offset'] ) && ! $query->form_count < $r['number'] ) {
-			$query->found_forms = gf_pages_query_forms_found_rows( $r );
-		} else {
-			$query->found_forms = $query->form_count;
-		}
+	if ( isset( $r['offset'] ) && ! $query->form_count < $r['number'] ) {
+		$query->found_forms = gf_pages_query_forms_found_rows( $r );
+	} else {
+		$query->found_forms = $query->form_count;
 	}
 	if ( $query->found_forms > $query->form_count ) {
 		$query->max_num_pages = (int) ceil( $query->found_forms / $r['number'] );
