@@ -392,7 +392,7 @@ function gf_pages_the_form_post_date( $format = 'Y-m-d', $form = 0 ) {
 
 			if ( $date ) {
 				$date = DateTime::createFromFormat( 'Y-m-d H:i:s', $date );
-				$formatted = $date->format( $format );
+				$formatted = date_i18n( $format, $date->format( 'U' ) );
 			}
 		}
 
@@ -438,7 +438,7 @@ function gf_pages_the_form_open_date( $format = 'Y-m-d', $form = 0 ) {
 				// Create readable date format
 				$date = "{$form->scheduleStart} {$form->scheduleStartHour}:{$minutes} {$form->scheduleStartAmpm}";
 				$date = DateTime::createFromFormat( 'm/d/Y g:i a', $date );
-				$formatted = $date->format( $format );
+				$formatted = date_i18n( $format, $date->format( 'U' ) );
 			} else {
 				$formatted = gf_pages_get_form_post_date( $format, $form );
 			}
@@ -486,7 +486,7 @@ function gf_pages_the_form_close_date( $format = 'Y-m-d', $form = 0 ) {
 				// Create readable date format
 				$date = "{$form->scheduleEnd} {$form->scheduleEndHour}:{$minutes} {$form->scheduleEndAmpm}";
 				$date = DateTime::createFromFormat( 'm/d/Y g:i a', $date );
-				$formatted = $date->format( $format );
+				$formatted = date_i18n( $format, $date->format( 'U' ) );
 			}
 		}
 
