@@ -467,19 +467,21 @@ function gf_pages_show_form( $form = '' ) {
  *  - orderby: The database column to order the results by. Defaults to 'date_created'.
  *  - order: Designates ascending or descending of ordered forms. Defaults to 'DESC'.
  *  - s: Search terms that could match a form's title.
+ *  - suppress_filters: Whether to suppress filters. Defaults to false.
  * @return array Form objects
  */
 function gf_pages_get_forms( $args = array() ) {
 
 	// Parse arguments
 	$r = wp_parse_args( $args, array(
-		'number'      => -1,
-		'paged'       => 1,
-		'count'       => false,
-		'show_active' => true,
-		'orderby'     => 'date_created',
-		'order'       => 'DESC',
-		's'           => ''
+		'number'           => -1,
+		'paged'            => 1,
+		'count'            => false,
+		'show_active'      => true,
+		'orderby'          => 'date_created',
+		'order'            => 'DESC',
+		's'                => '',
+		'suppress_filters' => false,
 	) );
 
 	// Query forms the GF way: fetch all
@@ -492,8 +494,14 @@ function gf_pages_get_forms( $args = array() ) {
 	// Setup form objects
 	$forms = array_map( 'gf_pages_get_form', $forms );
 
-	// Remove unavailable forms
-	$forms = array_filter( $forms, 'gf_pages_show_form' );
+	if ( ! $r['suppress_filters'] ) {
+
+		// Remove unavailable forms
+		$forms = array_filter( $forms, 'gf_pages_show_form' );
+
+		// Enable plugin filtering
+		$forms = (array) apply_filters( 'gf_pages_get_forms', $forms, $r );
+	}
 
 	// Return count early
 	if ( $r['count'] ) {
@@ -511,7 +519,7 @@ function gf_pages_get_forms( $args = array() ) {
 		$forms = array_slice( $forms, $r['offset'], $r['number'] );
 	}
 
-	return (array) apply_filters( 'gf_pages_get_forms', $forms, $r );
+	return $forms;
 }
 
 /**
