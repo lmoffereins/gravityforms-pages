@@ -578,10 +578,10 @@ function gf_pages_the_form_link( $args = array() ) {
 	 * @uses apply_filters() Calls 'gf_pages_get_form_link'
 	 *
 	 * @param array $args Function arguments, supports these args:
-	 *  - form: Optional. Form object or ID. Defaults to the current form.
-	 *  - link_before: Optional. Markup to put before the link. Defaults to an empty string.
-	 *  - link_after: Optional. Markup to put after the link. Defaults to an empty string.
-	 *  - link_text: Optional. Link text. Defaults to the form title.
+	 *  - form: Form object or ID. Defaults to the current form.
+	 *  - link_before: Markup to put before the link. Defaults to an empty string.
+	 *  - link_after: Markup to put after the link. Defaults to an empty string.
+	 *  - link_text: Link text. Defaults to the form title.
 	 * @return string Form link
 	 */
 	function gf_pages_get_form_link( $args = array() ) {
@@ -673,10 +673,10 @@ function gf_pages_the_form_edit_link( $args = array() ) {
 	 * @uses apply_filters() Calls 'gf_pages_get_form_edit_link'
 	 *
 	 * @param array $args Function arguments, supports these args:
-	 *  - form: Optional. Form object or ID. Defaults to the current form.
-	 *  - link_before: Optional. Markup to put before the link. Defaults to an empty string.
-	 *  - link_after: Optional. Markup to put after the link. Defaults to an empty string.
-	 *  - link_text: Optional. Link text. Defaults to 'Edit'.
+	 *  - form: Form object or ID. Defaults to the current form.
+	 *  - link_before: Markup to put before the link. Defaults to an empty string.
+	 *  - link_after: Markup to put after the link. Defaults to an empty string.
+	 *  - link_text: Link text. Defaults to 'Edit'.
 	 * @return string Edit form link
 	 */
 	function gf_pages_get_form_edit_link( $args = array() ) {
@@ -957,9 +957,9 @@ function gf_pages_the_form_archive_link( $args = array() ) {
 	 * @uses apply_filters() Calls 'gf_pages_get_form_archive_link'
 	 *
 	 * @param array $args Function arguments, supports these args:
-	 *  - link_before: Optional. Markup to put before the link. Defaults to an empty string.
-	 *  - link_after: Optional. Markup to put after the link. Defaults to an empty string.
-	 *  - link_text: Optional. Link text. Defaults to the archive title.
+	 *  - link_before: Markup to put before the link. Defaults to an empty string.
+	 *  - link_after: Markup to put after the link. Defaults to an empty string.
+	 *  - link_text: Link text. Defaults to the archive title.
 	 * @return string Form link
 	 */
 	function gf_pages_get_form_archive_link( $args = array() ) {
