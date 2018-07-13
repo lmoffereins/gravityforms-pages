@@ -62,7 +62,7 @@ class GFP_WPSEO {
 
 				// Form archives
 				'forms' => array(
-					'text'       => esc_html_x( 'Forms', 'Form archives breadcrumb title', 'gravityforms-pages' ),
+					'text'       => gf_pages_get_form_archive_title(),
 					'url'        => gf_pages_hide_form_archive() ? false : gf_pages_get_form_archive_url(),
 					'allow_html' => false,
 				)

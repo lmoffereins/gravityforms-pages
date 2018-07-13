@@ -509,7 +509,7 @@ function gf_pages_document_title_parts( $title = array() ) {
 	if ( is_gf_pages() && ! gf_pages_is_form_archive() ) {
 
 		// Define parent title part
-		$parent = array( 'parent' => esc_html_x( 'Forms', 'Plugin page title', 'gravityforms-pages' ) );
+		$parent = array( 'parent' => esc_html_x( 'Forms', 'Page title parent', 'gravityforms-pages' ) );
 
 		// Insert 'Forms' part after title part, creates 'Title - Forms - Site'
 		$title = array_slice( $title, 0, 1, true ) + $parent + array_slice( $title, 1, count( $title ) - 1, true );
@@ -517,7 +517,7 @@ function gf_pages_document_title_parts( $title = array() ) {
 
 	// Root page
 	if ( gf_pages_is_form_archive() ) {
-		$_title = esc_html_x( 'Forms', 'Plugin page title', 'gravityforms-pages' );
+		$_title = gf_pages_get_form_archive_title();
 
 	// Single Form
 	} elseif ( gf_pages_is_form() ) {
@@ -544,7 +544,7 @@ function gf_pages_get_the_archive_title( $title = '' ) {
 
 	// Form archives
 	if ( gf_pages_is_form_archive() ) {
-		$title = esc_html_x( 'Forms', 'Plugin page title', 'gravityforms-pages' );
+		$title = gf_pages_get_form_archive_title();
 
 	// Single Form
 	} elseif ( gf_pages_is_form() ) {
@@ -566,7 +566,7 @@ function gf_pages_get_the_archive_description( $description = '' ) {
 
 	// Form archives
 	if ( gf_pages_is_form_archive() ) {
-		$description = esc_html__( 'This page lists all available forms for you.', 'gravityforms-pages' );
+		$description = gf_pages_get_form_archive_description();
 
 	// Single Form
 	} elseif ( gf_pages_is_form() ) {

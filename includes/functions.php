@@ -149,6 +149,34 @@ function gf_pages_delete_rewrite_rules() {
 /** Options *******************************************************************/
 
 /**
+ * Return the form archive title
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_form_archive_title'
+ *
+ * @param string $default Optional. Default value
+ * @return string Form archive title
+ */
+function gf_pages_form_archive_title( $default = '' ) {
+	return apply_filters( 'gf_pages_form_archive_title', get_option( '_gf_pages_form_archive_title', $default ) );
+}
+
+/**
+ * Return the form archive description
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_form_archive_description'
+ *
+ * @param string $default Optional. Default value
+ * @return string Form archive description
+ */
+function gf_pages_form_archive_description( $default = '' ) {
+	return apply_filters( 'gf_pages_form_archive_description', get_option( '_gf_pages_form_archive_description', $default ) );
+}
+
+/**
  * Get the forms per page option
  *
  * @since 1.0.0

@@ -46,6 +46,19 @@ add_filter( 'gf_pages_get_form_excerpt',     'convert_smilies',    20 );
 add_filter( 'gf_pages_get_form_excerpt',     'force_balance_tags', 30 );
 add_filter( 'gf_pages_get_form_excerpt',     'wpautop',            40 );
 
+/** Archive *******************************************************************/
+
+add_filter( 'gf_pages_get_form_archive_title',       'wptexturize',       10 );
+add_filter( 'gf_pages_get_form_archive_title',       'strip_tags',        10 );
+add_filter( 'gf_pages_get_form_archive_title',       'convert_chars',     10 );
+add_filter( 'gf_pages_get_form_archive_title',       'trim',              10 );
+
+add_filter( 'gf_pages_get_form_archive_description', 'wptexturize',       10 );
+add_filter( 'gf_pages_get_form_archive_description', 'convert_smilies',   10 );
+add_filter( 'gf_pages_get_form_archive_description', 'convert_chars',     10 );
+add_filter( 'gf_pages_get_form_archive_description', 'wpautop',           10 );
+add_filter( 'gf_pages_get_form_archive_description', 'shortcode_unautop', 10 );
+
 /** Template ******************************************************************/
 
 add_action( 'gf_pages_after_setup_theme',  'gf_pages_load_theme_functions'        );

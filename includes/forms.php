@@ -890,7 +890,7 @@ function gf_pages_the_form_display_entry_count( $form = 0 ) {
 /** Form Archive **************************************************************/
 
 /**
- * Output the current form archive title
+ * Output the form archive title
  *
  * @since 1.0.0
  */
@@ -899,7 +899,7 @@ function gf_pages_the_form_archive_title() {
 }
 
 	/**
-	 * Get the current form archive title
+	 * Get the form archive title
 	 *
 	 * @since 1.0.0
 	 *
@@ -907,9 +907,36 @@ function gf_pages_the_form_archive_title() {
 	 * @return string Form archive title
 	 */
 	function gf_pages_get_form_archive_title() {
-		return apply_filters( 'gf_pages_get_form_archive_title', esc_html_x( 'Forms', 'Plugin page title', 'gravityforms-pages' ) );
+		$title = gf_pages_form_archive_title();
+
+		// Set default title
+		if ( ! $title ) {
+			$title = esc_html_x( 'Forms', 'Default form archive title', 'gravityforms-pages' );
+		}
+
+		return apply_filters( 'gf_pages_get_form_archive_title', $title );
 	}
 
+/**
+ * Output the form archive description
+ *
+ * @since 1.0.0
+ */
+function gf_pages_the_form_archive_description() {
+	echo gf_pages_get_form_archive_description();
+}
+
+	/**
+	 * Get the form archive description
+	 *
+	 * @since 1.0.0
+	 *
+	 * @uses apply_filters() Calls 'gf_pages_form_archive_description'
+	 * @return string Form archive description
+	 */
+	function gf_pages_get_form_archive_description() {
+		return apply_filters( 'gf_pages_get_form_archive_description', gf_pages_form_archive_description() );
+	}
 
 /**
  * Output the archive form link
