@@ -565,10 +565,11 @@ function gf_pages_get_nav_menu_items() {
 			// Form archives
 			'form-archive' => array(
 				'title'       => gf_pages_get_form_archive_title(),
-				'url'         => gf_pages_get_form_archive_url(),
+				'url'         => ! gf_pages_hide_form_archive() ? gf_pages_get_form_archive_url() : '',
 				'type_label'  => esc_html_x( 'Form Archive', 'Nav menu item type label', 'gravityforms-pages' ),
 				'is_current'  => gf_pages_is_form_archive(),
 				'is_parent'   => gf_pages_is_form( true ),
+				'allow_empty' => true
 			),
 		) );
 
@@ -583,6 +584,7 @@ function gf_pages_get_nav_menu_items() {
 				'is_current'  => false,
 				'is_parent'   => false,
 				'is_ancestor' => false,
+				'allow_empty' => false,
 			) );
 		}
 
@@ -699,16 +701,16 @@ function gf_pages_setup_nav_menu_item( $menu_item ) {
 					$menu_item->classes[] = 'current_page_ancestor';
 					$menu_item->classes[] = 'current-menu-ancestor';
 				}
+
+				// Prevent rendering when there's no url
+				if ( empty( $menu_item->url ) && ! $item->allow_empty ) {
+					$menu_item->_invalid = true;
+				}
 			}
 		}
 
 		// Enable plugin filtering
 		$menu_item = apply_filters( 'gf_pages_setup_nav_menu_item', $menu_item );
-
-		// Prevent rendering when there's no url
-		if ( empty( $menu_item->url ) ) {
-			$menu_item->_invalid = true;
-		}
 	}
 
 	return $menu_item;
