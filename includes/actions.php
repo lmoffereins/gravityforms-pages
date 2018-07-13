@@ -60,6 +60,11 @@ add_filter( 'gf_pages_form_class',         'gf_pages_filter_item_class'         
 add_filter( 'gf_pages_template_include', 'gf_pages_template_include_theme_supports', 10 );
 add_filter( 'gf_pages_template_include', 'gf_pages_template_include_theme_compat',   12 );
 
+/** Menus *********************************************************************/
+
+add_filter( 'wp_setup_nav_menu_item',    'gf_pages_setup_nav_menu_item'        );
+add_filter( 'wp_nav_menu_objects',       'gf_pages_nav_menu_objects',    10, 2 );
+
 /** Misc **********************************************************************/
 
 add_action( 'admin_bar_menu',            'gf_pages_admin_bar_menu', 90 );

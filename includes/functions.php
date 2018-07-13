@@ -545,6 +545,202 @@ function gf_pages_query_forms_found_rows( $query_args ) {
 	return (int) $count;
 }
 
+/** Menus *********************************************************************/
+
+/**
+ * Return the available custom plugin nav menu items
+ *
+ * @since 1.0.0
+ *
+ * @return array Custom nav menu items
+ */
+function gf_pages_get_nav_menu_items() {
+
+	// Setup items in cache
+	if ( empty( gf_pages()->wp_nav_menu_items ) ) {
+
+		// Setup nav menu items
+		$items = (array) apply_filters( 'gf_pages_get_nav_menu_items', array(
+
+			// Form archives
+			'form-archive' => array(
+				'title'       => gf_pages_get_form_archive_title(),
+				'url'         => gf_pages_get_form_archive_url(),
+				'type_label'  => esc_html_x( 'Form Archive', 'Nav menu item type label', 'gravityforms-pages' ),
+				'is_current'  => gf_pages_is_form_archive(),
+				'is_parent'   => gf_pages_is_form( true ),
+			),
+		) );
+
+		// Set default arguments
+		foreach ( $items as $item_id => &$item ) {
+			$item = wp_parse_args( $item, array(
+				'id'          => $item_id,
+				'title'       => '',
+				'type'        => 'gravityforms-pages',
+				'type_label'  => esc_html_x( 'Form Page', 'Nva menu item type label', 'gravityforms-pages' ),
+				'url'         => '',
+				'is_current'  => false,
+				'is_parent'   => false,
+				'is_ancestor' => false,
+			) );
+		}
+
+		// Assign items to cache
+		gf_pages()->wp_nav_menu_items = $items;
+	}
+
+	return gf_pages()->wp_nav_menu_items;
+}
+
+/**
+ * Setup nav menu item for a form
+ *
+ * @since 1.0.0
+ *
+ * @param object|int $form Optional. Form object or ID. Defaults to the current form
+ * @return WP_Post Nav menu item object
+ */
+function gf_pages_setup_form_nav_menu_item( $form = '' ) {
+
+	// Get the form
+	$form      = gf_pages_get_form( $form );
+	$menu_item = new stdClass;
+
+	if ( $form ) {
+		$menu_item->ID               = $form->id;
+		$menu_item->db_id            = 0;
+		$menu_item->menu_item_parent = 0;
+		$menu_item->object_id        = (int) $form->id;
+		$menu_item->post_parent      = 0;
+		$menu_item->type             = 'gravityforms-pages';
+		$menu_item->object           = 'form';
+		$menu_item->type_label       = esc_html_x( 'Form', 'Nav menu item type label', 'gravityforms-pages' );
+		$menu_item->title            = gf_pages_get_form_title( $form );
+		$menu_item->url              = gf_pages_get_form_url( $form );
+		$menu_item->target           = '';
+		$menu_item->attr_title       = '';
+		$menu_item->description      = gf_pages_get_form_description( $form );
+		$menu_item->classes          = array();
+		$menu_item->xfn              = '';
+	}
+
+	return $menu_item;
+}
+
+/**
+ * Setup details of nav menu item for plugin pages
+ *
+ * @since 1.0.0
+ *
+ * @param WP_Post $menu_item Nav menu item object
+ * @return WP_Post Nav menu item object
+ */
+function gf_pages_setup_nav_menu_item( $menu_item ) {
+
+	// Plugin item
+	if ( 'gravityforms-pages' === $menu_item->type ) {
+
+		// Form page
+		if ( 'form' === $menu_item->object ) {
+			$form = gf_pages_get_form( $menu_item->object_id );
+
+			if ( $form ) {
+				$menu_item->type_label = esc_html_x( 'Form', 'Nav menu item type label', 'gravityforms-pages' );
+				$menu_item->title      = gf_pages_get_form_title( $form );
+				$menu_item->url        = gf_pages_get_form_url( $form );
+
+				// Set item classes
+				if ( ! isset( $menu_item->classes ) ) {
+					$menu_item->classes = array();
+				}
+
+				// This is the current page
+				if ( gf_pages_is_form( true ) && gf_pages_get_form_id() === $form->id ) {
+					$menu_item->classes[] = 'current_page_item';
+					$menu_item->classes[] = 'current-menu-item';
+				}
+			}
+
+			// Prevent rendering hidden form when not in the admin
+			if ( ! $form || ( ! is_admin() && gf_pages_hide_form( $form ) ) ) {
+				$menu_item->_invalid = true;
+			}
+
+		// Custom page
+		} else {
+
+			// This is a registered custom menu item
+			if ( $item = wp_list_filter( gf_pages_get_nav_menu_items(), array( 'id' => $menu_item->object ) ) ) {
+				$item = (object) reset( $item );
+
+				// Set item details
+				$menu_item->type_label = $item->type_label;
+				$menu_item->url        = $item->url;
+
+				// Set item classes
+				if ( ! isset( $menu_item->classes ) ) {
+					$menu_item->classes = array();
+				}
+
+				// This is the current page
+				if ( $item->is_current ) {
+					$menu_item->classes[] = 'current_page_item';
+					$menu_item->classes[] = 'current-menu-item';
+
+				// This is the parent page
+				} elseif ( $item->is_parent ) {
+					$menu_item->classes[] = 'current_page_parent';
+					$menu_item->classes[] = 'current-menu-parent';
+
+				// This is an ancestor page
+				} elseif ( $item->is_ancestor ) {
+					$menu_item->classes[] = 'current_page_ancestor';
+					$menu_item->classes[] = 'current-menu-ancestor';
+				}
+			}
+		}
+
+		// Enable plugin filtering
+		$menu_item = apply_filters( 'gf_pages_setup_nav_menu_item', $menu_item );
+
+		// Prevent rendering when there's no url
+		if ( empty( $menu_item->url ) ) {
+			$menu_item->_invalid = true;
+		}
+	}
+
+	return $menu_item;
+}
+
+/**
+ * Modify the sorted list of menu items
+ *
+ * @since 1.0.0
+ *
+ * @param  array $items Menu items
+ * @param  array $args Arguments for `wp_nav_menu()`
+ * @return array Menu items
+ */
+function gf_pages_nav_menu_objects( $items, $args ) {
+
+	// When on a plugin page
+	if ( is_gf_pages() ) {
+		$posts_page = (int) get_option( 'page_for_posts' );
+
+		foreach ( $items as $k => $item ) {
+
+			// Remove the posts page's parent status/class. By default WordPress
+			// appoints the posts page as parent for non-page pages. Please not.
+			if ( $item->object_id == $posts_page && 'post_type' == $item->type && in_array( 'current_page_parent', $item->classes ) ) {
+				unset( $items[ $k ]->classes[ array_search( 'current_page_parent', $item->classes ) ] );
+			}
+		}
+	}
+
+	return $items;
+}
+
 /** Misc **********************************************************************/
 
 /**

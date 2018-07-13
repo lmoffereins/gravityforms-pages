@@ -25,6 +25,7 @@ class GravityForms_Pages_Admin {
 	 */
 	public function __construct() {
 		$this->setup_globals();
+		$this->includes();
 		$this->setup_actions();
 	}
 
@@ -35,6 +36,20 @@ class GravityForms_Pages_Admin {
 	 */
 	private function setup_globals() {
 		$this->minimum_capability = 'manage_options';
+	}
+
+	/**
+	 * Include the required files
+	 *
+	 * @since 1.0.0
+	 */
+	private function includes() {
+
+		// Core
+		require( gf_pages()->includes_dir . 'admin-functions.php' );
+
+		// Utility
+		require( gf_pages()->includes_dir . 'classes/class-gf-pages-walker-nav-menu-checklist.php' );
 	}
 
 	/**
@@ -53,6 +68,10 @@ class GravityForms_Pages_Admin {
 
 		// Forms
 		add_filter( 'gform_form_actions', array( $this, 'form_actions' ), 10, 2 );
+
+		// Nav menus
+		add_action( 'load-nav-menus.php',        array( $this, 'nav_menu_add_metabox' ), 10 );
+		add_action( 'wp_ajax_menu-quick-search', 'gf_pages_wp_ajax_menu_quick_search',    0 ); // Run before WP's default handler
 	}
 
 	/** Public methods **************************************************/
@@ -188,6 +207,17 @@ class GravityForms_Pages_Admin {
 		}
 
 		return $actions;
+	}
+
+	/** Nav Menus *******************************************************/
+
+	/**
+	 * Register nav menu metaboxes
+	 *
+	 * @since 1.0.0
+	 */
+	public function nav_menu_add_metabox() {
+		add_meta_box( 'gravityforms-pages-nav-menu', esc_html_x( 'Forms', 'Nav menu metabox title', 'gravityforms-pages' ), 'gf_pages_admin_nav_menu_metabox', 'nav-menus', 'side', 'default' );
 	}
 }
 
