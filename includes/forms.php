@@ -602,7 +602,7 @@ function gf_pages_the_form_link( $args = array() ) {
 				$link = sprintf( '%s<a href="%s" title="%s">%s</a>%s',
 					$r['link_before'],
 					esc_url( $url ),
-					sprintf( esc_html__( 'Edit form %s', 'gravityforms-pages' ), gf_pages_get_form_title( $form ) ),
+					sprintf( esc_html__( 'Complete form %s', 'gravityforms-pages' ), gf_pages_get_form_title( $form ) ),
 					! empty( $r['link_text'] ) ? $r['link_text'] : gf_pages_get_form_title( $form ),
 					$r['link_after']
 				);
