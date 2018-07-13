@@ -62,8 +62,11 @@ add_filter( 'gf_pages_template_include', 'gf_pages_template_include_theme_compat
 
 /** Menus *********************************************************************/
 
-add_filter( 'wp_setup_nav_menu_item',    'gf_pages_setup_nav_menu_item'        );
-add_filter( 'wp_nav_menu_objects',       'gf_pages_nav_menu_objects',    10, 2 );
+add_filter( 'customize_nav_menu_available_item_types', 'gf_pages_customize_nav_menu_available_item_types', 10    );
+add_filter( 'customize_nav_menu_available_items',      'gf_pages_customize_nav_menu_available_items',      10, 4 );
+add_filter( 'customize_nav_menu_searched_items',       'gf_pages_customize_nav_menu_searched_items',       10, 2 );
+add_filter( 'wp_setup_nav_menu_item',                  'gf_pages_setup_nav_menu_item'                            );
+add_filter( 'wp_nav_menu_objects',                     'gf_pages_nav_menu_objects',                        10, 2 );
 
 /** Misc **********************************************************************/
 

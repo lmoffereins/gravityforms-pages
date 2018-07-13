@@ -609,6 +609,7 @@ function gf_pages_setup_form_nav_menu_item( $form = '' ) {
 
 	if ( $form ) {
 		$menu_item->ID               = $form->id;
+		$menu_item->id               = 'form-' . $form->id;
 		$menu_item->db_id            = 0;
 		$menu_item->menu_item_parent = 0;
 		$menu_item->object_id        = (int) $form->id;
@@ -736,6 +737,108 @@ function gf_pages_nav_menu_objects( $items, $args ) {
 				unset( $items[ $k ]->classes[ array_search( 'current_page_parent', $item->classes ) ] );
 			}
 		}
+	}
+
+	return $items;
+}
+
+/**
+ * Add plugin nav menu item types for the Customizer
+ *
+ * @since 1.0.0
+ *
+ * @param array $item_types Nav menu item types
+ * @return array Nav menu item types
+ */
+function gf_pages_customize_nav_menu_available_item_types( $item_types = array() ) {
+	$item_types['gravityforms-pages'] = array(
+		'title'  => esc_html_x( 'Forms', 'Customizer menu section title', 'gravityforms-pages' ),
+		'type'   => 'gravityforms-pages',
+		'object' => 'form',
+	);
+
+	return $item_types;
+}
+
+/**
+ * Add plugin pages to the available menu items in the Customizer
+ *
+ * @since 1.0.0
+ *
+ * @param array $items The array of menu items.
+ * @param string $type The object type.
+ * @param string $object The object name.
+ * @param int $page The current page number.
+ * @return array Menu items
+ */
+function gf_pages_customize_nav_menu_available_items( $items, $type, $object, $page ) {
+
+	// Plugin items. Always handling object=form
+	if ( 'gravityforms-pages' === $type ) {
+		$forms = gf_pages_get_forms( array(
+			'number'           => 10,
+			'paged'            => $page + 1,
+			'suppress_filters' => true,
+		) );
+
+		foreach ( $forms as $form ) {
+			$items[] = gf_pages_setup_form_nav_menu_item( $form );
+		}
+
+		// When on the first page
+		if ( 0 === $page ) {
+			$_items = gf_pages_get_nav_menu_items();
+
+			// Prepend all items
+			foreach ( array_reverse( $_items ) as $item_id => $item ) {
+
+				// Redefine item details
+				$item['id']     = $object . '-' . $item_id;
+				$item['object'] = $item_id;
+
+				// Prepend item
+				array_unshift( $items, $item );
+			}
+		}
+	}
+
+	return $items;
+}
+
+/**
+ * Add plugin pages to the searched menu items in the Customizer
+ *
+ * @since 1.0.0
+ *
+ * @param array $items The array of menu items.
+ * @param array $args Includes 'pagenum' and 's' (search) arguments.
+ * @return array Menu items
+ */
+function gf_pages_customize_nav_menu_searched_items( $items, $args ) {
+
+	// Search query matches a part of the term 'forms'
+	if ( false !== strpos( _x( 'forms', 'Nav menu search term', 'gravityforms-pages' ), strtolower( $args['s'] ) ) ) {
+
+		// Append all custom items
+		foreach ( gf_pages_get_nav_menu_items() as $item_id => $item ) {
+
+			// Redefine item details
+			$item['id']     = 'forms-' . $item_id;
+			$item['object'] = $item_id;
+
+			// Append item
+			$items[] = $item;
+		}
+	}
+
+	// Search matches form titles
+	foreach ( gf_pages_get_forms( array(
+		's'                => $args['s'],
+		'suppress_filters' => true,
+		'orderby'          => 'title',
+		'order'            => 'ASC',
+	) ) as $form ) {
+		$items[] = gf_pages_setup_form_nav_menu_item( $form );
 	}
 
 	return $items;
