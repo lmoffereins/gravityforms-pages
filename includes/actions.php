@@ -94,4 +94,4 @@ if ( is_admin() ) {
 
 /** Extend ********************************************************************/
 
-add_action( 'gf_pages_init', 'gfp_wpseo' );
+add_action( 'gf_pages_init', 'gf_pages_wpseo' );

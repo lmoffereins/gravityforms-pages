@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Gravity Forms Pages WP SEO Functions
+ * Gravity Forms Pages Extension for WP SEO
  *
  * @package Gravity Forms Pages
  * @subpackage WP SEO
@@ -10,13 +10,13 @@
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
-if ( ! class_exists( 'GFP_WPSEO' ) ) :
+if ( ! class_exists( 'GF_Pages_WPSEO' ) ) :
 /**
  * The Gravity Forms WorsPress SEO class
  *
  * @since 1.0.0
  */
-class GFP_WPSEO {
+class GF_Pages_WPSEO {
 
 	/**
 	 * Setup this class
@@ -100,10 +100,10 @@ class GFP_WPSEO {
  *
  * @since 1.0.0
  *
- * @uses GFP_WPSEO
+ * @uses GF_Pages_WPSEO
  */
-function gfp_wpseo() {
-	gf_pages()->extend->wpseo = new GFP_WPSEO;
+function gf_pages_wpseo() {
+	gf_pages()->extend->wpseo = new GF_Pages_WPSEO;
 }
 
 endif; // class_exists
