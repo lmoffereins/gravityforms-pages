@@ -10,7 +10,7 @@ Do you find yourself regularly creating pages just to paste in a Gravity Forms s
 
 A form archive page is generated which lists the available forms on your site. Additionally each form gets a unique url to navigate to, where the form is presented as if it were its own page. There's no need for shortcodes anymore when you just want to present a form in its own right.
 
-Availability of a single form page honors form settings like inactive status, required user login and time schedule restrictions.
+Availability of forms as pages can be set globally and on a per-form basis. When made available, form settings like inactive status, required user login and time schedule restrictions are respected before the form is displayed.
 
 When desired, you can disable the form archive listing in the plugin's settings. Customize plugin settings in the "Pages" tab in Gravity Forms's Settings admin page.
 
