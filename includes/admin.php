@@ -67,7 +67,9 @@ class GravityForms_Pages_Admin {
 		add_action( 'gf_pages_admin_init', array( $this, 'register_settings_page'  ) );
 
 		// Forms
-		add_filter( 'gform_form_actions', array( $this, 'form_actions' ), 10, 2 );
+		add_filter( 'gform_form_actions',           array( $this, 'form_actions'           ), 10, 2 );
+		add_filter( 'gform_form_settings',          array( $this, 'register_form_settings' ), 10, 2 );
+		add_filter( 'gform_pre_form_settings_save', array( $this, 'update_form_settings'   )        );
 
 		// Nav menus
 		add_action( 'load-nav-menus.php',        array( $this, 'nav_menu_add_metabox' ), 10 );
@@ -95,6 +97,28 @@ class GravityForms_Pages_Admin {
 		}
 
 		return $links;
+	}
+
+	/**
+	 * Apply a i18n function with the 'gravityforms' context
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string|array $args I18n function argument(s)
+	 * @param string $i18n Optional. I18n function name. Defaults to '__'.
+	 * @return string Translated text
+	 */
+	public function __gravityforms( $args, $i18n = '__' ) {
+
+		// Bail when no arguments were passed
+		if ( empty( $args ) )
+			return '';
+
+		// Append translation domain
+		$args   = (array) $args;
+		$args[] = 'gravityforms';
+
+		return call_user_func_array( $i18n, $args );
 	}
 
 	/** Settings ********************************************************/
@@ -207,6 +231,89 @@ class GravityForms_Pages_Admin {
 		}
 
 		return $actions;
+	}
+
+	/**
+	 * Modify the form settings sections
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $settings Form settings sections
+	 * @param array $form Form data
+	 */
+	public function register_form_settings( $settings, $form ) {
+
+		// Get form settings fields
+		$fields = gf_pages_admin_get_form_settings_fields();
+
+		// Loop through fields
+		foreach ( $fields as $field_id => $field ) {
+
+			// Parse field args
+			$field = wp_parse_args( $field, array(
+				'title'    => '',
+				'tooltip'  => '',
+				'section'  => '',
+				'callback' => '',
+			) );
+
+			// Settings sections are stored by their translated title
+			$section = $this->__gravityforms( $field['section'] );
+
+			// Skip when the setting's section does not exist
+			if ( ! isset( $settings[ $section ] ) )
+				continue;
+
+			// Prefix tooltip with title
+			if ( ! empty( $field['tooltip'] ) ) {
+				$field['tooltip'] = '<h6>' . $field['title'] . '</h6>' . $field['tooltip'];
+			}
+
+			// Construct and fetch the field's content
+			ob_start(); ?>
+
+	<tr>
+		<th><?php echo esc_html( $field['title'] ); ?> <?php gform_tooltip( $field['tooltip'], "tooltip tooltip_{$field_id}" ); ?></th>
+		<td><?php call_user_func_array( $field['callback'], array( $form ) ); ?></td>
+	</tr>
+
+			<?php
+
+			$settings[ $section ][ $field_id ] = ob_get_clean();
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Modify the updated form when settings are saved
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $form Updated form
+	 * @return array Updated form
+	 */
+	public function update_form_settings( $form ) {
+
+		// Get form settings fields
+		$fields = gf_pages_admin_get_form_settings_fields();
+
+		// Loop through fields
+		foreach ( $fields as $field_id => $field ) {
+
+			// Get value from saved data
+			$value = isset( $_POST[ $field_id ] ) ? $_POST[ $field_id] : null;
+
+			// Sanitize value
+			if ( isset( $field['sanitize_callback'] ) && is_callable( $field['sanitize_callback'] ) ) {
+				$value = call_user_func_array( $field['sanitize_callback'], array( $value ) );
+			}
+
+			// Set updated value
+			$form[ $field_id ] = $value;
+		}
+
+		return $form;
 	}
 
 	/** Nav Menus *******************************************************/

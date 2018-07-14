@@ -284,3 +284,17 @@ function gf_pages_admin_setting_callback_force_ajax() { ?>
 
 	<?php
 }
+
+/** Forms *********************************************************************/
+
+/**
+ * Get the form settings fields
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_admin_get_form_settings_fields'
+ * @return array Form settings fields
+ */
+function gf_pages_admin_get_form_settings_fields() {
+	return (array) apply_filters( 'gf_pages_admin_get_form_settings_fields', array() );
+}
