@@ -219,6 +219,20 @@ function gf_pages_hide_closed_forms( $default = false ) {
 }
 
 /**
+ * Return whether forms are available by default
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_default_availability'
+ *
+ * @param bool $default Optional. Default value
+ * @return bool Default availability
+ */
+function gf_pages_default_availability( $default = true ) {
+	return (bool) apply_filters( 'gf_pages_default_availability', get_option( '_gf_pages_default_availability', $default ) );
+}
+
+/**
  * Return whether to force form ajax
  *
  * @since 1.0.0
@@ -430,6 +444,29 @@ function gf_pages_sanitize_form( $form ) {
 }
 
 /**
+ * Return wether the form page is available
+ *
+ * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_is_form_page_available'
+ *
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
+ * @return bool Is form page available?
+ */
+function gf_pages_is_form_page_available( $form ) {
+
+	// Get form
+	$form   = gf_pages_get_form( $form );
+	$retval = gf_pages_default_availability();
+
+	if ( $form && isset( $form->gf_pages_page_availability ) ) {
+		$retval = (bool) $form->gf_pages_page_availability;
+	}
+
+	return (bool) apply_filters( 'gf_pages_is_form_page_available', $retval, $form );
+}
+
+/**
  * Return whether to hide the form
  *
  * @since 1.0.0
@@ -447,8 +484,12 @@ function gf_pages_hide_form( $form = '' ) {
 
 	if ( $form ) {
 
+		// Hide unavailable forms
+		if ( ! gf_pages_is_form_page_available( $form ) ) {
+			$retval = true;
+
 		// Hide inactive forms
-		if ( gf_pages_is_form_inactive( $form ) ) {
+		} elseif ( gf_pages_is_form_inactive( $form ) ) {
 			$retval = true;
 
 		// Hide not open forms

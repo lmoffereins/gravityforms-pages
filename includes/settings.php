@@ -116,6 +116,14 @@ function gf_pages_admin_get_settings_fields() {
 		// Additional
 		'gf_pages_settings_additional' => array(
 
+			// Default availability
+			'_gf_pages_default_availability' => array(
+				'title'             => esc_html__( 'Default Availability', 'gravityforms-pages' ),
+				'callback'          => 'gf_pages_admin_setting_callback_default_availability',
+				'sanitize_callback' => 'intval',
+				'args'              => array()
+			),
+
 			// Force ajax
 			'_gf_pages_force_ajax' => array(
 				'title'             => esc_html__( 'Force Ajax Forms', 'gravityforms-pages' ),
@@ -273,6 +281,28 @@ function gf_pages_admin_setting_callback_additional_section() { ?>
 }
 
 /**
+ * Output the default availability setting field
+ *
+ * @since 1.0.0
+ */
+function gf_pages_admin_setting_callback_default_availability() {
+	$selected = get_option( '_gf_pages_default_availability', true );
+
+	ob_start(); ?>
+
+	<select id="_gf_pages_default_availability" name="_gf_pages_default_availability">
+		<option value="1" <?php selected( $selected, 1 ); ?>><?php esc_html_e( 'available', 'gravityforms-pages' ); ?></option>
+		<option value="0" <?php selected( $selected, 0 ); ?>><?php esc_html_e( 'unavailable', 'gravityforms-pages' ); ?></option>
+	</select>
+
+	<?php $availability = ob_get_clean(); ?>
+
+	<label for="_gf_pages_default_availability"><?php printf( esc_html__( 'Forms are by default %s as a page. Availability can also be set on a per-form basis. When made available, form settings like inactive status, required user login and time schedule restrictions are respected before the form is displayed.', 'gravityforms-pages' ), $availability ); ?></label>
+
+	<?php
+}
+
+/**
  * Output the force ajax setting field
  *
  * @since 1.0.0
@@ -296,5 +326,43 @@ function gf_pages_admin_setting_callback_force_ajax() { ?>
  * @return array Form settings fields
  */
 function gf_pages_admin_get_form_settings_fields() {
-	return (array) apply_filters( 'gf_pages_admin_get_form_settings_fields', array() );
+	return (array) apply_filters( 'gf_pages_admin_get_form_settings_fields', array(
+
+		// Page Availability
+		'gf_pages_page_availability' => array(
+			'title'             => esc_html__( 'Page Availability', 'gravityforms-pages' ),
+			'tooltip'           => esc_html__( 'Customize whether this form is available as a page within your site. When made available, other form settings like inactive status, required user login or time schedule restrictions are respected before the form is displayed.', 'gravityforms-pages' ),
+			'section'           => 'Restrictions',
+			'callback'          => 'gf_pages_admin_form_setting_callback_page_availability',
+			'sanitize_callback' => 'intval',
+		)
+	) );
+}
+
+/**
+ * Display the form availabiltity form settings field
+ *
+ * @since 1.0.0
+ *
+ * @param array $form Form data
+ */
+function gf_pages_admin_form_setting_callback_page_availability( $form ) {
+
+	// Get form setting, default to global setting
+	$selected = isset( $form['gf_pages_page_availability'] )
+		? (bool) $form['gf_pages_page_availability']
+		: gf_pages_default_availability();
+
+	ob_start(); ?>
+
+	<select id="gf_pages_page_availability" name="gf_pages_page_availability">
+		<option value="1" <?php selected( $selected, true ); ?>><?php esc_html_e( 'available', 'gravityforms-pages' ); ?></option>
+		<option value="0" <?php selected( $selected, false ); ?>><?php esc_html_e( 'unavailable', 'gravityforms-pages' ); ?></option>
+	</select>
+
+	<?php $availability = ob_get_clean(); ?>
+
+	<label for="gf_pages_page_availability"><?php printf( esc_html__( 'Make this form %s as a page.', 'gravityforms-pages' ), $availability ); ?></label>
+
+	<?php
 }
