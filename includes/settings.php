@@ -126,7 +126,7 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Force ajax
 			'_gf_pages_force_ajax' => array(
-				'title'             => esc_html__( 'Force Ajax Forms', 'gravityforms-pages' ),
+				'title'             => esc_html__( 'Force Ajax', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_force_ajax',
 				'sanitize_callback' => 'intval',
 				'args'              => array()
