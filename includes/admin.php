@@ -174,8 +174,8 @@ class GravityForms_Pages_Admin {
 		// Register GF settings tab
 		RGForms::add_settings_page( array(
 			'name'      => 'gf-pages',
-			'tab_label' => esc_html_x( 'Pages', 'Settings tab title' ),
-			'title'     => esc_html_x( 'Forms Pages', 'Settings page title' ),
+			'tab_label' => esc_html_x( 'Pages', 'Settings tab title', 'gravityforms-pages' ),
+			'title'     => esc_html_x( 'Forms Pages', 'Settings page title', 'gravityforms-pages' ),
 			'handler'   => array( $this, 'settings_page' )
 		) );
 	}
