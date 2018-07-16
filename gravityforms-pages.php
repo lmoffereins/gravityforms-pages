@@ -122,7 +122,6 @@ class GravityForms_Pages {
 	private function includes() {
 
 		// Core
-		require( $this->includes_dir . 'actions.php'      );
 		require( $this->includes_dir . 'forms.php'        );
 		require( $this->includes_dir . 'functions.php'    );
 		require( $this->includes_dir . 'template.php'     );
@@ -151,17 +150,24 @@ class GravityForms_Pages {
 		add_action( 'activate_'   . $this->basename, 'gf_pages_activation'   );
 		add_action( 'deactivate_' . $this->basename, 'gf_pages_deactivation' );
 
+		// Refresh rewrite rules when (de)activating
+		add_action( 'gf_pages_activation',   'gf_pages_delete_rewrite_rules', 10 );
+		add_action( 'gf_pages_deactivation', 'gf_pages_delete_rewrite_rules', 10 );
+
 		// Bail when plugins is being deactivated
 		if ( gf_pages_is_deactivation() )
 			return;
 
 		// Load textdomain
-		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ), 20 );
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain'   ), 20 );
+
+		// Conditionally run plugin logic, since GF 1.9
+		add_action( 'gform_loaded',   array( $this, 'plugin_loaded'     ), 10 );
 
 		// Rewrite Rules
-		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_tags'  ), 20 );
-		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_rules' ), 30 );
-		add_action( 'gf_pages_init',   array( $this, 'add_permastructs'  ), 40 );
+		add_action( 'gf_pages_init',  array( $this, 'add_rewrite_tags'  ), 20 );
+		add_action( 'gf_pages_init',  array( $this, 'add_rewrite_rules' ), 30 );
+		add_action( 'gf_pages_init',  array( $this, 'add_permastructs'  ), 40 );
 	}
 
 	/** Plugin ****************************************************************/
@@ -197,6 +203,21 @@ class GravityForms_Pages {
 
 		// Look in global /wp-content/languages/plugins/
 		load_plugin_textdomain( $this->domain );
+	}
+
+	/**
+	 * Run logic when the plugin is loaded
+	 *
+	 * @since 1.0.0
+	 *
+	 * @uses do_action() Calls 'gf_pages_loaded'
+	 */
+	public function plugin_loaded() {
+
+		// Load plugin actions
+		require( $this->includes_dir . 'actions.php' );
+
+		do_action( 'gf_pages_loaded' );
 	}
 
 	/** Rewrite Rules *********************************************************/
