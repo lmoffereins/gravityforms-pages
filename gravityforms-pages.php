@@ -94,6 +94,9 @@ class GravityForms_Pages {
 		$this->themes_dir   = trailingslashit( $this->plugin_dir . 'templates' );
 		$this->themes_url   = trailingslashit( $this->plugin_url . 'templates' );
 
+		// Languages
+		$this->lang_dir     = trailingslashit( $this->plugin_dir . 'languages' );
+
 		/** Identifiers *******************************************************/
 
 		$this->form_id      = apply_filters( 'gf_pages_form_id',    'gf_pages_form'    );
@@ -152,10 +155,48 @@ class GravityForms_Pages {
 		if ( gf_pages_is_deactivation() )
 			return;
 
+		// Load textdomain
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ), 20 );
+
 		// Rewrite Rules
 		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_tags'  ), 20 );
 		add_action( 'gf_pages_init',   array( $this, 'add_rewrite_rules' ), 30 );
 		add_action( 'gf_pages_init',   array( $this, 'add_permastructs'  ), 40 );
+	}
+
+	/** Plugin ****************************************************************/
+
+	/**
+	 * Load the translation file for current language. Checks the languages
+	 * folder inside the plugin first, and then the default WordPress
+	 * languages folder.
+	 *
+	 * Note that custom translation files inside the plugin folder will be
+	 * removed on plugin updates. If you're creating custom translation
+	 * files, please use the global language folder.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @uses apply_filters() Calls 'plugin_locale' with {@link get_locale()} value
+	 */
+	public function load_textdomain() {
+
+		// Traditional WordPress plugin locale filter
+		$locale        = apply_filters( 'plugin_locale', get_locale(), $this->domain );
+		$mofile        = sprintf( '%1$s-%2$s.mo', $this->domain, $locale );
+
+		// Setup paths to current locale file
+		$mofile_local  = $this->lang_dir . $mofile;
+		$mofile_global = WP_LANG_DIR . '/gravityforms-pages/' . $mofile;
+
+		// Look in global /wp-content/languages/gravityforms-pages folder
+		load_textdomain( $this->domain, $mofile_global );
+
+		// Look in local /wp-content/plugins/gravityforms-pages/languages/ folder
+		load_textdomain( $this->domain, $mofile_local );
+
+		// Look in global /wp-content/languages/plugins/
+		load_plugin_textdomain( $this->domain );
 	}
 
 	/** Rewrite Rules *********************************************************/
