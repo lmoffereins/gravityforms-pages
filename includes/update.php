@@ -181,8 +181,7 @@ function gf_pages_version_updater() {
 	/** 1.0 Branch ********************************************************/
 
 	// 1.0.0
-	if ( $raw_db_version < 20000 ) {
-
+	if ( $raw_db_version < 20180717 ) {
 		// Run updates
 	}
 
