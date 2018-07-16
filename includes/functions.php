@@ -473,7 +473,7 @@ function gf_pages_is_form_page_available( $form ) {
  *
  * @uses apply_filters() Calls 'gf_pages_hide_form'
  *
- * @param object $form Optional. Form data. Defaults to the current form.
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return bool Hide the form?
  */
 function gf_pages_hide_form( $form = '' ) {
@@ -514,7 +514,7 @@ function gf_pages_hide_form( $form = '' ) {
  *
  * @since 1.0.0
  *
- * @param object $form Optional. Form data. Defaults to the current form.
+ * @param object|int $form Optional. Form data or ID. Defaults to the current form.
  * @return bool Show the form?
  */
 function gf_pages_show_form( $form = '' ) {
