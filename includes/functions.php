@@ -384,7 +384,7 @@ function gf_pages_get_form_object( $form_id, $with_meta = true ) {
 	}
 
 	// Get the form data
-	if ( ! is_object( $form_id ) || ! isset( $form->id ) ) {
+	if ( ! is_object( $form_id ) ) {
 		$form = GFFormsModel::get_form( (int) $form_id );
 	} else {
 		$form = $form_id;
