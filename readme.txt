@@ -38,5 +38,8 @@ This plugin is not hosted in the official WordPress repository. Instead, updatin
 
 == Changelog ==
 
+= 1.0.1 =
+* Added View Form admin-bar link when editing a form
+
 = 1.0.0 =
 * Initial release
