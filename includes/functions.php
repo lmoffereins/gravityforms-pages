@@ -303,7 +303,7 @@ function gf_pages_get_form_by_slug( $slug = '' ) {
 
 	/**
 	 * Walk all forms. This can be expensive, but GF does the
-	 * same with GFFormsModel::get_form_id().
+	 * same with {@see GFFormsModel::get_form_id()}.
 	 */
 	foreach ( GFFormsModel::get_forms() as $_form ) {
 
@@ -621,6 +621,8 @@ function gf_pages_query_forms_found_rows( $query_args ) {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_get_nav_menu_items'
+ *
  * @return array Custom nav menu items
  */
 function gf_pages_get_nav_menu_items() {
@@ -704,6 +706,8 @@ function gf_pages_setup_form_nav_menu_item( $form = '' ) {
  * Setup details of nav menu item for plugin pages
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_setup_nav_menu_item'
  *
  * @param WP_Post $menu_item Nav menu item object
  * @return WP_Post Nav menu item object
@@ -822,6 +826,8 @@ function gf_pages_nav_menu_objects( $items, $args ) {
  * @return array Nav menu item types
  */
 function gf_pages_customize_nav_menu_available_item_types( $item_types = array() ) {
+
+	// Define 'Forms' menu item type
 	$item_types['gravityforms-pages'] = array(
 		'title'  => esc_html_x( 'Forms', 'Customizer menu section title', 'gravityforms-pages' ),
 		'type'   => 'gravityforms-pages',

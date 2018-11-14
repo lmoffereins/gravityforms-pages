@@ -15,6 +15,8 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Display the plugin's nav menu metabox
  *
+ * @see wp_nav_menu_item_post_type_meta_box()
+ *
  * @since 1.0.0
  */
 function gf_pages_admin_nav_menu_metabox() {

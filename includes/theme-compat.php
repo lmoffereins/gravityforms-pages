@@ -26,6 +26,7 @@ function gf_pages_get_theme_compat_dir() {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_get_template_stack'
  * @return array Template locations
  */
 function gf_pages_get_template_stack() {
@@ -41,6 +42,7 @@ function gf_pages_get_template_stack() {
  *
  * @since 1.0.0
  *
+ * @uses apply_filters() Calls 'gf_pages_get_template_locations'
  * @return array Template folders
  */
 function gf_pages_get_template_locations() {

@@ -17,9 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  *
  * @since 1.0.0
  *
- * @todo Overpaging (where no forms are) crashes 404
- * @todo 1 forms per page returns not-found with correct form content on last item
- *
  * @param WP_Query $posts_query
  */
 function gf_pages_parse_query( $posts_query ) {
@@ -623,6 +620,8 @@ function gf_pages_form_class( $class = '', $form = 0 ) {
  * @see get_post_class()
  *
  * @since 1.0.0
+ *
+ * @uses apply_filters() Calls 'gf_pages_form_class'
  *
  * @param string $class Optional. One or more classes to add to the class list.
  * @param object|int $form Optional. Form object or ID. Defaults to the current form.
