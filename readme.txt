@@ -2,9 +2,9 @@
 Contributors: Offereins
 Tags: gravity forms, pages, list, forms, single form
 Requires at least: 4.4, GF 2.0
-Tested up to: 4.9, GF 2.2.5
-Stable tag: 1.0.0
-License: GPLv2 or later
+Tested up to: 4.9.8, GF 2.2.5
+Stable tag: 1.0.1
+License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 List and display Gravity Forms forms without shortcodes.

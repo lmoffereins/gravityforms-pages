@@ -13,7 +13,7 @@
  * Plugin Name:       Gravity Forms Pages
  * Description:       List and display Gravity Forms forms without shortcodes
  * Plugin URI:        https://github.com/lmoffereins/gravityforms-pages/
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Laurens Offereins
  * Author URI:        https://github.com/lmoffereins
  * Text Domain:       gravityforms-pages
@@ -76,7 +76,7 @@ class GravityForms_Pages {
 
 		/** Versions **********************************************************/
 
-		$this->version      = '1.0.0';
+		$this->version      = '1.0.1';
 		$this->db_version   = 20180717;
 
 		/** Paths *************************************************************/
