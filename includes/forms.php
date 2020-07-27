@@ -1206,7 +1206,11 @@ function gf_pages_has_form_user_entry( $form = 0, $user_id = 0 ) {
 	$has_entry = false;
 
 	if ( ! empty( $form ) ) {
-		$lead_table = GFFormsModel::get_lead_table_name();
+
+		// Consider GF from version 2.2
+		$lead_table = version_compare( GFFormsModel::get_database_version(), '2.2', '<' )
+			? GFFormsModel::get_lead_table_name()
+			: GFFormsModel::get_entry_table_name();
 
 		// Logged in user
 		if ( ! empty( $user_id ) ) {
