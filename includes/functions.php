@@ -437,7 +437,13 @@ function gf_pages_sanitize_form( $form ) {
 
 	// Default lead count
 	if ( ! isset( $form->lead_count ) ) {
-		$form->lead_count = (int) GFFormsModel::get_lead_count( $form->id, null );
+
+		// Consider GF from version 2.3.0.1
+		if ( version_compare( GFFormsModel::get_database_version(), '2.3.0.1', '<' ) ) {
+			$form->lead_count = (int) GFFormsModel::get_lead_count( $form->id, null );
+		} else {
+			$form->lead_count = (int) GFAPI::count_entries( $form->id );
+		}
 	}
 
 	return apply_filters( 'gf_pages_sanitize_form', $form );
