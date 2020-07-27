@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gravity Forms Pages\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-16 19:17+0000\n"
+"POT-Creation-Date: 2020-07-27 23:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -83,34 +83,38 @@ msgctxt "Default form archive title"
 msgid "Forms"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:638
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:646
 msgctxt "Nav menu item type label"
 msgid "Form Archive"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:651
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:659
 msgctxt "Nva menu item type label"
 msgid "Form Page"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:690
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:721
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:698
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:731
 msgctxt "Nav menu item type label"
 msgid "Form"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:826
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:838
 msgctxt "Customizer menu section title"
 msgid "Forms"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:891
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:903
 msgctxt "Nav menu search term"
 msgid "forms"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:938
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:950
 msgid "Edit Form"
+msgstr ""
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:965
+msgid "View Form"
 msgstr ""
 
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:28
@@ -225,20 +229,20 @@ msgstr ""
 msgid "Make this form %s as a page."
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:512
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:509
 msgctxt "Page title parent"
 msgid "Forms"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:740
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:739
 msgid "Previous forms"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:741
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:740
 msgid "Next forms"
 msgstr ""
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:742
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:741
 msgid "Forms navigation"
 msgstr ""
 

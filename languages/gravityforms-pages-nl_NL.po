@@ -2,16 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Gravity Forms Pages\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-16 19:17+0000\n"
-"PO-Revision-Date: 2018-07-16 19:18+0000\n"
-"Last-Translator: Laurens Offereins <lmoffereins@gmail.com>\n"
+"POT-Creation-Date: 2020-07-27 23:52+0000\n"
+"PO-Revision-Date: 2020-07-27 23:55+0000\n"
+"Last-Translator: Laurens Offereins\n"
 "Language-Team: Nederlands\n"
 "Language: nl_NL\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.4.0; wp-5.5-alpha-20200316.172550"
 
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:96
 msgctxt "Plugin action link"
@@ -67,14 +68,14 @@ msgstr "Bewerk formulier %s"
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:873
 #, php-format
 msgid "%s of %s Entries"
-msgstr "%s van %s reacties"
+msgstr "%s van %s inzendingen"
 
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:879
 #, php-format
 msgid "%s Entry"
 msgid_plural "%s Entries"
-msgstr[0] "%s reactie"
-msgstr[1] "%s reacties"
+msgstr[0] "%s inzending"
+msgstr[1] "%s inzendingen"
 
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:914
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:210
@@ -82,35 +83,39 @@ msgctxt "Default form archive title"
 msgid "Forms"
 msgstr "Formulieren"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:638
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:646
 msgctxt "Nav menu item type label"
 msgid "Form Archive"
 msgstr "Formulierarchief"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:651
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:659
 msgctxt "Nva menu item type label"
 msgid "Form Page"
 msgstr "Formulierpagina"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:690
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:721
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:698
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:731
 msgctxt "Nav menu item type label"
 msgid "Form"
 msgstr "Formulier"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:826
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:838
 msgctxt "Customizer menu section title"
 msgid "Forms"
 msgstr "Formulieren"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:891
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:903
 msgctxt "Nav menu search term"
 msgid "forms"
 msgstr "formulieren"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:938
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:950
 msgid "Edit Form"
 msgstr "Formulier bewerken"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:965
+msgid "View Form"
+msgstr "Formulier bekijken"
 
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:28
 msgid "Form slugs"
@@ -181,7 +186,7 @@ msgstr ""
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:264
 msgid "Hide paged forms that are closed to new entries."
 msgstr ""
-"Verberg pagina's van formulieren die zijn gesloten voor nieuwe reacties."
+"Verberg pagina's van formulieren die zijn gesloten voor nieuwe inzendingen."
 
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:278
 msgid "Customize additional settings here."
@@ -235,20 +240,20 @@ msgstr ""
 msgid "Make this form %s as a page."
 msgstr "Maak dit formulier %s als een pagina."
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:512
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:509
 msgctxt "Page title parent"
 msgid "Forms"
 msgstr "Formulieren"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:740
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:739
 msgid "Previous forms"
 msgstr "Voorgaande formulieren"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:741
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:740
 msgid "Next forms"
 msgstr "Volgende formulieren"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:742
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:741
 msgid "Forms navigation"
 msgstr "Formuliernavigatie"
 
