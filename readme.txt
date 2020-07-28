@@ -2,8 +2,8 @@
 Contributors: Offereins
 Tags: gravity forms, pages, list, forms, single form
 Requires at least: 4.4, GF 2.0
-Tested up to: 4.9.8, GF 2.2.5
-Stable tag: 1.0.1
+Tested up to: 5.4.2, GF 2.4.17
+Stable tag: 1.0.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,9 @@ Activate Gravity Forms Pages in the "Plugins" admin panel using the "Activate" l
 This plugin is not hosted in the official WordPress repository. Instead, updating is supported through use of the [GitHub Updater](https://github.com/afragen/github-updater/) plugin by @afragen and friends.
 
 == Changelog ==
+
+= 1.0.2 =
+* Fixed compatability issues with GF up to version 2.4.17
 
 = 1.0.1 =
 * Added View Form admin-bar link when editing a form
