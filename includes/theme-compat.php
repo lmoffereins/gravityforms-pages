@@ -438,7 +438,7 @@ function gf_pages_enqueue_style( $handle, $file = '', $deps = array(), $ver = fa
  *
  * @return string The script filename if one is located.
  */
-function gf_pages_enqueue_script( $handle = '', $file = '', $dependencies = array(), $version = false, $in_footer = 'all' ) {
+function gf_pages_enqueue_script( $handle, $file = '', $deps = array(), $ver = false, $in_footer = 'all' ) {
 
 	// No file found yet
 	$located = false;
@@ -447,8 +447,8 @@ function gf_pages_enqueue_script( $handle = '', $file = '', $dependencies = arra
 	$file = ltrim( $file, '/' );
 
 	// Make sure there is always a version
-	if ( empty( $version ) ) {
-		$version = gf_pages_get_version();
+	if ( empty( $ver ) ) {
+		$ver = gf_pages_get_version();
 	}
 
 	// Loop through template stack
@@ -482,7 +482,7 @@ function gf_pages_enqueue_script( $handle = '', $file = '', $dependencies = arra
 		$located = str_replace( $content_dir, content_url(), $located );
 
 		// Enqueue the style
-		wp_enqueue_script( $handle, $located, $dependencies, $version, $in_footer );
+		wp_enqueue_script( $handle, $located, $deps, $ver, $in_footer );
 	}
 
 	return $located;
