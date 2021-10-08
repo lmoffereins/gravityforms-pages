@@ -370,7 +370,7 @@ function gf_pages_locate_template( $template_names, $load = false, $require_once
  *
  * @return string The style filename if one is located.
  */
-function gf_pages_enqueue_style( $handle = '', $file = '', $dependencies = array(), $version, $media = 'all' ) {
+function gf_pages_enqueue_style( $handle, $file = '', $deps = array(), $ver = false, $media = 'all' ) {
 
 	// No file found yet
 	$located = false;
@@ -379,8 +379,8 @@ function gf_pages_enqueue_style( $handle = '', $file = '', $dependencies = array
 	$file = ltrim( $file, '/' );
 
 	// Make sure there is always a version
-	if ( empty( $version ) ) {
-		$version = gf_pages_get_version();
+	if ( empty( $ver ) ) {
+		$ver = gf_pages_get_version();
 	}
 
 	// Loop through template stack
@@ -414,7 +414,7 @@ function gf_pages_enqueue_style( $handle = '', $file = '', $dependencies = array
 		$located = str_replace( $content_dir, content_url(), $located );
 
 		// Enqueue the style
-		wp_enqueue_style( $handle, $located, $dependencies, $version, $media );
+		wp_enqueue_style( $handle, $located, $deps, $ver, $media );
 	}
 
 	return $located;
