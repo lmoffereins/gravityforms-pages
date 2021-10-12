@@ -18,10 +18,14 @@ Developers can modify the availability of a form through the `gf_pages_hide_form
 
 ### Theme Compatibility ###
 
-The templates used for displaying both the form archive and single forms can be overridden in your theme. The plugin's theme-compat logic is similar to the ones featured in plugins like bbPress and BuddyPress. Use the following file names in your theme's `gravityforms` template folder:
+By default, the plugin generates the pages of both the form archive and single forms using template files from your theme. This theme-compat logic is similar to the ones featured in plugins like bbPress and BuddyPress. If your theme contains a `single.php` or `page.php` template file, this plugin will handle the content insertion automagically. See `gf_pages_get_theme_compat_template()` for the full stack of queried template files.
 
-* `archive-gf-pages-form.php` for the form archive page
-* `single-gf-pages-form.php` for a single form page
+When desired, the templates used for displaying both the form archive and single forms can be overridden in your theme. Use the following file names in your theme's `gravityforms` template folder:
+
+* `archive-gf-pages-form.php` for the form archive page. See `gf_pages_get_form_archive_template()` for all options.
+* `single-gf-pages-form.php` for a single form page. See `gf_pages_get_form_template()` for all options.
+
+Refer to the `includes/form.php` file for the form archive and single form template tags. See the `templates/default/gravityforms/content-archive-form.php` template part for an example of how to structure the form archive's content.
 
 ## Installation ##
 
