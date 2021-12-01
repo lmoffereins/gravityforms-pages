@@ -953,8 +953,8 @@ function gf_pages_admin_bar_menu( $wp_admin_bar ) {
 		}
 	}
 
-	// When editing a single form in the admin
-	if ( is_admin() && 'toplevel_page_gf_edit_forms' === get_current_screen()->id && isset( $_GET['id'] ) ) {
+	// When in the context of a single form in the admin
+	if ( is_admin() && 0 === strpos( rgget( 'page' ), 'gf_' ) && rgget( 'id' ) ) {
 
 		// When the form is visible as a page			
 		if ( gf_pages_show_form( $_GET['id'] ) ) {
