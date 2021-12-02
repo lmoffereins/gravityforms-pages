@@ -216,7 +216,7 @@ class GravityForms_Pages_Admin {
 					'title' => esc_html__( 'Settings: Pages', 'gravityforms-pages' ),
 				),
 				'input_name_prefix' => '_gf_pages',
-				'capability'        => 'gravityforms_edit_settings',
+				'capability'        => $this->minimum_capability,
 				'initial_values'    => gf_pages_admin_get_settings_fields_initial_values_for_gf_2_5(),
 				'save_callback'     => 'gf_pages_admin_update_settings_fields_for_gf_2_5'
 			) );
