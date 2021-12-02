@@ -38,6 +38,10 @@ This plugin is not hosted in the official WordPress repository. Instead, updatin
 
 == Changelog ==
 
+= 1.0.3 =
+* Fixed compatability with GF 2.5
+* Added support for the GravityForms Submit Once plugin. Forms that are marked submit-once will be hidden for users who have already submitted an entry.
+
 = 1.0.2 =
 * Fixed compatability issues with GF up to version 2.4.17
 
