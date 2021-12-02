@@ -76,9 +76,21 @@ function gf_pages_admin_get_settings_fields_for_gf_2_5() {
 	}
 
 	// Put primary option in the heading
-	$primary_option_name = apply_filters( 'gf_pages_admin_get_primary_settings_field_for_gf_2_5', '_gf_pages_forms_slug' );
+	$primary_option_name = '_gf_pages_forms_slug';
 	if ( isset( $settings_fields[ $primary_option_name ] ) ) {
-		$settings_fields['heading']['fields'][] = $settings_fields[ $primary_option_name ]['fields'][0];
+		$primary_field = $settings_fields[ $primary_option_name ]['fields'][0];
+		$settings_fields['heading']['fields'][] = array(
+			'name' => $primary_field['name'],
+			'type' => 'html',
+			'html' => sprintf(
+				'<span class="%s">%s</span>',
+				'gform-settings-input__container',
+				sprintf(
+					sprintf( $primary_field['description'], '<code>' . home_url( trailingslashit( $wp_rewrite->root ) ) . '</code> %s <code>/</code>' ),
+					sprintf( '<input type="text" name="%s" value="%s" id="%s" style="width: inherit;"/>', $primary_option_name, esc_attr( get_option( $primary_option_name ) ), $primary_field['name'] )
+				)
+			)
+		);
 		unset( $settings_fields[ $primary_option_name ] );
 	}
 
@@ -193,7 +205,7 @@ function gf_pages_admin_get_settings_fields() {
 				'callback'          => 'gf_pages_admin_setting_callback_forms_slug',
 				'sanitize_callback' => 'sanitize_title',
 				'args'              => array(
-					'description'   => esc_html__( 'Enter the permalink part for the forms archive and single forms.', 'gravityforms-pages' ),
+					'description'   => esc_html__( 'The forms pages will live at %s and beyond.', 'gravityforms-pages' ),
 					'type'          => 'text',
 					'default_value' => 'forms'
 				)
