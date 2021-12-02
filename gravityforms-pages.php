@@ -22,15 +22,15 @@
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'GravityForms_Pages' ) ) :
 /**
- * Main Gravity Forms Pages Class
+ * The main plugin class
  *
  * @since 1.0.0
  */
-class GravityForms_Pages {
+final class GravityForms_Pages {
 
 	/** Singleton *************************************************************/
 
@@ -289,12 +289,11 @@ class GravityForms_Pages {
 }
 
 /**
- * Main function responsible for loading plugin functionality and returning
- * the plugin main object.
+ * Return single instance of this main plugin class
  *
  * @since 1.0.0
  *
- * @return GF Pages instance
+ * @return GravityForms_Pages
  */
 function gf_pages() {
 	return GravityForms_Pages::instance();
