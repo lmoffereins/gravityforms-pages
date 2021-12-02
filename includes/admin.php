@@ -7,10 +7,15 @@
  * @subpackage Administration
  */
 
+// Require settings renderer from GF
+// Not sure how this will break backwards compatibility
+use Gravity_Forms\Gravity_Forms\Settings\Settings as GF_Settings;
+
 // Exit if accessed directly
 defined( 'ABSPATH' ) || exit;
 
 if ( ! class_exists( 'GravityForms_Pages_Admin' ) ) :
+
 /**
  * The Gravity Forms Pages Admin class
  *
@@ -188,7 +193,10 @@ class GravityForms_Pages_Admin {
 	 *
 	 * @since 1.0.0
 	 */
-	public function settings_page() { ?>
+	public function settings_page() {
+
+		// Legacy settings
+		if ( version_compare( GFCommon::$version, '2.5', '<=' ) ) : ?>
 
 		<h3><?php echo esc_html_x( 'Forms Pages', 'Admin page heading', 'gravityforms-pages' ); ?></h3>
 
@@ -198,7 +206,25 @@ class GravityForms_Pages_Admin {
 			<?php submit_button(); ?>
 		</form>
 
-		<?php
+		<?php else :
+
+			// Create settings renderer
+			$renderer = new GF_Settings( array(
+				'fields' => gf_pages_admin_get_settings_fields_for_gf_2_5(),
+				'header' => array(
+					'icon'  => 'fa fa-gear',
+					'title' => esc_html__( 'Settings: Pages', 'gravityforms-pages' ),
+				),
+				'input_name_prefix' => '_gf_pages',
+				'capability'        => 'gravityforms_edit_settings',
+				'initial_values'    => gf_pages_admin_get_settings_fields_initial_values_for_gf_2_5(),
+				'save_callback'     => 'gf_pages_admin_update_settings_fields_for_gf_2_5'
+			) );
+
+			// Render fields
+			$renderer->render();
+
+		endif;
 	}
 
 	/** Form ************************************************************/

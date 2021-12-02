@@ -13,6 +13,124 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /** Settings ******************************************************************/
 
 /**
+ * Return settings fields for the new Settings layout since GF 2.5
+ *
+ * @since 1.0.3
+ *
+ * @uses apply_filters() Calls 'gf_pages_admin_get_settings_fields_for_gf_2_5'
+ * @uses apply_filters() Calls 'gf_pages_admin_get_primary_settings_field_for_gf_2_5'
+ *
+ * @return array Settings fields
+ */
+function gf_pages_admin_get_settings_fields_for_gf_2_5() {
+
+	// Define page heading field
+	$settings_fields = array(
+		'heading' => array(
+			'title'       => esc_html__( 'Forms Pages', 'gravityforms-pages' ),
+			'class'       => 'gform-settings-panel--full',
+			'description' => esc_html__( 'Setup the structure of the paged forms archive listing and single forms pages.', 'gravityforms-pages' ),
+			'fields'      => array( array( 'type' => 'html' ) )
+		)
+	);
+
+	// Walk legacy settings fields for setup
+	foreach ( gf_pages_admin_get_settings_fields() as $section => $fields ) {
+		foreach ( $fields as $option_name => $args ) {
+
+			// Get field name without prefix
+			$field_name = isset( $args['name'] ) ? $args['name'] : str_replace( '_gf_pages_', '', $option_name );
+
+			// Skip field when not indicated for inclusion
+			if ( ! isset( $args['args']['type'] ) ) {
+				continue;
+			}
+
+			// Identify any sub fields
+			$sub_fields = array();
+			if ( isset( $args['args']['sub_fields'] ) ) {
+				$sub_fields = $args['args']['sub_fields'];
+				unset( $args['args']['sub_fields'] );
+			}
+
+			// Set field attributes
+			$settings_fields[ $option_name ] = wp_parse_args( $args, array(
+				'id'     => 'section_' . $option_name,
+				'class'  => 'gform-settings-panel--half',
+				'fields' => array_merge( array(
+					wp_parse_args( $args['args'], array(
+						'name' => $field_name
+					) )
+				), $sub_fields )
+			) );
+		}
+	}
+
+	// Put primary option in the heading
+	$primary_option_name = apply_filters( 'gf_pages_admin_get_primary_settings_field_for_gf_2_5', '_gf_pages_forms_slug' );
+	if ( isset( $settings_fields[ $primary_option_name ] ) ) {
+		$settings_fields['heading']['fields'][] = $settings_fields[ $primary_option_name ]['fields'][0];
+		unset( $settings_fields[ $primary_option_name ] );
+	}
+
+	return apply_filters( 'gf_pages_admin_get_settings_fields_for_gf_2_5', $settings_fields );
+}
+
+/**
+ * Return settings fields' initial values for the new Settings layout since GF 2.5
+ *
+ * @since 1.0.3
+ *
+ * @uses apply_filters() Calls 'gf_pages_admin_get_settings_fields_initial_values_for_gf_2_5'
+ * @return array Settings fields' initial values
+ */
+function gf_pages_admin_get_settings_fields_initial_values_for_gf_2_5() {
+
+	// Define retval
+	$initial_values = array();
+
+	// Walk legacy settings fields for setup
+	foreach ( gf_pages_admin_get_settings_fields() as $section => $fields ) {
+		foreach ( $fields as $option_name => $args ) {
+
+			// Get field name without prefix
+			$field_name = isset( $args['name'] ) ? $args['name'] : str_replace( '_gf_pages_', '', $option_name );
+
+			// Collect initial values
+			$initial_values[ $field_name ] = get_option( $option_name, $args['args']['default_value'] );
+		}
+	}
+
+	return apply_filters( 'gf_pages_admin_get_settings_fields_initial_values_for_gf_2_5', $initial_values );
+}
+
+/**
+ * Update settings fields for the new Settings layout since GF 2.5
+ *
+ * @since 1.0.3
+ *
+ * @uses do_action() Calls 'gf_pages_admin_update_settings_fields_for_gf_2_5'
+ */
+function gf_pages_admin_update_settings_fields_for_gf_2_5( $values ) {
+
+	// Walk legacy settings fields for saving
+	foreach ( gf_pages_admin_get_settings_fields() as $section => $fields ) {
+		foreach ( $fields as $option_name => $args ) {
+
+			// Settings are saved by unprefixed name, so get name first
+			$field_name = isset( $args['name'] ) ? $args['name'] : str_replace( '_gf_pages_', '', $option_name );
+
+			/* Save setting. Sanitization callbacks are registered through `GravityForms_Pages_Admin::register_settings()` */
+			update_option( $option_name, rgar( $values, $field_name ) );
+		}
+	}
+
+	do_action( 'gf_pages_admin_update_settings_fields_for_gf_2_5', $values );
+}
+
+/** Legacy Settings ***********************************************************/
+
+/**
  * Get the plugin settings sections
  *
  * @since 1.0.0
@@ -65,7 +183,11 @@ function gf_pages_admin_get_settings_fields() {
 				'title'             => esc_html__( 'Forms Slug', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_forms_slug',
 				'sanitize_callback' => 'sanitize_title',
-				'args'              => array()
+				'args'              => array(
+					'description'   => esc_html__( 'Enter the permalink part for the forms archive and single forms.', 'gravityforms-pages' ),
+					'type'          => 'text',
+					'default_value' => 'forms'
+				)
 			),
 		),
 
@@ -74,10 +196,24 @@ function gf_pages_admin_get_settings_fields() {
 
 			// Form archive title
 			'_gf_pages_form_archive_title' => array(
-				'title'             => esc_html__( 'Form Archive Title', 'gravityforms-pages' ),
+				'title'             => version_compare( GFCommon::$version, '2.5', '<=' )
+					? esc_html__( 'Form Archive Title', 'gravityforms-pages' )
+					: esc_html__( 'Form Archive Title and Description', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_form_archive_title',
 				'sanitize_callback' => 'strip_tags',
-				'args'              => array()
+				'args'              => array(
+					'description'   => sprintf( esc_html__( 'The forms archive page title. When empty, the default title %s will be used.', 'gravityforms-pages' ), '<code>' . esc_html_x( 'Forms', 'Default form archive title', 'gravityforms-pages' ) . '</code>' ),
+					'type'          => 'text',
+					'default_value' => esc_html_x( 'Forms', 'Default form archive title', 'gravityforms-pages' ),
+					'sub_fields'    => array(
+						array(
+							'name'          => 'form_archive_description',
+							'description'   => esc_html__( 'The introduction text to the paged forms archive.', 'gravityforms-pages' ),
+							'type'          => 'textarea',
+							'default_value' => ''
+						)
+					)
+				)
 			),
 
 			// Form archive description
@@ -85,7 +221,9 @@ function gf_pages_admin_get_settings_fields() {
 				'title'             => esc_html__( 'Form Archive Description', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_form_archive_description',
 				'sanitize_callback' => '',
-				'args'              => array()
+				'args'              => array(
+					'default_value' => ''
+				)
 			),
 
 			// Forms per page
@@ -93,7 +231,12 @@ function gf_pages_admin_get_settings_fields() {
 				'title'             => esc_html__( 'Forms Per Page', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_forms_per_page',
 				'sanitize_callback' => 'intval',
-				'args'              => array()
+				'args'              => array(
+					'description'   => esc_html__( 'The number of items to show per page on the paged forms archive.', 'gravityforms-pages' ),
+					'type'          => 'text',
+					'input_type'    => 'number',
+					'default_value' => 10
+				)
 			),
 
 			// Hide form archive
@@ -101,7 +244,11 @@ function gf_pages_admin_get_settings_fields() {
 				'title'             => esc_html__( 'Hide Form Archive', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_hide_form_archive',
 				'sanitize_callback' => 'intval',
-				'args'              => array()
+				'args'              => array(
+					'description'   => sprintf( esc_html__( "Disable the paged forms archive listing. Visitors of %s will be routed to a 404 'Not Found' page.", 'gravityforms-pages' ), '<code>' . gf_pages_get_form_archive_url() . '</code>' ),
+					'type'          => 'toggle',
+					'default_value' => 0
+				)
 			),
 
 			// Hide closed forms
@@ -109,7 +256,11 @@ function gf_pages_admin_get_settings_fields() {
 				'title'             => esc_html__( 'Hide Closed Forms', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_hide_closed_forms',
 				'sanitize_callback' => 'intval',
-				'args'              => array()
+				'args'              => array(
+					'description'   => esc_html__( 'Hide paged forms that are closed to new entries.', 'gravityforms-pages' ),
+					'type'          => 'toggle',
+					'default_value' => 0
+				)
 			),
 		),
 
@@ -121,7 +272,11 @@ function gf_pages_admin_get_settings_fields() {
 				'title'             => esc_html__( 'Default Availability', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_default_availability',
 				'sanitize_callback' => 'intval',
-				'args'              => array()
+				'args'              => array(
+					'description'   => esc_html__( 'Enable this when forms should be available as a page by default. Availability can also be set on a per-form basis. When made available, form settings like inactive status, required user login and time schedule restrictions are respected before the form is displayed.', 'gravityforms-pages' ),
+					'type'          => 'toggle',
+					'default_value' => 1
+				)
 			),
 
 			// Force ajax
@@ -129,7 +284,11 @@ function gf_pages_admin_get_settings_fields() {
 				'title'             => esc_html__( 'Force Ajax', 'gravityforms-pages' ),
 				'callback'          => 'gf_pages_admin_setting_callback_force_ajax',
 				'sanitize_callback' => 'intval',
-				'args'              => array()
+				'args'              => array(
+					'description'   => esc_html__( 'Always use interactive ajax functionality in paged forms.', 'gravityforms-pages' ),
+					'type'          => 'toggle',
+					'default_value' => 0
+				)
 			),
 		)
 	) );
@@ -206,12 +365,11 @@ function gf_pages_admin_setting_callback_query_section() { ?>
  *
  * @since 1.0.0
  */
-function gf_pages_admin_setting_callback_form_archive_title() {
-	$default_value = esc_html_x( 'Forms', 'Default form archive title', 'gravityforms-pages' ); ?>
+function gf_pages_admin_setting_callback_form_archive_title( $args = array() ) { ?>
 
-	<input id="_gf_pages_form_archive_title" name="_gf_pages_form_archive_title" type="text" class="regular-text" value="<?php echo get_option( '_gf_pages_form_archive_title', $default_value ); ?>" />
+	<input id="_gf_pages_form_archive_title" name="_gf_pages_form_archive_title" type="text" class="regular-text" value="<?php echo get_option( '_gf_pages_form_archive_title', $args['default_value'] ); ?>" />
 	<br>
-	<label for="_gf_pages_form_archive_title"><span class="description"><?php printf( esc_html__( 'When empty, the default title %s will be used.', 'gravityforms-pages' ), '<code>' . $default_value . '</code>' ); ?></span></label>
+	<label for="_gf_pages_form_archive_title"><span class="description"><?php echo $args['description']; ?></span></label>
 
 	<?php
 }
@@ -221,7 +379,7 @@ function gf_pages_admin_setting_callback_form_archive_title() {
  *
  * @since 1.0.0
  */
-function gf_pages_admin_setting_callback_form_archive_description() { ?>
+function gf_pages_admin_setting_callback_form_archive_description( $args = array() ) { ?>
 
 	<textarea id="_gf_pages_form_archive_description" name="_gf_pages_form_archive_description" class="large-text" rows="3" cols="50"><?php echo esc_textarea( get_option( '_gf_pages_form_archive_description', '' ) ); ?></textarea>
 
@@ -245,10 +403,10 @@ function gf_pages_admin_setting_callback_forms_per_page() { ?>
  *
  * @since 1.0.0
  */
-function gf_pages_admin_setting_callback_hide_form_archive() { ?>
+function gf_pages_admin_setting_callback_hide_form_archive( $args = array() ) { ?>
 
 	<input id="_gf_pages_hide_form_archive" name="_gf_pages_hide_form_archive" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_hide_form_archive' ) ); ?> />
-	<label for="_gf_pages_hide_form_archive"><span class="description"><?php printf( esc_html__( "Disable the paged forms archive listing. Visitors of %s will be routed to a 404 'Not Found' page.", 'gravityforms-pages' ), '<code>' . gf_pages_get_form_archive_url() . '</code>' ); ?></span></label>
+	<label for="_gf_pages_hide_form_archive"><span class="description"><?php echo $args['description']; ?></span></label>
 
 	<?php
 }
@@ -258,10 +416,10 @@ function gf_pages_admin_setting_callback_hide_form_archive() { ?>
  *
  * @since 1.0.0
  */
-function gf_pages_admin_setting_callback_hide_closed_forms() { ?>
+function gf_pages_admin_setting_callback_hide_closed_forms( $args = array() ) { ?>
 
 	<input id="_gf_pages_hide_closed_forms" name="_gf_pages_hide_closed_forms" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_hide_closed_forms' ) ); ?> />
-	<label for="_gf_pages_hide_closed_forms"><span class="description"><?php esc_html_e( 'Hide paged forms that are closed to new entries.', 'gravityforms-pages' ); ?></span></label>
+	<label for="_gf_pages_hide_closed_forms"><span class="description"><?php echo $args['description']; ?></span></label>
 
 	<?php
 }
@@ -285,19 +443,10 @@ function gf_pages_admin_setting_callback_additional_section() { ?>
  *
  * @since 1.0.0
  */
-function gf_pages_admin_setting_callback_default_availability() {
-	$selected = get_option( '_gf_pages_default_availability', true );
+function gf_pages_admin_setting_callback_default_availability( $args = array() ) { ?>
 
-	ob_start(); ?>
-
-	<select id="_gf_pages_default_availability" name="_gf_pages_default_availability">
-		<option value="1" <?php selected( $selected, 1 ); ?>><?php esc_html_e( 'available', 'gravityforms-pages' ); ?></option>
-		<option value="0" <?php selected( $selected, 0 ); ?>><?php esc_html_e( 'unavailable', 'gravityforms-pages' ); ?></option>
-	</select>
-
-	<?php $availability = ob_get_clean(); ?>
-
-	<label for="_gf_pages_default_availability"><?php printf( esc_html__( 'Forms are by default %s as a page. Availability can also be set on a per-form basis. When made available, form settings like inactive status, required user login and time schedule restrictions are respected before the form is displayed.', 'gravityforms-pages' ), $availability ); ?></label>
+	<input id="_gf_pages_default_availability" name="_gf_pages_default_availability" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_default_availability', true ) ); ?> />
+	<label for="_gf_pages_default_availability"><span class="description"><?php echo $args['description']; ?></span></label>
 
 	<?php
 }
@@ -307,10 +456,10 @@ function gf_pages_admin_setting_callback_default_availability() {
  *
  * @since 1.0.0
  */
-function gf_pages_admin_setting_callback_force_ajax() { ?>
+function gf_pages_admin_setting_callback_force_ajax( $args = array() ) { ?>
 
 	<input id="_gf_pages_force_ajax" name="_gf_pages_force_ajax" type="checkbox" value="1" <?php checked( get_option( '_gf_pages_force_ajax' ) ); ?> />
-	<label for="_gf_pages_force_ajax"><span class="description"><?php esc_html_e( 'Always use interactive ajax functionality in paged forms.', 'gravityforms-pages' ); ?></span></label>
+	<label for="_gf_pages_force_ajax"><span class="description"><?php echo $args['description']; ?></span></label>
 
 	<?php
 }
