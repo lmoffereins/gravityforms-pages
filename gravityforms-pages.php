@@ -3,7 +3,7 @@
 /**
  * The Gravity Forms Pages Plugin
  *
- * Tested with Gravity Forms 2.4.17
+ * Tested with Gravity Forms 2.5.15
  *
  * @package Gravity Forms Pages
  * @subpackage Main
@@ -13,7 +13,7 @@
  * Plugin Name:       Gravity Forms Pages
  * Description:       List and display Gravity Forms forms without shortcodes
  * Plugin URI:        https://github.com/lmoffereins/gravityforms-pages/
- * Version:           1.0.2
+ * Version:           1.0.3
  * Author:            Laurens Offereins
  * Author URI:        https://github.com/lmoffereins
  * Text Domain:       gravityforms-pages
@@ -76,7 +76,7 @@ final class GravityForms_Pages {
 
 		/** Versions **********************************************************/
 
-		$this->version      = '1.0.2';
+		$this->version      = '1.0.3';
 		$this->db_version   = 20180717;
 
 		/** Paths *************************************************************/

@@ -2,8 +2,8 @@
 Contributors: Offereins
 Tags: gravity forms, pages, list, forms, single form
 Requires at least: 4.4, GF 2.0
-Tested up to: 5.4.2, GF 2.4.17
-Stable tag: 1.0.2
+Tested up to: 5.8, GF 2.5.15
+Stable tag: 1.0.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
