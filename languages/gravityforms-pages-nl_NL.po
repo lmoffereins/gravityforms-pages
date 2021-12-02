@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Gravity Forms Pages\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-07-27 23:52+0000\n"
-"PO-Revision-Date: 2020-07-27 23:55+0000\n"
+"PO-Revision-Date: 2021-12-02 22:00+0000\n"
 "Last-Translator: Laurens Offereins\n"
 "Language-Team: Nederlands\n"
 "Language: nl_NL\n"
@@ -14,62 +14,6 @@ msgstr ""
 "X-Generator: Loco https://localise.biz/\n"
 "X-Loco-Version: 2.4.0; wp-5.5-alpha-20200316.172550"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:96
-msgctxt "Plugin action link"
-msgid "Settings"
-msgstr "Instellingen"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:177
-msgctxt "Settings tab title"
-msgid "Pages"
-msgstr "Pagina's"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:178
-msgctxt "Settings page title"
-msgid "Forms Pages"
-msgstr "Formulierpagina's"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:190
-msgctxt "Admin page heading"
-msgid "Forms Pages"
-msgstr "Formulierpagina's"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:226
-msgid "View"
-msgstr "Bekijken"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:227
-msgid "View this form"
-msgstr "Bekijk dit formulier"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:327
-msgctxt "Nav menu metabox title"
-msgid "Forms"
-msgstr "Formulieren"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:257
-msgid "There is no description provided for this form."
-msgstr "Er is geen beschrijving beschikbaar voor dit formulier."
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:605
-#, php-format
-msgid "Complete form %s"
-msgstr "Vul formulier %s in"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:687
-msgid "Edit"
-msgstr "Bewerken"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:700
-#, php-format
-msgid "Edit form %s"
-msgstr "Bewerk formulier %s"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:873
-#, php-format
-msgid "%s of %s Entries"
-msgstr "%s van %s inzendingen"
-
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:879
 #, php-format
 msgid "%s Entry"
@@ -77,153 +21,46 @@ msgid_plural "%s Entries"
 msgstr[0] "%s inzending"
 msgstr[1] "%s inzendingen"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:914
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:210
-msgctxt "Default form archive title"
-msgid "Forms"
-msgstr "Formulieren"
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:873
+#, php-format
+msgid "%s of %s Entries"
+msgstr "%s van %s inzendingen"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:646
-msgctxt "Nav menu item type label"
-msgid "Form Archive"
-msgstr "Formulierarchief"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:659
-msgctxt "Nva menu item type label"
-msgid "Form Page"
-msgstr "Formulierpagina"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:698
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:731
-msgctxt "Nav menu item type label"
-msgid "Form"
-msgstr "Formulier"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:838
-msgctxt "Customizer menu section title"
-msgid "Forms"
-msgstr "Formulieren"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:903
-msgctxt "Nav menu search term"
-msgid "forms"
-msgstr "formulieren"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:950
-msgid "Edit Form"
-msgstr "Formulier bewerken"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:965
-msgid "View Form"
-msgstr "Formulier bekijken"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:28
-msgid "Form slugs"
-msgstr "Verkorte formuliernamen"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:35
-msgid "Query settings"
-msgstr "Query-instellingen"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:42
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:181
 msgid "Additional settings"
 msgstr "Overige instellingen"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:65
-msgid "Forms Slug"
-msgstr "Formulieren verkorte naam"
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:201
+msgctxt "Admin page heading"
+msgid "Forms Pages"
+msgstr "Formulierpagina's"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:77
-msgid "Form Archive Title"
-msgstr "Archieftitel"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:85
-msgid "Form Archive Description"
-msgstr "Archiefbeschrijving"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:93
-msgid "Forms Per Page"
-msgstr "Formulieren per pagina"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:101
-msgid "Hide Form Archive"
-msgstr "Verberg formulierarchief"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:109
-msgid "Hide Closed Forms"
-msgstr "Verberg gesloten formulieren"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:121
-msgid "Default Availability"
-msgstr "Standaard beschikbaarheid"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:129
-msgid "Force Ajax"
-msgstr "Gebruik ajax"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:173
-msgid "Customize your form permalink structure here."
-msgstr "Wijzig hier de permalinkstructuur van je formulieren."
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:199
-msgid "Customize the form archive and query settings here."
-msgstr "Wijzig hier instellingen voor het formulierarchief en queries."
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:214
-#, php-format
-msgid "When empty, the default title %s will be used."
-msgstr "Wanneer dit leeg is, zal standaard %s als titel gebruikt worden."
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:251
-#, php-format
-msgid ""
-"Disable the paged forms archive listing. Visitors of %s will be routed to a "
-"404 'Not Found' page."
-msgstr ""
-"Schakel de lijst van formulieren in het formulierarchief uit. Bezoekers van "
-"%s zullen naar een 404 'Niet gevonden' pagina gestuurd worden."
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:264
-msgid "Hide paged forms that are closed to new entries."
-msgstr ""
-"Verberg pagina's van formulieren die zijn gesloten voor nieuwe inzendingen."
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:278
-msgid "Customize additional settings here."
-msgstr "Wijzig hier de overige instellingen."
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:294
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:359
-msgid "available"
-msgstr "beschikbaar"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:295
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:360
-msgid "unavailable"
-msgstr "niet beschikbaar"
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:300
-#, php-format
-msgid ""
-"Forms are by default %s as a page. Availability can also be set on a per-"
-"form basis. When made available, form settings like inactive status, "
-"required user login and time schedule restrictions are respected before the "
-"form is displayed."
-msgstr ""
-"Formulieren zijn standaard %s als een pagina. Indien beschikbaar, worden "
-"formulierinstellingen zoals de (in)actiefstatus, verplichte gebruikerslogin "
-"of tijdsbeperkingen aangehouden voordat het formulier daadwerkelijk getoond "
-"wordt."
-
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:313
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:309
 msgid "Always use interactive ajax functionality in paged forms."
 msgstr "Gebruik altijd interactieve ajax-functionaliteit in formulierpagina's."
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:333
-msgid "Page Availability"
-msgstr "Beschikbaar als pagina"
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:534
+msgid "available"
+msgstr "beschikbaar"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:334
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:605
+#, php-format
+msgid "Complete form %s"
+msgstr "Vul formulier %s in"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/templates/default/gravityforms/content-archive-form.php:30
+msgid "Complete the form &rarr;"
+msgstr "Vul het formulier in &rarr;"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:457
+msgid "Customize additional settings here."
+msgstr "Wijzig hier de overige instellingen."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:379
+msgid "Customize the form archive and query settings here."
+msgstr "Wijzig hier instellingen voor het formulierarchief en queries."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:501
 msgid ""
 "Customize whether this form is available as a page within your site. When "
 "made available, other form settings like inactive status, required user "
@@ -235,43 +72,117 @@ msgstr ""
 "verplichte gebruikerslogin of tijdsbeperkingen aangehouden voordat het "
 "formulier daadwerkelijk getoond wordt."
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:365
-#, php-format
-msgid "Make this form %s as a page."
-msgstr "Maak dit formulier %s als een pagina."
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:353
+msgid "Customize your form permalink structure here."
+msgstr "Wijzig hier de permalinkstructuur van je formulieren."
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:509
-msgctxt "Page title parent"
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:838
+msgctxt "Customizer menu section title"
 msgid "Forms"
 msgstr "Formulieren"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:739
-msgid "Previous forms"
-msgstr "Voorgaande formulieren"
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:293
+msgid "Default Availability"
+msgstr "Standaard beschikbaarheid"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:740
-msgid "Next forms"
-msgstr "Volgende formulieren"
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:914
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:226
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:228
+msgctxt "Default form archive title"
+msgid "Forms"
+msgstr "Formulieren"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:269
+#, php-format
+msgid ""
+"Disable the paged forms archive listing. Visitors of %s will be routed to a "
+"404 'Not Found' page."
+msgstr ""
+"Schakel de lijst van formulieren in het formulierarchief uit. Bezoekers van "
+"%s zullen naar een 404 'Niet gevonden' pagina gestuurd worden."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:687
+msgid "Edit"
+msgstr "Bewerken"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:950
+msgid "Edit Form"
+msgstr "Formulier bewerken"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:700
+#, php-format
+msgid "Edit form %s"
+msgstr "Bewerk formulier %s"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:297
+msgid ""
+"Enable this when forms should be available as a page by default. "
+"Availability can also be set on a per-form basis. When made available, form "
+"settings like inactive status, required user login and time schedule "
+"restrictions are respected before the form is displayed."
+msgstr ""
+"Schakel dit in om formulieren standaard beschikbaar te maken als een pagina. "
+"Beschikbaarheid kan altijd ingesteld worden per formulier. Indien "
+"beschikbaar, worden formulierinstellingen zoals de (in)actiefstatus, "
+"verplichte gebruikerslogin of tijdsbeperkingen aangehouden voordat het "
+"formulier daadwerkelijk getoond wordt."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:305
+msgid "Force Ajax"
+msgstr "Gebruik ajax"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:242
+msgid "Form Archive Description"
+msgstr "Archiefbeschrijving"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:221
+msgid "Form Archive Title"
+msgstr "Archieftitel"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:222
+msgid "Form Archive Title and Description"
+msgstr "Archieftitel en -beschrijving"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:167
+msgid "Form slugs"
+msgstr "Verkorte formuliernamen"
 
 #: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:741
 msgid "Forms navigation"
 msgstr "Formuliernavigatie"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/templates/default/gravityforms/content-archive-form.php:30
-msgid "Complete the form &rarr;"
-msgstr "Vul het formulier in &rarr;"
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:32
+msgid "Forms Pages"
+msgstr "Formulierpagina's"
 
-#: ../../../../src/wp-content/plugins/gravityforms-pages/templates/default/gravityforms/feedback-no-forms.php:13
-msgid "Oh bother! There were no forms found here."
-msgstr "Vervelend! Er zijn hier geen formulieren gevonden."
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:252
+msgid "Forms Per Page"
+msgstr "Formulieren per pagina"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:204
+msgid "Forms Slug"
+msgstr "Formulieren verkorte naam"
 
 #. Name of the plugin
 msgid "Gravity Forms Pages"
 msgstr "Gravity Forms Pages"
 
-#. Description of the plugin
-msgid "List and display Gravity Forms forms without shortcodes"
-msgstr "Presenteer formulieren uit Gravity Forms zonder shortcodes"
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:277
+msgid "Hide Closed Forms"
+msgstr "Verberg gesloten formulieren"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:265
+msgid "Hide Form Archive"
+msgstr "Verberg formulierarchief"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:281
+msgid "Hide paged forms that are closed to new entries."
+msgstr ""
+"Verberg pagina's van formulieren die zijn gesloten voor nieuwe inzendingen."
+
+#. Author URI of the plugin
+msgid "https://github.com/lmoffereins"
+msgstr "https://github.com/lmoffereins"
 
 #. URI of the plugin
 msgid "https://github.com/lmoffereins/gravityforms-pages/"
@@ -281,6 +192,135 @@ msgstr "https://github.com/lmoffereins/gravityforms-pages/"
 msgid "Laurens Offereins"
 msgstr "Laurens Offereins"
 
-#. Author URI of the plugin
-msgid "https://github.com/lmoffereins"
-msgstr "https://github.com/lmoffereins"
+#. Description of the plugin
+msgid "List and display Gravity Forms forms without shortcodes"
+msgstr "Presenteer formulieren uit Gravity Forms zonder shortcodes"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:540
+#, php-format
+msgid "Make this form %s as a page."
+msgstr "Maak dit formulier %s als een pagina."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:698
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:731
+msgctxt "Nav menu item type label"
+msgid "Form"
+msgstr "Formulier"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:646
+msgctxt "Nav menu item type label"
+msgid "Form Archive"
+msgstr "Formulierarchief"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:394
+msgctxt "Nav menu metabox title"
+msgid "Forms"
+msgstr "Formulieren"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:903
+msgctxt "Nav menu search term"
+msgid "forms"
+msgstr "formulieren"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:740
+msgid "Next forms"
+msgstr "Volgende formulieren"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:659
+msgctxt "Nva menu item type label"
+msgid "Form Page"
+msgstr "Formulierpagina"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/templates/default/gravityforms/feedback-no-forms.php:13
+msgid "Oh bother! There were no forms found here."
+msgstr "Vervelend! Er zijn hier geen formulieren gevonden."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:500
+msgid "Page Availability"
+msgstr "Beschikbaar als pagina"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:509
+msgctxt "Page title parent"
+msgid "Forms"
+msgstr "Formulieren"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:104
+msgctxt "Plugin action link"
+msgid "Settings"
+msgstr "Instellingen"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/template.php:739
+msgid "Previous forms"
+msgstr "Voorgaande formulieren"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:174
+msgid "Query settings"
+msgstr "Query-instellingen"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:186
+msgctxt "Settings page title"
+msgid "Forms Pages"
+msgstr "Formulierpagina's"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:185
+msgctxt "Settings tab title"
+msgid "Pages"
+msgstr "Pagina's"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:216
+msgid "Settings: Pages"
+msgstr "Instellingen: pagina's"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:39
+msgid ""
+"Setup the structure of the paged forms archive listing and single forms "
+"pages."
+msgstr ""
+"Instellingen voor de structuur van het formulierarchief en de losse "
+"formulierpagina's."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:226
+#, php-format
+msgid ""
+"The forms archive page title. When empty, the default title %s will be used."
+msgstr ""
+"De titel van het formulierarchief. Wanneer dit leeg is, zal standaard %s als "
+"titel gebruikt worden."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:208
+#, php-format
+msgid "The forms pages will live at %s and beyond."
+msgstr "De formulierpagina's zullen te vinden zijn vanaf %s."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:232
+msgid "The introduction text to the paged forms archive."
+msgstr "De tekst die als beschrijving van het formulierarchief wordt gebruikt."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:256
+msgid "The number of items to show per page on the paged forms archive."
+msgstr ""
+"Het aantal formulieren dat per pagina getoond wordt in het formulierarchief."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/forms.php:257
+msgid "There is no description provided for this form."
+msgstr "Er is geen beschrijving beschikbaar voor dit formulier."
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:535
+msgid "unavailable"
+msgstr "niet beschikbaar"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:255
+msgid "View"
+msgstr "Bekijken"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/functions.php:965
+msgid "View Form"
+msgstr "Formulier bekijken"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/settings.php:40
+msgid "View Forms &nbsp;→"
+msgstr "Bekijk formulieren &nbsp;→"
+
+#: ../../../../src/wp-content/plugins/gravityforms-pages/includes/admin.php:256
+msgid "View this form"
+msgstr "Bekijk dit formulier"
