@@ -17,20 +17,29 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.3
  *
+ * @global $wp_rewrite WP_Rewrite
+ *
  * @uses apply_filters() Calls 'gf_pages_admin_get_settings_fields_for_gf_2_5'
- * @uses apply_filters() Calls 'gf_pages_admin_get_primary_settings_field_for_gf_2_5'
  *
  * @return array Settings fields
  */
 function gf_pages_admin_get_settings_fields_for_gf_2_5() {
+	global $wp_rewrite;
 
 	// Define page heading field
 	$settings_fields = array(
 		'heading' => array(
 			'title'       => esc_html__( 'Forms Pages', 'gravityforms-pages' ),
 			'class'       => 'gform-settings-panel--full',
-			'description' => esc_html__( 'Setup the structure of the paged forms archive listing and single forms pages.', 'gravityforms-pages' ),
-			'fields'      => array( array( 'type' => 'html' ) )
+			'fields'      => array(
+				array(
+					'name' => 'heading',
+					'type' => 'html',
+					'html' =>
+						esc_html__( 'Setup the structure of the paged forms archive listing and single forms pages.', 'gravityforms-pages' ) .
+						( ! gf_pages_hide_form_archive() ? sprintf( ' <a target="_blank" href="%s" class="button primary" style="display: inline-block; float: right">%s</a>', gf_pages_get_form_archive_url(), esc_html__( 'View Forms &nbsp;→', 'gravityforms-pages' ) ) : '' )
+				)
+			)
 		)
 	);
 
