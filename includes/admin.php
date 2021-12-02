@@ -67,9 +67,12 @@ class GravityForms_Pages_Admin {
 		add_action( 'gf_pages_admin_init', array( $this, 'register_settings_page'  ) );
 
 		// Forms
-		add_filter( 'gform_form_actions',           array( $this, 'form_actions'           ), 10, 2 );
-		add_filter( 'gform_form_settings',          array( $this, 'register_form_settings' ), 10, 2 );
-		add_filter( 'gform_pre_form_settings_save', array( $this, 'update_form_settings'   )        );
+		add_filter( 'gform_form_actions',               array( $this, 'form_actions'           ), 10, 2 );
+		add_filter( 'gform_form_settings_fields',       array( $this, 'register_form_settings_fields' ), 10, 2 );
+		if ( version_compare( GFCommon::$version, '2.5', '<' ) ) {
+			add_filter( 'gform_form_settings',          array( $this, 'register_form_legacy_settings' ), 10, 2 );
+			add_filter( 'gform_pre_form_settings_save', array( $this, 'update_form_legacy_settings'   )        );
+		}
 
 		// Nav menus
 		add_action( 'load-nav-menus.php',        array( $this, 'nav_menu_add_metabox' ), 10 );
@@ -234,14 +237,52 @@ class GravityForms_Pages_Admin {
 	}
 
 	/**
+	 * Register the plugin form setting's field
+	 *
+	 * This filter is used since GF 2.5.
+	 *
+	 * @since 1.0.3
+	 *
+	 * @param array $settings Form settings sections and their fields
+	 * @param array $form Form object
+	 * @return array Form settings
+	 */
+	public function register_form_settings_fields( $settings, $form ) {
+
+		// Get form settings fields
+		$fields = gf_pages_admin_get_form_settings_fields();
+
+		// Loop through fields
+		foreach ( $fields as $field_id => $field ) {
+			$section = $field['section'];
+
+			// Map attributes
+			$field['name'] = $field_id;
+			$field['label'] = $field['title'];
+			unset( $field['callback'] );
+
+			// Settings sections are stored by their key
+			if ( ! isset( $settings[ $section ] ) ) {
+				$settings[ $section ] = array( 'title' => $this->__gravityforms( 'Restrictions', 'esc_html__' ), 'fields' => array() );
+			}
+
+			// Append field
+			$settings[ $section ]['fields'][] = $field;
+		}
+
+		return $settings;
+	}
+
+	/**
 	 * Modify the form settings sections
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $settings Form settings sections
+	 * @param array $settings Form settings sections and their fields
 	 * @param array $form Form data
+	 * @return array Form settings
 	 */
-	public function register_form_settings( $settings, $form ) {
+	public function register_form_legacy_settings( $settings, $form ) {
 
 		// Get form settings fields
 		$fields = gf_pages_admin_get_form_settings_fields();
@@ -293,7 +334,7 @@ class GravityForms_Pages_Admin {
 	 * @param array $form Updated form
 	 * @return array Updated form
 	 */
-	public function update_form_settings( $form ) {
+	public function update_form_legacy_settings( $form ) {
 
 		// Get form settings fields
 		$fields = gf_pages_admin_get_form_settings_fields();
@@ -302,7 +343,7 @@ class GravityForms_Pages_Admin {
 		foreach ( $fields as $field_id => $field ) {
 
 			// Get value from saved data
-			$value = isset( $_POST[ $field_id ] ) ? $_POST[ $field_id] : null;
+			$value = isset( $_POST[ $field_id ] ) ? $_POST[ $field_id ] : null;
 
 			// Sanitize value
 			if ( isset( $field['sanitize_callback'] ) && is_callable( $field['sanitize_callback'] ) ) {

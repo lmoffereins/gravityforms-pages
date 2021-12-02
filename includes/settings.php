@@ -326,13 +326,18 @@ function gf_pages_admin_setting_callback_force_ajax() { ?>
  * @return array Form settings fields
  */
 function gf_pages_admin_get_form_settings_fields() {
+	$legacy_settings = version_compare( GFCommon::$version, '2.5', '<=' );
+	$field_title     = esc_html__( 'Page Availability', 'gravityforms-pages' );
+	$tooltip_text    = '<strong>' . $field_title . '</strong>' . esc_html__( 'Customize whether this form is available as a page within your site. When made available, other form settings like inactive status, required user login or time schedule restrictions are respected before the form is displayed.', 'gravityforms-pages' );
+
 	return (array) apply_filters( 'gf_pages_admin_get_form_settings_fields', array(
 
 		// Page Availability
 		'gf_pages_page_availability' => array(
-			'title'             => esc_html__( 'Page Availability', 'gravityforms-pages' ),
-			'tooltip'           => esc_html__( 'Customize whether this form is available as a page within your site. When made available, other form settings like inactive status, required user login or time schedule restrictions are respected before the form is displayed.', 'gravityforms-pages' ),
-			'section'           => 'Restrictions',
+			'section'           => $legacy_settings ? 'Restrictions' : 'form_basics',
+			'type'              => 'toggle',
+			'title'             => $field_title,
+			'tooltip'           => $legacy_settings ? $tooltip_text : gform_tooltip( $tooltip_text, '', true ),
 			'callback'          => 'gf_pages_admin_form_setting_callback_page_availability',
 			'sanitize_callback' => 'intval',
 		)
