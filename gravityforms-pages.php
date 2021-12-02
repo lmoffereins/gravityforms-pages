@@ -136,7 +136,8 @@ class GravityForms_Pages {
 		}
 
 		// Extensions
-		require( $this->includes_dir . 'extend/wordpress-seo.php' );
+		require( $this->includes_dir . 'extend/wordpress-seo.php'            );
+		require( $this->includes_dir . 'extend/gravityforms-submit-once.php' );
 	}
 
 	/**
